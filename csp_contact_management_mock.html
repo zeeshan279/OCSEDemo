@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CSP Contact Management (Simplified + Powerful)</title>
+<style>
+:root{--bg:#f6f8fc;--panel:#fff;--text:#1f2937;--muted:#6b7280;--line:#e5eaf2;--blue:#2563eb;--soft:#eef4ff;--green:#059669;--amber:#b45309;--red:#b91c1c;--radius:16px}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial;background:var(--bg);color:var(--text)}
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:#0f4c81;color:#fff;padding:20px}
+.sidebar h1{font-size:16px;margin:0 0 12px}
+.nav a{display:block;padding:10px 12px;border-radius:10px;color:#fff;text-decoration:none;margin-bottom:6px}
+.nav a.active,.nav a:hover{background:rgba(255,255,255,.12)}
+.main{padding:20px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+button{border:none;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer}
+.primary{background:var(--blue);color:#fff}.secondary{background:#fff;border:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:320px 1fr;gap:16px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:#fbfdff}
+.card.active{border-color:#9ec5fe;background:#eef5ff}
+.badge{font-size:11px;padding:4px 8px;border-radius:999px;font-weight:700}
+.b-green{background:#d1fae5;color:#047857}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tags span{font-size:11px;border:1px solid var(--line);padding:4px 6px;border-radius:999px;background:#fff}
+.section{margin-top:18px;font-weight:800;color:#0f4c81;font-size:13px;text-transform:uppercase}
+.info{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.box{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fbfdff}
+.k{font-size:10px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.v{font-size:13px;font-weight:600}
+.list{margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.item{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);background:#fff}
+.item:last-child{border-bottom:none}
+.item .left{display:flex;flex-direction:column}
+.item .title{font-weight:700}
+.item .sub{font-size:12px;color:var(--muted);margin-top:4px}
+.item .right{display:flex;align-items:center;gap:8px}
+.item .chip{font-size:11px;border:1px solid var(--line);padding:4px 8px;border-radius:999px;background:#fbfdff}
+@media(max-width:1000px){.layout,.grid{grid-template-columns:1fr}.info{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<aside class="sidebar">
+<h1>CSP Contacts</h1>
+<div class="nav">
+<a class="active">Search</a>
+<a>Create</a>
+<a>Approvals</a>
+
+<a>Duplicate Review</a>
+</div>
+</aside>
+
+<main class="main">
+<div class="top">
+<h2>Contact Management</h2>
+<div>
+
+<button class="primary">+ New</button>
+</div>
+</div>
+
+<div class="grid">
+
+<!-- SEARCH -->
+<div class="panel">
+<h3>Search</h3>
+
+<!-- Primary Search -->
+<label style="font-size:12px;font-weight:700;margin-bottom:4px;display:block">Search</label>
+<input placeholder="Name, Company, FEIN, or Email" value="Karen Mitchell" />
+
+<!-- Quick Filters -->
+<label style="font-size:12px;font-weight:700;margin-top:10px;display:block">Application</label>
+<div class="row" style="margin-top:4px">
+<select><option>Application</option><option selected>Locate</option><option>State Profile Admin</option><option>Employer Services</option><option>IRG</option><option>Data Access</option><option>Federal Collections</option><option>Insurance Match</option><option>Communication Center</option></select>
+</div>
+
+<label style="font-size:12px;font-weight:700;margin-top:10px;display:block">Relationship Type</label>
+<div class="row" style="margin-top:4px">
+<select>
+<option>Relationship Type</option>
+<option selected>State IV-D Agency</option>
+<option>Tribal IV-D Agency</option>
+<option>Employer</option>
+<option>Federal Agency</option>
+<option>International Partner</option>
+<option>Vendor / Contractor</option>
+<option>OCSE Internal</option>
+</select>
+</div>
+
+
+
+<!-- Advanced Filters (Collapsed Pattern Simulated) -->
+<div class="section" style="font-size:12px;color:#6b7280">Advanced Filters</div>
+
+<label style="font-size:12px;font-weight:700;margin-top:10px;display:block">Organization</label>
+<div class="row" style="margin-top:4px">
+<input placeholder="FEIN (Employer)" />
+<input placeholder="Company Name" />
+</div>
+
+<label style="font-size:12px;font-weight:700;margin-top:10px;display:block">Audit Filters</label>
+<div class="row" style="margin-top:4px">
+<input placeholder="Updated By" />
+<input placeholder="Updated Date" />
+</div>
+
+<label style="font-size:12px;font-weight:700;margin-top:10px;display:block">Tags</label>
+<div class="row" style="margin-top:4px">
+<input placeholder="e.g., Technical, Primary" />
+<select>
+<option>Match Any</option>
+<option>Match All</option>
+</select>
+</div>
+
+<!-- Actions -->
+<div style="display:flex;gap:10px;margin-top:12px">
+<button class="primary" style="flex:1">Search</button>
+<button class="secondary">Clear</button>
+</div>
+
+<!-- Results -->
+<div class="section">Results</div>
+<div class="card active">
+<strong>Karen Mitchell</strong><br/>
+<small>MD Child Support · (410) 555-0187</small>
+<div class="tags">
+<span>Locate</span><span>Technical POC</span><span>Primary</span>
+</div>
+</div>
+
+<div class="card">
+<strong>Karen Mitchell</strong><br/>
+<small>MD CSA · Possible Duplicate</small>
+<div class="tags"><span>State Profile</span></div>
+</div>
+</div>
+
+<!-- DETAIL -->
+<div class="panel">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<h3>Karen Mitchell <span class="badge b-green">Active</span></h3>
+<div style="display:flex;gap:10px">
+<button class="primary">Edit</button>
+</div>
+</div>
+
+<div class="section">Key Info</div>
+<div class="info">
+<div class="box"><div class="k">Name</div><div class="v">Karen Mitchell</div></div>
+<div class="box"><div class="k">Primary Contact</div><div class="v">karen.mitchell@state.md.gov<br/>(410) 555-0187</div></div>
+<div class="box"><div class="k">Secondary Contact</div><div class="v">k.mitchell@maryland.gov<br/>(410) 555-0199</div></div>
+
+</div>
+<div style="margin-top:8px">
+<button class="secondary">View Full Contact Details</button>
+</div>
+
+<div class="section">Relationships</div>
+
+<div class="section" style="margin-top:10px;font-size:12px;color:#6b7280">Relationship Type</div>
+<div class="list">
+  <div class="item">
+    <div class="left">
+      <div class="title">State IV-D Agency</div>
+      <div class="sub">Primary stakeholder classification</div>
+    </div>
+    <div class="right">
+      <span class="chip">Active</span>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:10px;font-size:12px;color:#6b7280">Applications</div>
+<div class="list">
+  <div class="item">
+    <div class="left">
+      <div class="title">Locate</div>
+      <div class="sub">FPLS Locate operations & technical contacts</div>
+    </div>
+    <div class="right"><span class="chip">Active</span></div>
+  </div>
+  <div class="item">
+    <div class="left">
+      <div class="title">State Profile Admin</div>
+      <div class="sub">State IV-D directory & governance contacts</div>
+    </div>
+    <div class="right"><span class="chip">Active</span></div>
+  </div>
+  <div class="item">
+    <div class="left">
+      <div class="title">Employer Services</div>
+      <div class="sub">Employer onboarding & payroll contacts</div>
+    </div>
+    <div class="right"><span class="chip">Active</span></div>
+  </div>
+  <div class="item">
+    <div class="left">
+      <div class="title">IRG (International)</div>
+      <div class="sub">International case & liaison contacts</div>
+    </div>
+    <div class="right"><span class="chip">Active</span></div>
+  </div>
+  <div class="item">
+    <div class="left">
+      <div class="title">Data Access</div>
+      <div class="sub">Partner access & data exchange contacts</div>
+    </div>
+    <div class="right"><span class="chip">Active</span></div>
+  </div>
+  <div class="item">
+    <div class="left">
+      <div class="title">Federal Collections</div>
+      <div class="sub">Federal match & collections contacts</div>
+    </div>
+    <div class="right"><span class="chip">Active</span></div>
+  </div>
+  <div class="item">
+    <div class="left">
+      <div class="title">Insurance Match</div>
+      <div class="sub">MSFIDM / insurance data match contacts</div>
+    </div>
+    <div class="right"><span class="chip">Active</span></div>
+  </div>
+  <div class="item">
+    <div class="left">
+      <div class="title">Communication Center</div>
+      <div class="sub">Broadcast & notification contacts</div>
+    </div>
+    <div class="right"><span class="chip">Active</span></div>
+  </div>
+</div>
+<div style="margin-top:8px">
+<button class="secondary">+ Add Application</button>
+</div>
+
+<div class="section" style="margin-top:14px;font-size:12px;color:#6b7280">Program Context</div>
+<div class="list">
+  <div class="item">
+    <div class="left">
+      <div class="title">Locate · Technical POC</div>
+      <div class="sub">Endpoint Owner · Operational Contact</div>
+    </div>
+    <div class="right">
+      <span class="chip">Primary</span>
+    </div>
+  </div>
+  <div class="item">
+    <div class="left">
+      <div class="title">State Profile · Secondary Contact</div>
+      <div class="sub">Directory Listing</div>
+    </div>
+    <div class="right">
+      <span class="chip">Secondary</span>
+    </div>
+  </div>
+  <div class="item">
+    <div class="left">
+      <div class="title">Data Access · Authorized Partner</div>
+      <div class="sub">Restricted Visibility</div>
+    </div>
+    <div class="right">
+      <span class="chip">Active</span>
+    </div>
+  </div>
+</div>
+<div style="margin-top:8px">
+<button class="secondary">+ Add Program Context</button>
+</div>
+
+<div class="section">Tags</div>
+<div class="tags" style="margin-top:10px">
+<span>Technical</span>
+<span>Primary Contact</span>
+<span>State Partner</span>
+<span>Partner Restricted</span>
+<span>Locate</span>
+<span>Needs Approval</span>
+<span style="background:#eef4ff;border-style:dashed">+ Add Tag</span>
+</div>
+
+
+
+
+<div class="section">Audit Metadata</div>
+<div class="info">
+<div class="box"><div class="k">Created Date</div><div class="v">Mar 15, 2024</div></div>
+<div class="box"><div class="k">Created By</div><div class="v">OCSS Admin</div></div>
+<div class="box"><div class="k">Last Updated</div><div class="v">Mar 18, 2026</div></div>
+<div class="box"><div class="k">Updated By</div><div class="v">MD Partner Admin</div></div>
+</div>
+
+
+
+</div>
+
+</div>
+</main>
+</div>
+</body>
+</html>
