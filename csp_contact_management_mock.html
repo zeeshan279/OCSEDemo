@@ -22,9 +22,11 @@
     .metric { border: 1px solid var(--usa-color-base-lighter); border-radius: 0.35rem; padding: 0.5rem; background: var(--usa-color-base-lightest); }
     .metric-label { display: block; font-size: 0.7rem; text-transform: uppercase; color: var(--usa-color-base-dark); letter-spacing: 0.04em; }
     .metric-value { font-weight: 700; font-size: 0.95rem; }
+    .pagination-wrapper { margin-top: 1rem; display: flex; justify-content: flex-end; }
     @media (max-width: 63.99em) {
       .search-layout, .result-content, .metrics-grid { grid-template-columns: 1fr; }
       .app-sidebar { margin-bottom: 1rem; }
+      .pagination-wrapper { justify-content: flex-start; }
     }
     @media (min-width: 64em) {
       .app-shell { display: grid; grid-template-columns: 260px 1fr; }
@@ -132,7 +134,7 @@
             <div class="usa-card__header display-flex flex-justify flex-align-end flex-wrap gap-1">
               <div>
                 <h3 class="usa-card__heading">Search Results</h3>
-                <p class="margin-top-05 margin-bottom-0"><strong>6 results</strong> for “Karen Mitchell”</p>
+                <p id="results-summary" class="margin-top-05 margin-bottom-0">No results to display.</p>
               </div>
               <div>
                 <label class="usa-label margin-top-0" for="sort-results">Sort results</label>
@@ -149,47 +151,15 @@
                 <div class="usa-alert__body"><p class="usa-alert__text">Tip: Use FEIN + Application to narrow duplicates.</p></div>
               </div>
 
-              <ul class="usa-collection result-list" aria-label="Contact search result list">
-                <li class="usa-collection__item">
-                  <article class="result-content result-content--active">
-                    <div>
-                      <h4 class="margin-y-0">Karen Mitchell <span class="usa-tag bg-green-20v text-green-70v">Primary Match</span> <span class="usa-tag bg-blue-20v text-blue-70v">Active</span></h4>
-                      <p class="result-meta">MD Child Support · Director, Locate Operations<br>(410) 555-0187 · karen.mitchell@maryland.gov</p>
-                      <div class="result-tags"><span class="usa-tag">Locate</span><span class="usa-tag">Technical POC</span><span class="usa-tag">Primary</span></div>
-                      <div class="metrics-grid">
-                        <div class="metric"><span class="metric-label">Last Updated</span><span class="metric-value">2026-03-19</span></div>
-                        <div class="metric"><span class="metric-label">Updated By</span><span class="metric-value">A. Johnson</span></div>
-                        <div class="metric"><span class="metric-label">Duplicates</span><span class="metric-value">1 Possible</span></div>
-                      </div>
-                    </div>
-                    <div><a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a></div>
-                  </article>
-                </li>
-                <li class="usa-collection__item">
-                  <article class="result-content">
-                    <div>
-                      <h4 class="margin-y-0">Karen Mitchell <span class="usa-tag bg-yellow-10v text-yellow-70v">Possible Duplicate</span></h4>
-                      <p class="result-meta">MD CSA · Program Coordinator<br>(410) 555-7712 · kmitchell@mdcsa.gov</p>
-                    </div>
-                    <div class="display-flex flex-column gap-1">
-                      <a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a>
-                      <button class="usa-button usa-button--outline" type="button">Mark Not Duplicate</button>
-                    </div>
-                  </article>
-                </li>
-                <li class="usa-collection__item">
-                  <article class="result-content">
-                    <div>
-                      <h4 class="margin-y-0">Karin Mitchell <span class="usa-tag bg-blue-20v text-blue-70v">Name Variant</span></h4>
-                      <p class="result-meta">Maryland Department of Human Services · Enterprise Liaison<br>(443) 555-0441 · karin.mitchell@maryland.gov</p>
-                    </div>
-                    <div class="display-flex flex-column gap-1">
-                      <a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a>
-                      <button class="usa-button usa-button--outline" type="button">Compare Record</button>
-                    </div>
-                  </article>
-                </li>
-              </ul>
+              <div id="empty-results" class="usa-alert usa-alert--warning margin-top-2" role="status">
+                <div class="usa-alert__body"><p class="usa-alert__text">Run a search to load contact results.</p></div>
+              </div>
+
+              <ul id="results-list" class="usa-collection result-list" aria-label="Contact search result list"></ul>
+
+              <div id="pagination-wrapper" class="pagination-wrapper" hidden>
+                <nav id="pagination" class="usa-pagination" aria-label="Search results pagination"></nav>
+              </div>
             </div>
           </div>
         </section>
@@ -199,11 +169,274 @@
 
   <script>
     const resultsPanel = document.getElementById('results-panel');
-    document.getElementById('search-button').addEventListener('click', () => {
-      resultsPanel.hidden = false;
+    const resultsList = document.getElementById('results-list');
+    const resultsSummary = document.getElementById('results-summary');
+    const emptyResults = document.getElementById('empty-results');
+    const paginationWrapper = document.getElementById('pagination-wrapper');
+    const pagination = document.getElementById('pagination');
+    const searchQuery = document.getElementById('search-query');
+    const searchButton = document.getElementById('search-button');
+    const clearButton = document.getElementById('clear-button');
+
+    const pageSize = 10;
+    let currentPage = 1;
+
+    const searchResults = [
+      {
+        name: 'Karen Mitchell',
+        badges: ['Primary Match', 'Active'],
+        badgeClasses: ['bg-green-20v text-green-70v', 'bg-blue-20v text-blue-70v'],
+        meta: 'MD Child Support · Director, Locate Operations<br>(410) 555-0187 · karen.mitchell@maryland.gov',
+        tags: ['Locate', 'Technical POC', 'Primary'],
+        metrics: [
+          { label: 'Last Updated', value: '2026-03-19' },
+          { label: 'Updated By', value: 'A. Johnson' },
+          { label: 'Duplicates', value: '1 Possible' }
+        ],
+        active: true
+      },
+      {
+        name: 'Karen Mitchell',
+        badges: ['Possible Duplicate'],
+        badgeClasses: ['bg-yellow-10v text-yellow-70v'],
+        meta: 'MD CSA · Program Coordinator<br>(410) 555-7712 · kmitchell@mdcsa.gov'
+      },
+      {
+        name: 'Karin Mitchell',
+        badges: ['Name Variant'],
+        badgeClasses: ['bg-blue-20v text-blue-70v'],
+        meta: 'Maryland Department of Human Services · Enterprise Liaison<br>(443) 555-0441 · karin.mitchell@maryland.gov'
+      },
+      {
+        name: 'Karen M. Mitchell',
+        badges: ['Active'],
+        badgeClasses: ['bg-green-20v text-green-70v'],
+        meta: 'Maryland Child Support Enforcement · Regional Director<br>(410) 555-9931 · karenm@mdchildsupport.gov'
+      },
+      {
+        name: 'K. Mitchell',
+        badges: ['Possible Duplicate'],
+        badgeClasses: ['bg-yellow-10v text-yellow-70v'],
+        meta: 'MD Child Support · Program Analyst<br>(410) 555-7132 · kmitchell2@maryland.gov'
+      },
+      {
+        name: 'Karen Ann Mitchell',
+        badges: ['Active'],
+        badgeClasses: ['bg-green-20v text-green-70v'],
+        meta: 'Baltimore County DSS · Intergovernmental Lead<br>(443) 555-0672 · karen.ann.mitchell@bcmd.gov'
+      },
+      {
+        name: 'Karen Mitchell-Smith',
+        badges: ['Active'],
+        badgeClasses: ['bg-green-20v text-green-70v'],
+        meta: 'Maryland DHS · IV-D Operations Manager<br>(667) 555-1222 · karen.mitchell-smith@maryland.gov'
+      },
+      {
+        name: 'Karyn Mitchell',
+        badges: ['Name Variant'],
+        badgeClasses: ['bg-blue-20v text-blue-70v'],
+        meta: 'Harford County Child Support · Case Liaison<br>(410) 555-4401 · karyn.mitchell@harfordmd.gov'
+      },
+      {
+        name: 'K. A. Mitchell',
+        badges: ['Possible Duplicate'],
+        badgeClasses: ['bg-yellow-10v text-yellow-70v'],
+        meta: 'MD State Profile Team · Data Coordinator<br>(410) 555-2121 · kamitchell@maryland.gov'
+      },
+      {
+        name: 'Karen Mitchell',
+        badges: ['Active'],
+        badgeClasses: ['bg-green-20v text-green-70v'],
+        meta: 'Anne Arundel County CSA · Program Contact<br>(410) 555-3010 · karen.mitchell@aacounty.gov'
+      },
+      {
+        name: 'Karen Mitchell',
+        badges: ['Active'],
+        badgeClasses: ['bg-green-20v text-green-70v'],
+        meta: 'Howard County CSS · Technical POC<br>(410) 555-6319 · kmitchell@howardcountymd.gov'
+      },
+      {
+        name: 'Karen Mitchell',
+        badges: ['Pending Approval'],
+        badgeClasses: ['bg-gold-10v text-gold-70v'],
+        meta: 'Montgomery County CSA · Onboarding Request<br>(301) 555-0747 · karen.mitchell@montgomerycountymd.gov'
+      },
+      {
+        name: 'Karen M. Mitchel',
+        badges: ['Possible Duplicate'],
+        badgeClasses: ['bg-yellow-10v text-yellow-70v'],
+        meta: 'MD Child Support · Regional Support<br>(410) 555-1243 · karen.mitchel@maryland.gov'
+      },
+      {
+        name: 'K. Mitchell',
+        badges: ['Active'],
+        badgeClasses: ['bg-green-20v text-green-70v'],
+        meta: 'Prince George\'s County CSA · Program Office<br>(301) 555-6173 · k.mitchell@pgc.gov'
+      },
+      {
+        name: 'Karen Mitchell',
+        badges: ['Inactive'],
+        badgeClasses: ['bg-base-lighter text-base-darkest'],
+        meta: 'Former Contact · Allegany County CSA<br>(301) 555-9982 · karen.mitchell.old@alleganymd.gov'
+      },
+      {
+        name: 'Karin A. Mitchell',
+        badges: ['Name Variant'],
+        badgeClasses: ['bg-blue-20v text-blue-70v'],
+        meta: 'Maryland DHS · Enterprise Services<br>(410) 555-7303 · karin.a.mitchell@maryland.gov'
+      },
+      {
+        name: 'Karen Mitchell',
+        badges: ['Active'],
+        badgeClasses: ['bg-green-20v text-green-70v'],
+        meta: 'Frederick County CSA · Program Manager<br>(301) 555-7235 · karen.mitchell@frederickmd.gov'
+      },
+      {
+        name: 'Karen Mitchell',
+        badges: ['Active'],
+        badgeClasses: ['bg-green-20v text-green-70v'],
+        meta: 'Washington County CSA · Security Contact<br>(240) 555-1184 · kmitchell@washco-md.net'
+      },
+      {
+        name: 'K. Mitchell',
+        badges: ['Possible Duplicate'],
+        badgeClasses: ['bg-yellow-10v text-yellow-70v'],
+        meta: 'MD Insurance Match Team · Operations<br>(410) 555-9055 · kmitchell.ins@maryland.gov'
+      },
+      {
+        name: 'Karen Mitchell',
+        badges: ['Active'],
+        badgeClasses: ['bg-green-20v text-green-70v'],
+        meta: 'Carroll County CSA · Supervisor<br>(410) 555-3334 · karen.mitchell@carrollcountymd.gov'
+      },
+      {
+        name: 'Karen A Mitchell',
+        badges: ['Possible Duplicate'],
+        badgeClasses: ['bg-yellow-10v text-yellow-70v'],
+        meta: 'MD Employer Services · Enrollment Support<br>(410) 555-2511 · karen.a.mitchell@maryland.gov'
+      },
+      {
+        name: 'K. Mitchell',
+        badges: ['Active'],
+        badgeClasses: ['bg-green-20v text-green-70v'],
+        meta: 'Dorchester County CSA · Program Lead<br>(410) 555-6648 · kmitchell@dorchestermd.gov'
+      },
+      {
+        name: 'Karen Mitchell',
+        badges: ['Active'],
+        badgeClasses: ['bg-green-20v text-green-70v'],
+        meta: 'MD Data Access · External Liaison<br>(410) 555-7814 · kmitchell.data@maryland.gov'
+      }
+    ];
+
+    function getTotalPages() {
+      return Math.max(1, Math.ceil(searchResults.length / pageSize));
+    }
+
+    function renderResults() {
+      const totalPages = getTotalPages();
+      currentPage = Math.min(Math.max(1, currentPage), totalPages);
+      const start = (currentPage - 1) * pageSize;
+      const pageResults = searchResults.slice(start, start + pageSize);
+      const query = searchQuery.value.trim() || 'all contacts';
+
+      resultsSummary.innerHTML = `<strong>${searchResults.length} results</strong> for “${query}”`;
+      resultsList.innerHTML = '';
+      emptyResults.hidden = pageResults.length > 0;
+
+      pageResults.forEach((result) => {
+        const li = document.createElement('li');
+        li.className = 'usa-collection__item';
+
+        const badges = result.badges.map((badge, index) => `<span class="usa-tag ${result.badgeClasses[index]}">${badge}</span>`).join(' ');
+        const tags = result.tags ? `<div class="result-tags">${result.tags.map((tag) => `<span class="usa-tag">${tag}</span>`).join('')}</div>` : '';
+        const metrics = result.metrics
+          ? `<div class="metrics-grid">${result.metrics.map((metric) => `<div class="metric"><span class="metric-label">${metric.label}</span><span class="metric-value">${metric.value}</span></div>`).join('')}</div>`
+          : '';
+
+        li.innerHTML = `
+          <article class="result-content ${result.active ? 'result-content--active' : ''}">
+            <div>
+              <h4 class="margin-y-0">${result.name} ${badges}</h4>
+              <p class="result-meta">${result.meta}</p>
+              ${tags}
+              ${metrics}
+            </div>
+            <div><a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a></div>
+          </article>
+        `;
+
+        resultsList.appendChild(li);
+      });
+
+      renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages) {
+      paginationWrapper.hidden = totalPages <= 1;
+      pagination.innerHTML = '';
+
+      if (totalPages <= 1) return;
+
+      const list = document.createElement('ul');
+      list.className = 'usa-pagination__list';
+
+      const previousDisabled = currentPage === 1 ? 'usa-pagination__link--disabled' : '';
+      list.insertAdjacentHTML('beforeend', `
+        <li class="usa-pagination__item usa-pagination__arrow">
+          <a class="usa-pagination__link usa-pagination__previous-page ${previousDisabled}" href="#" data-page="${currentPage - 1}" aria-label="Previous page">
+            <svg class="usa-icon" aria-hidden="true" role="img"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#navigate_before"></use></svg>
+            <span class="usa-pagination__link-text">Previous</span>
+          </a>
+        </li>
+      `);
+
+      for (let page = 1; page <= totalPages; page += 1) {
+        const currentMarkup = page === currentPage
+          ? `<li class="usa-pagination__item usa-pagination__page-no"><a class="usa-pagination__button usa-current" href="#" aria-current="page" data-page="${page}">${page}</a></li>`
+          : `<li class="usa-pagination__item usa-pagination__page-no"><a class="usa-pagination__button" href="#" data-page="${page}">${page}</a></li>`;
+        list.insertAdjacentHTML('beforeend', currentMarkup);
+      }
+
+      const nextDisabled = currentPage === totalPages ? 'usa-pagination__link--disabled' : '';
+      list.insertAdjacentHTML('beforeend', `
+        <li class="usa-pagination__item usa-pagination__arrow">
+          <a class="usa-pagination__link usa-pagination__next-page ${nextDisabled}" href="#" data-page="${currentPage + 1}" aria-label="Next page">
+            <span class="usa-pagination__link-text">Next</span>
+            <svg class="usa-icon" aria-hidden="true" role="img"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#navigate_next"></use></svg>
+          </a>
+        </li>
+      `);
+
+      pagination.appendChild(list);
+    }
+
+    pagination.addEventListener('click', (event) => {
+      const link = event.target.closest('a[data-page]');
+      if (!link) return;
+
+      event.preventDefault();
+      const targetPage = Number(link.dataset.page);
+      const totalPages = getTotalPages();
+      if (!Number.isNaN(targetPage) && targetPage >= 1 && targetPage <= totalPages) {
+        currentPage = targetPage;
+        renderResults();
+      }
     });
-    document.getElementById('clear-button').addEventListener('click', () => {
-      document.getElementById('search-query').value = '';
+
+    searchButton.addEventListener('click', () => {
+      currentPage = 1;
+      resultsPanel.hidden = false;
+      renderResults();
+    });
+
+    clearButton.addEventListener('click', () => {
+      searchQuery.value = '';
+      resultsList.innerHTML = '';
+      resultsSummary.textContent = 'No results to display.';
+      emptyResults.hidden = false;
+      pagination.innerHTML = '';
+      paginationWrapper.hidden = true;
       resultsPanel.hidden = true;
     });
   </script>
