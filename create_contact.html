@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Create Contact</title>
+<style>
+:root{--bg:#f6f8fc;--panel:#fff;--text:#1f2937;--muted:#6b7280;--line:#e5eaf2;--blue:#2563eb;--radius:16px;--green:#059669;--red:#b91c1c}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Arial;background:var(--bg);color:var(--text)}
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:#0f4c81;color:#fff;padding:20px}
+.sidebar h1{font-size:16px;margin:0 0 12px}
+.nav a{display:block;padding:10px 12px;border-radius:10px;color:#fff;text-decoration:none;margin-bottom:6px}
+.nav a.active,.nav a:hover{background:rgba(255,255,255,.12)}
+.main{padding:20px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;max-width:760px}
+h2{margin:0 0 16px}
+label{display:block;font-size:12px;font-weight:700;margin-bottom:6px}
+input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);margin-bottom:12px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{border:none;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer}
+.primary{background:var(--blue);color:#fff}
+.secondary{background:#fff;border:1px solid var(--line)}
+.message{margin-top:12px;padding:10px;border-radius:10px;font-size:14px;display:none}
+.success{background:#d1fae5;color:var(--green);display:block}
+.error{background:#fee2e2;color:var(--red);display:block}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>CSP Contacts</h1>
+    <div class="nav">
+      <a href="csp_contact_management_mock.html">Search</a>
+      <a class="active" href="create_contact.html">Create</a>
+      <a>Approvals</a>
+      <a>Duplicate Review</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h2>Create Contact</h2>
+    <div class="panel">
+      <form id="contactForm">
+        <div class="row">
+          <div>
+            <label for="firstName">First Name</label>
+            <input id="firstName" name="firstName" required />
+          </div>
+          <div>
+            <label for="lastName">Last Name</label>
+            <input id="lastName" name="lastName" required />
+          </div>
+        </div>
+
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required />
+
+        <div class="row">
+          <div>
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" required />
+          </div>
+          <div>
+            <label for="application">Application</label>
+            <select id="application" name="application" required>
+              <option value="">Select an app</option>
+              <option>Locate</option>
+              <option>State Profile Admin</option>
+              <option>Employer Services</option>
+              <option>IRG</option>
+              <option>Data Access</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="organization">Organization</label>
+        <input id="organization" name="organization" required />
+
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes" rows="4" placeholder="Optional"></textarea>
+
+        <div style="display:flex;gap:10px">
+          <button class="primary" type="submit">Save Contact</button>
+          <a href="csp_contact_management_mock.html"><button class="secondary" type="button">Back to Search</button></a>
+        </div>
+      </form>
+      <div id="message" class="message"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+const DB_NAME = 'cspContactsDB';
+const STORE_NAME = 'contacts';
+const DB_VERSION = 1;
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function saveContact(contact) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_NAME, 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.add(contact);
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function setMessage(text, type) {
+  const el = document.getElementById('message');
+  el.textContent = text;
+  el.className = `message ${type}`;
+}
+
+document.getElementById('contactForm').addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const formData = new FormData(event.target);
+  const contact = {
+    firstName: formData.get('firstName'),
+    lastName: formData.get('lastName'),
+    email: formData.get('email'),
+    phone: formData.get('phone'),
+    application: formData.get('application'),
+    organization: formData.get('organization'),
+    notes: formData.get('notes'),
+    createdAt: new Date().toISOString()
+  };
+
+  try {
+    await saveContact(contact);
+    setMessage('Contact saved to IndexedDB successfully.', 'success');
+    event.target.reset();
+  } catch (error) {
+    setMessage(`Failed to save contact: ${error.message}`, 'error');
+  }
+});
+</script>
+</body>
+</html>
