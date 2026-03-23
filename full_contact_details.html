@@ -6,11 +6,12 @@
   <title>Full Contact Details</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/css/uswds.min.css" />
   <style>
-    .app-shell { min-height: 100vh; }
-    .app-sidebar { background: var(--usa-color-primary-darker); color: var(--usa-color-base-darkest); }
-    .app-sidebar .usa-sidenav a { color: var(--usa-color-base-darkest); }
-    .app-sidebar .usa-current { background-color: #fff; color: var(--usa-color-primary-darker); font-weight: 700; }
-    .menu-icon { width: 1.1rem; height: 1.1rem; fill: currentColor; margin-right: 0.5rem; vertical-align: text-bottom; }
+    .app-shell { min-height: 100vh; background: var(--usa-color-base-lightest); }
+    .app-sidebar { background: var(--usa-color-primary-darker); color: var(--usa-color-base-darkest); padding: 1rem; }
+    .app-sidebar .usa-sidenav a { color: var(--usa-color-base-darkest); display: flex; align-items: center; gap: 0.5rem; }
+    .app-sidebar .usa-current { background-color: transparent; color: var(--usa-color-base-darkest); font-weight: 700; }
+    .app-main { padding: 1.5rem; }
+    .menu-icon { width: 1.1rem; height: 1.1rem; fill: currentColor; }
     .app-shell.menu-hidden { grid-template-columns: 1fr !important; }
     .app-shell.menu-hidden .app-sidebar { display: none; }
     .menu-toggle { margin-left: auto; }
@@ -28,7 +29,7 @@
   <a class="usa-skipnav" href="#main-content">Skip to main content</a>
 
   <div class="app-shell">
-    <aside class="app-sidebar padding-2" aria-label="Primary navigation">
+    <aside class="app-sidebar" aria-label="Primary navigation">
       <h1 class="margin-top-0 font-sans-lg">CSP Contacts</h1>
       <nav aria-label="Section navigation">
         <ul class="usa-sidenav margin-top-2">
@@ -39,7 +40,7 @@
       </nav>
     </aside>
 
-    <main class="padding-3" id="main-content">
+    <main class="app-main" id="main-content">
       <header class="display-flex flex-align-center gap-1 margin-bottom-2">
         <h2 class="margin-y-0">Full Contact Details</h2>
         <button id="menu-toggle" class="usa-button usa-button--outline menu-toggle" type="button">Hide menu</button>
