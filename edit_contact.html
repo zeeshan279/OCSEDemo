@@ -52,6 +52,11 @@
               <select class="usa-select" id="relationshipType" name="relationshipType" required>
                 <option value="">Relationship Type</option><option value="State IV-D Agency">State IV-D Agency</option><option value="Tribal IV-D Agency">Tribal IV-D Agency</option><option value="Employer">Employer</option><option value="Federal Agency">Federal Agency</option><option value="International Partner">International Partner</option><option value="Vendor / Contractor">Vendor / Contractor</option><option value="OCSE Internal">OCSE Internal</option>
               </select>
+              <label class="usa-label" for="applications">Applications</label>
+              <span class="usa-hint" id="applications-hint">Select one or more applications linked to this contact.</span>
+              <select class="usa-select" id="applications" name="applications" multiple size="8" aria-describedby="applications-hint" required>
+                <option value="Locate">Locate</option><option value="State Profile Admin">State Profile Admin</option><option value="Employer Services">Employer Services</option><option value="IRG">IRG</option><option value="Data Access">Data Access</option><option value="Federal Collections">Federal Collections</option><option value="Insurance Match">Insurance Match</option><option value="Communication Center">Communication Center</option>
+              </select>
               <label class="usa-label" for="primaryEmail">Primary Email</label><input class="usa-input" id="primaryEmail" name="primaryEmail" type="email" required />
               <label class="usa-label" for="secondaryEmail">Secondary Email</label><input class="usa-input" id="secondaryEmail" name="secondaryEmail" type="email" />
               <label class="usa-label" for="primaryPhone">Primary Phone</label><input class="usa-input" id="primaryPhone" name="primaryPhone" type="tel" required />
@@ -84,6 +89,7 @@
       lastName: 'Mitchell',
       title: 'Technical Program Manager',
       relationshipType: 'State IV-D Agency',
+      applications: ['Locate', 'State Profile Admin', 'Employer Services'],
       primaryEmail: 'karen.mitchell@state.md.gov',
       secondaryEmail: 'k.mitchell@maryland.gov',
       primaryPhone: '(410) 555-0124',
@@ -94,11 +100,23 @@
     const params = new URLSearchParams(window.location.search);
 
     Object.keys(defaults).forEach((key) => {
+      if (key === 'applications') return;
       const input = document.getElementById(key);
       if (!input) return;
       const value = params.get(key) || defaults[key];
       input.value = value;
     });
+
+    const selectedApplications = (params.get('applications') || defaults.applications.join(','))
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean);
+    const applicationSelect = document.getElementById('applications');
+    if (applicationSelect) {
+      Array.from(applicationSelect.options).forEach((option) => {
+        option.selected = selectedApplications.includes(option.value);
+      });
+    }
 
     document.getElementById('editContactForm').addEventListener('submit', (event) => {
       event.preventDefault();
