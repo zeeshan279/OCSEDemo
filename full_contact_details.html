@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Full Contact Details</title>
+<style>
+:root{--bg:#f6f8fc;--panel:#fff;--text:#1f2937;--muted:#6b7280;--line:#e5eaf2;--blue:#2563eb;--soft:#eef4ff;--green:#059669;--radius:16px}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial;background:var(--bg);color:var(--text)}
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:#0f4c81;color:#fff;padding:20px}
+.sidebar h1{font-size:16px;margin:0 0 12px}
+.nav a{display:block;padding:10px 12px;border-radius:10px;color:#fff;text-decoration:none;margin-bottom:6px}
+.nav a.active,.nav a:hover{background:rgba(255,255,255,.12)}
+.main{padding:20px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+h2{margin:0 0 12px}
+.section{margin-top:18px;font-weight:800;color:#0f4c81;font-size:13px;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:10px}
+.box{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fbfdff}
+.k{font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.v{font-size:14px;font-weight:600;line-height:1.4}
+.list{margin-top:10px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.item{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:#fff}
+.item:last-child{border-bottom:none}
+.badge{font-size:11px;padding:4px 8px;border-radius:999px;font-weight:700;background:#d1fae5;color:#047857}
+.actions{margin-top:20px;display:flex;gap:10px}
+.btn{border:none;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.primary{background:var(--blue);color:#fff}
+.secondary{background:#fff;border:1px solid var(--line);color:var(--text)}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>CSP Contacts</h1>
+    <div class="nav">
+      <a href="csp_contact_management_mock.html">Search</a>
+      <a href="create_contact.html">Create</a>
+      <a class="active" href="full_contact_details.html">Full Details</a>
+      <a>Approvals</a>
+      <a>Duplicate Review</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="panel">
+      <h2>Karen Mitchell <span class="badge">Active</span></h2>
+      <p style="margin:0;color:var(--muted)">Comprehensive view of contact, organization, and access details.</p>
+
+      <div class="section">Contact Details</div>
+      <div class="grid">
+        <div class="box"><div class="k">First Name</div><div class="v">Karen</div></div>
+        <div class="box"><div class="k">Last Name</div><div class="v">Mitchell</div></div>
+        <div class="box"><div class="k">Job Title</div><div class="v">Technical Program Manager</div></div>
+        <div class="box"><div class="k">Relationship Type</div><div class="v">State IV-D Agency</div></div>
+        <div class="box"><div class="k">Primary Email</div><div class="v">karen.mitchell@state.md.gov</div></div>
+        <div class="box"><div class="k">Secondary Email</div><div class="v">k.mitchell@maryland.gov</div></div>
+        <div class="box"><div class="k">Primary Phone</div><div class="v">(410) 555-0187</div></div>
+        <div class="box"><div class="k">Secondary Phone</div><div class="v">(410) 555-0199</div></div>
+      </div>
+
+      <div class="section">Organization Details</div>
+      <div class="grid">
+        <div class="box"><div class="k">Organization</div><div class="v">Maryland Child Support Administration</div></div>
+        <div class="box"><div class="k">FEIN</div><div class="v">52-6002033</div></div>
+        <div class="box"><div class="k">Address</div><div class="v">311 W. Saratoga St, Baltimore, MD 21201</div></div>
+        <div class="box"><div class="k">Preferred Contact Method</div><div class="v">Email</div></div>
+      </div>
+
+      <div class="section">Program Access</div>
+      <div class="list">
+        <div class="item"><span>Locate</span><span>Primary Technical POC</span></div>
+        <div class="item"><span>State Profile Admin</span><span>Secondary Contact</span></div>
+        <div class="item"><span>Employer Services</span><span>Authorized User</span></div>
+        <div class="item"><span>Data Access</span><span>Restricted Visibility</span></div>
+      </div>
+
+      <div class="section">Audit</div>
+      <div class="grid">
+        <div class="box"><div class="k">Created Date</div><div class="v">Mar 15, 2024</div></div>
+        <div class="box"><div class="k">Created By</div><div class="v">OCSS Admin</div></div>
+        <div class="box"><div class="k">Last Updated</div><div class="v">Mar 18, 2026</div></div>
+        <div class="box"><div class="k">Updated By</div><div class="v">MD Partner Admin</div></div>
+      </div>
+
+      <div class="actions">
+        <a class="btn primary" href="csp_contact_management_mock.html">Back to Contact Management</a>
+        <a class="btn secondary" href="create_contact.html">Create New Contact</a>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
