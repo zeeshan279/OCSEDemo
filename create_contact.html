@@ -9,8 +9,11 @@
     .app-shell { min-height: 100vh; background: var(--usa-color-base-lightest); }
     .app-sidebar { background: var(--usa-color-primary-darker); color: #fff; padding: 1rem; }
     .app-sidebar .usa-sidenav a { color: #fff; display: flex; align-items: center; gap: 0.5rem; }
-    .app-sidebar .usa-current { background-color: rgba(255, 255, 255, 0.2); color: #fff; font-weight: 700; }
+    .app-sidebar .usa-current { background-color: #fff; color: var(--usa-color-primary-darker); font-weight: 700; }
     .app-main { padding: 1.5rem; }
+    .app-shell.menu-hidden { grid-template-columns: 1fr !important; }
+    .app-shell.menu-hidden .app-sidebar { display: none; }
+    .menu-toggle { margin-left: auto; }
     .menu-icon { width: 1.1rem; height: 1.1rem; fill: currentColor; }
     .form-card { max-width: 780px; }
     @media (min-width: 64em) { .app-shell { display: grid; grid-template-columns: 260px 1fr; } }
@@ -26,15 +29,16 @@
         <ul class="usa-sidenav margin-top-2">
           <li class="usa-sidenav__item"><a href="csp_contact_management_mock.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#search"></use></svg>Search</a></li>
           <li class="usa-sidenav__item"><a class="usa-current" href="create_contact.html" aria-current="page"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#add"></use></svg>Create</a></li>
-          <li class="usa-sidenav__item"><a href="#"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#assignment"></use></svg>Approvals</a></li>
-          <li class="usa-sidenav__item"><a href="full_contact_details.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#description"></use></svg>Full Details</a></li>
           <li class="usa-sidenav__item"><a href="duplicate_review_merge.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#content_copy"></use></svg>Duplicate Review</a></li>
         </ul>
       </nav>
     </aside>
 
     <main class="app-main" id="main-content">
-      <h2 class="margin-top-0">Create Contact</h2>
+      <header class="display-flex flex-align-center gap-1 margin-bottom-2">
+        <h2 class="margin-y-0">Create Contact</h2>
+        <button id="menu-toggle" class="usa-button usa-button--outline menu-toggle" type="button">Hide menu</button>
+      </header>
       <section class="usa-card form-card">
         <div class="usa-card__container">
           <div class="usa-card__body">
@@ -135,6 +139,16 @@
         setMessage(`Failed to save contact: ${error.message}`, 'error');
       }
     });
+  </script>
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    if (menuToggle) {
+      menuToggle.addEventListener('click', () => {
+        const appShell = document.querySelector('.app-shell');
+        appShell.classList.toggle('menu-hidden');
+        menuToggle.textContent = appShell.classList.contains('menu-hidden') ? 'Show menu' : 'Hide menu';
+      });
+    }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/js/uswds.min.js"></script>
 </body>
