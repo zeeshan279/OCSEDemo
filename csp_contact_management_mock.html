@@ -14,8 +14,10 @@
     .menu-icon { width: 1.1rem; height: 1.1rem; fill: currentColor; }
     .search-layout { display: grid; grid-template-columns: minmax(300px, 390px) 1fr; gap: 1rem; align-items: start; }
     .result-list .usa-collection__item { padding: 1rem 0; }
-    .result-content { display: grid; grid-template-columns: 1fr auto; gap: 1rem; }
+    .result-content { display: grid; grid-template-columns: minmax(0, 1fr) 14rem; gap: 1rem; align-items: start; }
     .result-content--active { border-left: 0.25rem solid var(--usa-color-primary); padding-left: 0.75rem; }
+    .result-action { display: flex; justify-content: flex-end; }
+    .result-action .usa-button { width: 100%; margin-right: 0; }
     .result-meta { margin: 0.5rem 0; color: var(--usa-color-base-dark); font-size: 0.95rem; }
     .result-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.75rem; }
     .result-activity { border-left: 0.25rem solid var(--usa-color-primary-lighter); background: var(--usa-color-primary-lightest); padding: 0.75rem; margin-bottom: 0.75rem; border-radius: 0.25rem; }
@@ -30,6 +32,7 @@
       .search-layout, .result-content, .metrics-grid { grid-template-columns: 1fr; }
       .app-sidebar { margin-bottom: 1rem; }
       .pagination-wrapper { justify-content: flex-start; }
+      .result-action .usa-button { width: auto; }
     }
     @media (min-width: 64em) {
       .app-shell { display: grid; grid-template-columns: 260px 1fr; }
@@ -380,10 +383,7 @@
               ${activity}
               ${metrics}
             </div>
-            <div class="display-flex flex-column gap-1">
-              <button class="usa-button" type="button">Add Note Activity</button>
-              <a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a>
-            </div>
+            <div class="result-action"><a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a></div>
           </article>
         `;
 
