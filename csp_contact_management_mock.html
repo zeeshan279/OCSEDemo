@@ -357,14 +357,25 @@
         const li = document.createElement('li');
         li.className = 'usa-collection__item';
 
-        const isFirstOverallResult = start + pageIndex === 0;
-        const badges = isFirstOverallResult
-          ? ''
-          : result.badges.map((badge, index) => `<span class="usa-tag ${result.badgeClasses[index]}">${badge}</span>`).join(' ');
-        const tags = result.tags ? `<div class="result-tags">${result.tags.map((tag) => `<span class="usa-tag">${tag}</span>`).join('')}</div>` : '';
-        const metrics = result.metrics
-          ? `<div class="metrics-grid">${result.metrics.map((metric) => `<div class="metric"><span class="metric-label">${metric.label}</span><span class="metric-value">${metric.value}</span></div>`).join('')}</div>`
-          : '';
+        const hiddenBadges = new Set(['Possible Duplicate', 'Name Variant', 'Active']);
+        const visibleBadges = (result.badges || []).reduce((acc, badge, index) => {
+          if (!hiddenBadges.has(badge)) {
+            acc.push(`<span class="usa-tag ${result.badgeClasses?.[index] || ''}">${badge}</span>`);
+          }
+          return acc;
+        }, []);
+
+        const defaultTags = ['Contact', 'Directory', 'Candidate'];
+        const tags = `<div class="result-tags">${(result.tags || defaultTags).map((tag) => `<span class="usa-tag">${tag}</span>`).join('')}</div>`;
+
+        const defaultMetrics = [
+          { label: 'Last Updated', value: `2026-03-${String(19 - ((start + pageIndex) % 8)).padStart(2, '0')}` },
+          { label: 'Updated By', value: 'Contact Admin' },
+          { label: 'Duplicates', value: 'Review Needed' }
+        ];
+        const metricsData = result.metrics || defaultMetrics;
+        const metrics = `<div class="metrics-grid">${metricsData.map((metric) => `<div class="metric"><span class="metric-label">${metric.label}</span><span class="metric-value">${metric.value}</span></div>`).join('')}</div>`;
+        const badges = visibleBadges.join(' ');
 
         li.innerHTML = `
           <article class="result-content ${result.active ? 'result-content--active' : ''}">
