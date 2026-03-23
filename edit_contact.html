@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Contact</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/css/uswds.min.css" />
+  <style>
+    .app-shell { min-height: 100vh; background: var(--usa-color-base-lightest); }
+    .app-sidebar { background: var(--usa-color-primary-darker); color: var(--usa-color-base-darkest); padding: 1rem; }
+    .app-sidebar .usa-sidenav a { color: var(--usa-color-base-darkest); display: flex; align-items: center; gap: 0.5rem; }
+    .app-sidebar .usa-current { background-color: transparent; color: var(--usa-color-base-darkest); font-weight: 700; }
+    .app-main { padding: 1.5rem; }
+    .app-shell.menu-hidden { grid-template-columns: 1fr !important; }
+    .app-shell.menu-hidden .app-sidebar { display: none; }
+    .menu-toggle { margin-left: auto; }
+    .menu-icon { width: 1.1rem; height: 1.1rem; fill: currentColor; }
+    .form-card { max-width: 780px; }
+    @media (min-width: 64em) { .app-shell { display: grid; grid-template-columns: 260px 1fr; } }
+    @media (max-width: 63.99em) { .app-sidebar { margin-bottom: 1rem; } }
+  </style>
+</head>
+<body>
+  <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+  <div class="app-shell menu-hidden">
+    <aside class="app-sidebar" aria-label="Primary navigation">
+      <h1 class="margin-top-0 font-sans-lg">CSP Contacts</h1>
+      <nav aria-label="Section navigation">
+        <ul class="usa-sidenav margin-top-2">
+          <li class="usa-sidenav__item"><a href="csp_contact_management_mock.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#search"></use></svg>Search</a></li>
+          <li class="usa-sidenav__item"><a href="create_contact.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#add"></use></svg>Create</a></li>
+          <li class="usa-sidenav__item"><a href="duplicate_review_merge.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#content_copy"></use></svg>Duplicate Review</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="app-main" id="main-content">
+      <header class="display-flex flex-align-center gap-1 margin-bottom-2">
+        <h2 class="margin-y-0">Edit Contact</h2>
+        <button id="menu-toggle" class="usa-button usa-button--outline menu-toggle" type="button">Show menu</button>
+      </header>
+      <section class="usa-card form-card">
+        <div class="usa-card__container">
+          <div class="usa-card__body">
+            <form id="editContactForm">
+              <div class="grid-row grid-gap">
+                <div class="tablet:grid-col-6"><label class="usa-label" for="firstName">First Name</label><input class="usa-input" id="firstName" name="firstName" required /></div>
+                <div class="tablet:grid-col-6"><label class="usa-label" for="lastName">Last Name</label><input class="usa-input" id="lastName" name="lastName" required /></div>
+              </div>
+              <label class="usa-label" for="title">Job Title</label><input class="usa-input" id="title" name="title" required />
+              <label class="usa-label" for="relationshipType">Relationship Type</label>
+              <select class="usa-select" id="relationshipType" name="relationshipType" required>
+                <option value="">Relationship Type</option><option value="State IV-D Agency">State IV-D Agency</option><option value="Tribal IV-D Agency">Tribal IV-D Agency</option><option value="Employer">Employer</option><option value="Federal Agency">Federal Agency</option><option value="International Partner">International Partner</option><option value="Vendor / Contractor">Vendor / Contractor</option><option value="OCSE Internal">OCSE Internal</option>
+              </select>
+              <label class="usa-label" for="primaryEmail">Primary Email</label><input class="usa-input" id="primaryEmail" name="primaryEmail" type="email" required />
+              <label class="usa-label" for="secondaryEmail">Secondary Email</label><input class="usa-input" id="secondaryEmail" name="secondaryEmail" type="email" />
+              <label class="usa-label" for="organization">Organization</label><input class="usa-input" id="organization" name="organization" required />
+              <div class="display-flex gap-1 flex-wrap margin-top-2">
+                <button class="usa-button" type="submit">Save Changes</button>
+                <a href="full_contact_details.html" class="usa-button usa-button--outline">Cancel</a>
+              </div>
+            </form>
+            <div id="message" class="margin-top-2" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    if (menuToggle) {
+      menuToggle.addEventListener('click', () => {
+        const appShell = document.querySelector('.app-shell');
+        appShell.classList.toggle('menu-hidden');
+        menuToggle.textContent = appShell.classList.contains('menu-hidden') ? 'Show menu' : 'Hide menu';
+      });
+    }
+
+    const defaults = {
+      firstName: 'Karen',
+      lastName: 'Mitchell',
+      title: 'Technical Program Manager',
+      relationshipType: 'State IV-D Agency',
+      primaryEmail: 'karen.mitchell@state.md.gov',
+      secondaryEmail: 'k.mitchell@maryland.gov',
+      organization: 'Maryland Child Support Administration'
+    };
+
+    const params = new URLSearchParams(window.location.search);
+
+    Object.keys(defaults).forEach((key) => {
+      const input = document.getElementById(key);
+      if (!input) return;
+      const value = params.get(key) || defaults[key];
+      input.value = value;
+    });
+
+    document.getElementById('editContactForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const message = document.getElementById('message');
+      message.innerHTML = '<div class="usa-alert usa-alert--success"><div class="usa-alert__body"><p class="usa-alert__text">Contact changes saved in this prototype.</p></div></div>';
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/js/uswds.min.js"></script>
+</body>
+</html>
