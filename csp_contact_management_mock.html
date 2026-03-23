@@ -35,10 +35,18 @@ body {
   min-height: 100vh;
 }
 
+.layout.sidebar-collapsed {
+  grid-template-columns: 1fr;
+}
+
 .sidebar {
   background: #0f4c81;
   color: #fff;
   padding: 20px;
+}
+
+.layout.sidebar-collapsed .sidebar {
+  display: none;
 }
 
 .sidebar h1 {
@@ -71,6 +79,12 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+}
+
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 button {
@@ -344,7 +358,10 @@ label {
 
   <main class="main">
     <div class="top">
-      <h2>Contact Management</h2>
+      <div class="top-left">
+        <button class="secondary" id="toggleSidebarBtn" type="button" onclick="toggleSidebar()">Collapse Menu</button>
+        <h2>Contact Management</h2>
+      </div>
       <a href="create_contact.html"><button class="primary">+ New</button></a>
     </div>
 
@@ -467,7 +484,6 @@ label {
             </div>
             <div class="result-actions">
               <a href="full_contact_details.html"><button class="secondary">View Contact Details</button></a>
-              <button class="primary">Quick Compare</button>
             </div>
           </article>
 
@@ -600,5 +616,14 @@ label {
     </div>
   </main>
 </div>
+<script>
+function toggleSidebar() {
+  const layout = document.querySelector('.layout');
+  const toggleButton = document.getElementById('toggleSidebarBtn');
+  layout.classList.toggle('sidebar-collapsed');
+  const isCollapsed = layout.classList.contains('sidebar-collapsed');
+  toggleButton.textContent = isCollapsed ? 'Expand Menu' : 'Collapse Menu';
+}
+</script>
 </body>
 </html>
