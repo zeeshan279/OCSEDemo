@@ -120,7 +120,7 @@
                   <select class="usa-select" id="role-filter">
                     <option selected>Any Role</option>
                     <option>Primary Contact</option>
-                    <option>Technical POC</option>
+                    <option>Technical Contact</option>
                     <option>Business Contact</option>
                   </select>
                 </div>
@@ -132,7 +132,7 @@
                 <div class="tablet:grid-col-6"><label class="usa-label" for="company">Company name</label><input class="usa-input" id="company" /></div>
               </div>
               <label class="usa-label margin-top-2" for="tag-filter">Tags</label>
-              <input class="usa-input" id="tag-filter" placeholder="Filter by tags (comma-separated, e.g., Locate, Technical POC)" />
+              <input class="usa-input" id="tag-filter" placeholder="Filter by tags (comma-separated, e.g., Locate, Technical Contact)" />
             </div>
             <div class="usa-card__footer display-flex flex-wrap gap-1">
               <button id="search-button" class="usa-button" type="button">Search</button>
@@ -194,12 +194,12 @@
     const pageSize = 10;
     let currentPage = 1;
     const searchResults = [
-      { name: 'Karen Mitchell', relationshipType: 'State IV-D Agency', badges: ['Primary Match', 'Active'], badgeClasses: ['bg-green-20v text-green-70v', 'bg-blue-20v text-blue-70v'], meta: 'MD Child Support · Director, Locate Operations<br>(410) 555-0187 · karen.mitchell@maryland.gov', tags: ['Locate', 'Technical POC', 'Primary'], active: true },
+      { name: 'Karen Mitchell', relationshipType: 'State IV-D Agency', badges: ['Primary Match', 'Active'], badgeClasses: ['bg-green-20v text-green-70v', 'bg-blue-20v text-blue-70v'], meta: 'MD Child Support · Director, Locate Operations<br>(410) 555-0187 · karen.mitchell@maryland.gov', tags: ['Locate', 'Technical Contact', 'Primary'], active: true },
       { name: 'Karin Mitchell', relationshipType: 'Tribal IV-D Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Navajo Nation Child Support · Program Liaison<br>(505) 555-0101 · karin.mitchell@navajo.gov', tags: ['IRG', 'Intergovernmental', 'Case Coordination'] },
       { name: 'Kay Mitchell', relationshipType: 'Employer', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Blue Harbor Logistics · Payroll Contact<br>(443) 555-0102 · kay.mitchell@blueharbor.com', tags: ['Employer Services', 'Payroll', 'Wage Withholding'] },
       { name: 'Keisha Mitchell', relationshipType: 'Federal Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Office of Child Support Services · Federal Partner Manager<br>(202) 555-0103 · keisha.mitchell@acf.hhs.gov', tags: ['Federal Collections', 'Policy', 'Escalation'] },
       { name: 'Kendall Mitchell', relationshipType: 'International Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Ontario Family Responsibility Office · Cross-Border Coordinator<br>(613) 555-0104 · kendall.mitchell@ontario.ca', tags: ['International', 'IRG', 'Reciprocity'] },
-      { name: 'Kelsey Mitchell', relationshipType: 'Vendor / Contractor', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'CivisTech Solutions · Platform Support Lead<br>(410) 555-0105 · kelsey.mitchell@civistech.com', tags: ['Technical POC', 'Platform Support', 'Production'] },
+      { name: 'Kelsey Mitchell', relationshipType: 'Vendor / Contractor', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'CivisTech Solutions · Platform Support Lead<br>(410) 555-0105 · kelsey.mitchell@civistech.com', tags: ['Technical Contact', 'Platform Support', 'Production'] },
       { name: 'Kim Mitchell', relationshipType: 'OCSE Internal', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'OCSE Internal Operations · Access Administrator<br>(202) 555-0106 · kim.mitchell@acf.hhs.gov', tags: ['Data Access', 'Security', 'Admin'] },
       { name: 'Kyle Mitchell', relationshipType: 'Court System', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland Family Court · Judicial Interface Analyst<br>(410) 555-0107 · kyle.mitchell@mdcourts.gov', tags: ['Court Liaison', 'Case Updates', 'Compliance'] },
       { name: 'Kara Mitchell', relationshipType: 'County Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Baltimore County DSS · Regional Supervisor<br>(443) 555-0108 · kara.mitchell@baltimorecountymd.gov', tags: ['Locate', 'Supervisor', 'Regional'] },
@@ -222,7 +222,7 @@
 
     function getResultTags(result) {
       const contactTags = result.tags || defaultTags;
-      const relationshipTag = result.relationshipType ? [`Relationship: ${result.relationshipType}`] : [];
+      const relationshipTag = result.relationshipType ? [result.relationshipType] : [];
       return [...relationshipTag, ...contactTags];
     }
 
@@ -286,7 +286,7 @@
 
         const defaultMetrics = [
           { label: 'Last Updated', value: `2026-03-${String(19 - ((start + pageIndex) % 8)).padStart(2, '0')}` },
-          { label: 'Updated By', value: 'Contact Admin' },
+          { label: 'Updated By', value: result.name },
           { label: 'Duplicates', value: 'Review Needed' }
         ];
         const metricsData = result.metrics || defaultMetrics;
