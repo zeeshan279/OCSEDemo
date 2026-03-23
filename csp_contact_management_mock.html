@@ -9,7 +9,7 @@
     .app-shell { min-height: 100vh; background: var(--usa-color-base-lightest); }
     .app-sidebar { background: var(--usa-color-primary-darker); color: #fff; padding: 1rem; }
     .app-sidebar .usa-sidenav a { color: #fff; display: flex; align-items: center; gap: 0.5rem; }
-    .app-sidebar .usa-current { background-color: #fff; color: var(--usa-color-primary-darker); font-weight: 700; }
+    .app-sidebar .usa-current { background-color: transparent; color: #fff; font-weight: 700; }
     .app-main { padding: 1.5rem; }
     .app-shell.menu-hidden { grid-template-columns: 1fr !important; }
     .app-shell.menu-hidden .app-sidebar { display: none; }
@@ -17,9 +17,9 @@
     .menu-icon { width: 1.1rem; height: 1.1rem; fill: currentColor; }
     .search-layout { display: grid; grid-template-columns: minmax(300px, 390px) 1fr; gap: 1rem; align-items: start; }
     .result-list .usa-collection__item { padding: 1rem 0; }
-    .result-content { display: grid; grid-template-columns: minmax(0, 1fr) 14rem; gap: 1rem; align-items: start; }
+    .result-content { display: block; }
     .result-content--active { border-left: 0.25rem solid var(--usa-color-primary); padding-left: 0.75rem; }
-    .result-action { display: flex; justify-content: flex-end; }
+    .result-action { margin-top: 0.75rem; }
     .result-action .usa-button { width: 100%; margin-right: 0; }
     .result-meta { margin: 0.5rem 0; color: var(--usa-color-base-dark); font-size: 0.95rem; }
     .result-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.75rem; }
@@ -190,12 +190,6 @@
 
     const pageSize = 10;
     let currentPage = 1;
-    const activityTemplates = [
-      'Note added on 2026-03-22: Verified direct line and updated preferred contact window.',
-      'Call logged on 2026-03-21: Coordinated Locate onboarding checklist with employer services.',
-      'Case update on 2026-03-20: Confirmed intergovernmental routing and escalation contact.'
-    ];
-
     const searchResults = [
       {
         name: 'Karen Mitchell',
@@ -344,12 +338,6 @@
       }
     ];
 
-    searchResults.forEach((result, index) => {
-      if (!result.activity) {
-        result.activity = activityTemplates[index % activityTemplates.length];
-      }
-    });
-
     function getTotalPages() {
       return Math.max(1, Math.ceil(searchResults.length / pageSize));
     }
@@ -365,15 +353,15 @@
       resultsList.innerHTML = '';
       emptyResults.hidden = pageResults.length > 0;
 
-      pageResults.forEach((result) => {
+      pageResults.forEach((result, pageIndex) => {
         const li = document.createElement('li');
         li.className = 'usa-collection__item';
 
-        const badges = result.badges.map((badge, index) => `<span class="usa-tag ${result.badgeClasses[index]}">${badge}</span>`).join(' ');
+        const isFirstOverallResult = start + pageIndex === 0;
+        const badges = isFirstOverallResult
+          ? ''
+          : result.badges.map((badge, index) => `<span class="usa-tag ${result.badgeClasses[index]}">${badge}</span>`).join(' ');
         const tags = result.tags ? `<div class="result-tags">${result.tags.map((tag) => `<span class="usa-tag">${tag}</span>`).join('')}</div>` : '';
-        const activity = result.activity
-          ? `<div class="result-activity"><span class="result-activity__label">Latest Activity</span><p class="result-activity__text">${result.activity}</p></div>`
-          : '';
         const metrics = result.metrics
           ? `<div class="metrics-grid">${result.metrics.map((metric) => `<div class="metric"><span class="metric-label">${metric.label}</span><span class="metric-value">${metric.value}</span></div>`).join('')}</div>`
           : '';
@@ -381,13 +369,12 @@
         li.innerHTML = `
           <article class="result-content ${result.active ? 'result-content--active' : ''}">
             <div>
-              <h4 class="margin-y-0">${result.name} ${badges}</h4>
+              <h4 class="margin-y-0">${result.name}${badges ? ` ${badges}` : ""}</h4>
               <p class="result-meta">${result.meta}</p>
               ${tags}
-              ${activity}
               ${metrics}
             </div>
-            <div class="result-action"><a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a></div>
+            <div class="result-action"><a href="full_contact_details.html" class="usa-button usa-button--outline">View details</a></div>
           </article>
         `;
 
