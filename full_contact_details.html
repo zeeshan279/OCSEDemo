@@ -1,116 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Full Contact Details</title>
-<style>
-:root{--bg:#f6f8fc;--panel:#fff;--text:#1f2937;--muted:#6b7280;--line:#e5eaf2;--blue:#2563eb;--soft:#eef4ff;--green:#059669;--radius:16px}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial;background:var(--bg);color:var(--text)}
-.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh;transition:grid-template-columns .2s ease}
-.layout.sidebar-collapsed{grid-template-columns:84px 1fr}
-.sidebar{background:#0f4c81;color:#fff;padding:16px 12px}
-.sidebar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.sidebar h1{font-size:16px;margin:0;white-space:nowrap}
-.menu-toggle{border:1px solid rgba(255,255,255,.32);background:transparent;color:#fff;border-radius:10px;width:42px;height:38px;padding:0;font-size:20px;cursor:pointer}
-.nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:#fff;text-decoration:none;margin-bottom:6px}
-.nav .icon{width:20px;text-align:center;flex-shrink:0}
-.nav .label{white-space:nowrap}
-.nav a.active,.nav a:hover{background:rgba(255,255,255,.12)}
-.layout.sidebar-collapsed .sidebar h1,.layout.sidebar-collapsed .nav .label{display:none}
-.layout.sidebar-collapsed .sidebar{padding:16px 10px}
-.layout.sidebar-collapsed .sidebar-header{justify-content:center}
-.layout.sidebar-collapsed .nav a{justify-content:center;padding:10px 8px}
-.main{padding:20px}
-.top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
-h2{margin:0 0 12px}
-.section{margin-top:18px;font-weight:800;color:#0f4c81;font-size:13px;text-transform:uppercase}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:10px}
-.box{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fbfdff}
-.k{font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px}
-.v{font-size:14px;font-weight:600;line-height:1.4}
-.list{margin-top:10px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.item{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:#fff}
-.item:last-child{border-bottom:none}
-.badge{font-size:11px;padding:4px 8px;border-radius:999px;font-weight:700;background:#d1fae5;color:#047857}
-.actions{margin-top:20px;display:flex;gap:10px}
-.btn{border:none;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
-.primary{background:var(--blue);color:#fff}
-.secondary{background:#fff;border:1px solid var(--line);color:var(--text)}
-@media(max-width:1000px){.layout{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.sidebar h1,.layout.sidebar-collapsed .sidebar h1,.nav .label,.layout.sidebar-collapsed .nav .label{display:inline}.nav a,.layout.sidebar-collapsed .nav a{justify-content:flex-start;padding:10px 12px}.sidebar-header,.layout.sidebar-collapsed .sidebar-header{justify-content:space-between}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Full Contact Details</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/css/uswds.min.css" />
+  <style>
+    .app-shell { min-height: 100vh; background: var(--usa-color-base-lightest); }
+    .app-sidebar { background: var(--usa-color-primary-darker); color: #fff; padding: 1rem; }
+    .app-sidebar .usa-sidenav a { color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+    .app-sidebar .usa-current { background-color: rgba(255, 255, 255, 0.2); color: #fff; font-weight: 700; }
+    .app-main { padding: 1.5rem; }
+    .menu-icon { width: 1.1rem; height: 1.1rem; fill: currentColor; }
+    .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+    .detail-box { border: 1px solid var(--usa-color-base-lighter); border-radius: 0.25rem; padding: 0.75rem; background: #fff; }
+    .label { font-size: 0.85rem; color: var(--usa-color-base-dark); margin: 0 0 0.2rem; }
+    @media (min-width: 64em) { .app-shell { display: grid; grid-template-columns: 260px 1fr; } }
+    @media (max-width: 63.99em) { .app-sidebar { margin-bottom: 1rem; } .detail-grid { grid-template-columns: 1fr; } }
+  </style>
 </head>
 <body>
-<div class="layout" id="layout">
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <h1>CSP Contacts</h1>
-      <button class="menu-toggle" type="button" aria-label="Toggle menu" onclick="toggleSidebar()">☰</button>
-    </div>
-    <div class="nav">
-      <a href="csp_contact_management_mock.html"><span class="icon">🔎</span><span class="label">Search</span></a>
-      <a href="create_contact.html"><span class="icon">➕</span><span class="label">Create</span></a>
-      <a class="active" href="full_contact_details.html"><span class="icon">📄</span><span class="label">Full Details</span></a>
-      <a><span class="icon">✅</span><span class="label">Approvals</span></a>
-      <a href="duplicate_review_merge.html"><span class="icon">🧬</span><span class="label">Duplicate Review</span></a>
-    </div>
-  </aside>
+  <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+  <div class="app-shell">
+    <aside class="app-sidebar" aria-label="Primary navigation">
+      <h1 class="margin-top-0 font-sans-lg">CSP Contacts</h1>
+      <nav aria-label="Section navigation">
+        <ul class="usa-sidenav margin-top-2">
+          <li class="usa-sidenav__item"><a href="csp_contact_management_mock.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#search"></use></svg>Search</a></li>
+          <li class="usa-sidenav__item"><a href="create_contact.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#add"></use></svg>Create</a></li>
+          <li class="usa-sidenav__item"><a href="#"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#assignment"></use></svg>Approvals</a></li>
+          <li class="usa-sidenav__item"><a class="usa-current" href="full_contact_details.html" aria-current="page"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#description"></use></svg>Full Details</a></li>
+          <li class="usa-sidenav__item"><a href="duplicate_review_merge.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#content_copy"></use></svg>Duplicate Review</a></li>
+        </ul>
+      </nav>
+    </aside>
 
-  <main class="main">
-    <div class="top"></div>
-    <div class="panel">
-      <h2>Karen Mitchell <span class="badge">Active</span></h2>
-      <p style="margin:0;color:var(--muted)">Comprehensive view of contact, organization, and access details.</p>
+    <main class="app-main" id="main-content">
+      <section class="usa-card">
+        <div class="usa-card__container">
+          <div class="usa-card__header">
+            <h2 class="usa-card__heading">Karen Mitchell <span class="usa-tag bg-green-20v text-green-70v">Active</span></h2>
+            <p class="margin-y-1 text-base-dark">Comprehensive view of contact, organization, and access details.</p>
+          </div>
+          <div class="usa-card__body">
+            <h3>Contact Details</h3>
+            <div class="detail-grid margin-bottom-2">
+              <div class="detail-box"><p class="label">First Name</p><strong>Karen</strong></div>
+              <div class="detail-box"><p class="label">Last Name</p><strong>Mitchell</strong></div>
+              <div class="detail-box"><p class="label">Job Title</p><strong>Technical Program Manager</strong></div>
+              <div class="detail-box"><p class="label">Relationship Type</p><strong>State IV-D Agency</strong></div>
+              <div class="detail-box"><p class="label">Primary Email</p><strong>karen.mitchell@state.md.gov</strong></div>
+              <div class="detail-box"><p class="label">Secondary Email</p><strong>k.mitchell@maryland.gov</strong></div>
+            </div>
 
-      <div class="section">Contact Details</div>
-      <div class="grid">
-        <div class="box"><div class="k">First Name</div><div class="v">Karen</div></div>
-        <div class="box"><div class="k">Last Name</div><div class="v">Mitchell</div></div>
-        <div class="box"><div class="k">Job Title</div><div class="v">Technical Program Manager</div></div>
-        <div class="box"><div class="k">Relationship Type</div><div class="v">State IV-D Agency</div></div>
-        <div class="box"><div class="k">Primary Email</div><div class="v">karen.mitchell@state.md.gov</div></div>
-        <div class="box"><div class="k">Secondary Email</div><div class="v">k.mitchell@maryland.gov</div></div>
-        <div class="box"><div class="k">Primary Phone</div><div class="v">(410) 555-0187</div></div>
-        <div class="box"><div class="k">Secondary Phone</div><div class="v">(410) 555-0199</div></div>
-      </div>
+            <h3>Organization Details</h3>
+            <div class="detail-grid margin-bottom-2">
+              <div class="detail-box"><p class="label">Organization</p><strong>Maryland Child Support Administration</strong></div>
+              <div class="detail-box"><p class="label">FEIN</p><strong>52-6002033</strong></div>
+              <div class="detail-box"><p class="label">Address</p><strong>311 W. Saratoga St, Baltimore, MD 21201</strong></div>
+              <div class="detail-box"><p class="label">Preferred Contact Method</p><strong>Email</strong></div>
+            </div>
 
-      <div class="section">Organization Details</div>
-      <div class="grid">
-        <div class="box"><div class="k">Organization</div><div class="v">Maryland Child Support Administration</div></div>
-        <div class="box"><div class="k">FEIN</div><div class="v">52-6002033</div></div>
-        <div class="box"><div class="k">Address</div><div class="v">311 W. Saratoga St, Baltimore, MD 21201</div></div>
-        <div class="box"><div class="k">Preferred Contact Method</div><div class="v">Email</div></div>
-      </div>
+            <h3>Program Access</h3>
+            <ul class="usa-collection margin-bottom-2">
+              <li class="usa-collection__item display-flex flex-justify"><span>Locate</span><span class="usa-tag">Primary Technical POC</span></li>
+              <li class="usa-collection__item display-flex flex-justify"><span>State Profile Admin</span><span class="usa-tag">Secondary Contact</span></li>
+              <li class="usa-collection__item display-flex flex-justify"><span>Employer Services</span><span class="usa-tag">Authorized User</span></li>
+            </ul>
 
-      <div class="section">Program Access</div>
-      <div class="list">
-        <div class="item"><span>Locate</span><span>Primary Technical POC</span></div>
-        <div class="item"><span>State Profile Admin</span><span>Secondary Contact</span></div>
-        <div class="item"><span>Employer Services</span><span>Authorized User</span></div>
-        <div class="item"><span>Data Access</span><span>Restricted Visibility</span></div>
-      </div>
-
-      <div class="section">Audit</div>
-      <div class="grid">
-        <div class="box"><div class="k">Created Date</div><div class="v">Mar 15, 2024</div></div>
-        <div class="box"><div class="k">Created By</div><div class="v">OCSS Admin</div></div>
-        <div class="box"><div class="k">Last Updated</div><div class="v">Mar 18, 2026</div></div>
-        <div class="box"><div class="k">Updated By</div><div class="v">MD Partner Admin</div></div>
-      </div>
-
-      <div class="actions">
-        <a class="btn primary" href="csp_contact_management_mock.html">Back to Contact Search</a>
-        <a class="btn secondary" href="create_contact.html">Create New Contact</a>
-      </div>
-    </div>
-  </main>
-</div>
-<script>
-function toggleSidebar() {
-  const layout = document.getElementById('layout');
-  layout.classList.toggle('sidebar-collapsed');
-}
-</script>
+            <h3>Audit</h3>
+            <div class="detail-grid">
+              <div class="detail-box"><p class="label">Created Date</p><strong>Mar 15, 2024</strong></div>
+              <div class="detail-box"><p class="label">Created By</p><strong>OCSS Admin</strong></div>
+              <div class="detail-box"><p class="label">Last Updated</p><strong>Mar 18, 2026</strong></div>
+              <div class="detail-box"><p class="label">Updated By</p><strong>MD Partner Admin</strong></div>
+            </div>
+          </div>
+          <div class="usa-card__footer display-flex gap-1 flex-wrap">
+            <a class="usa-button" href="csp_contact_management_mock.html">Back to Contact Search</a>
+            <a class="usa-button usa-button--outline" href="create_contact.html">Create New Contact</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/js/uswds.min.js"></script>
 </body>
 </html>

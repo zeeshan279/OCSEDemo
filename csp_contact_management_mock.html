@@ -6,112 +6,28 @@
   <title>CSP Contact Search (USWDS)</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/css/uswds.min.css" />
   <style>
-    .app-shell {
-      min-height: 100vh;
-      background: var(--usa-color-base-lightest);
-    }
-
-    .app-sidebar {
-      background: var(--usa-color-primary-darker);
-      color: #fff;
-      padding: 1rem;
-    }
-
-    .app-sidebar .usa-sidenav a {
-      color: #fff;
-    }
-
-    .app-sidebar .usa-current {
-      background-color: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      font-weight: 700;
-    }
-
-    .app-main {
-      padding: 1.5rem;
-    }
-
-    .search-layout {
-      display: grid;
-      grid-template-columns: minmax(280px, 380px) 1fr;
-      gap: 1rem;
-      align-items: start;
-    }
-
-    .result-card {
-      border: 1px solid var(--usa-color-base-lighter);
-      border-radius: 0.5rem;
-      background: #fff;
-      padding: 1rem;
-      margin-bottom: 0.75rem;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 1rem;
-    }
-
-    .result-card--active {
-      border-color: var(--usa-color-primary);
-      box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--usa-color-primary) 15%, white);
-    }
-
-    .result-meta {
-      margin: 0.5rem 0;
-      color: var(--usa-color-base-dark);
-      font-size: 0.95rem;
-    }
-
-    .result-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.5rem;
-    }
-
-    .metric {
-      border: 1px solid var(--usa-color-base-lighter);
-      border-radius: 0.35rem;
-      padding: 0.5rem;
-      background: var(--usa-color-base-lightest);
-    }
-
-    .metric-label {
-      display: block;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      color: var(--usa-color-base-dark);
-      letter-spacing: 0.04em;
-    }
-
-    .metric-value {
-      font-weight: 700;
-      font-size: 0.95rem;
-    }
-
+    .app-shell { min-height: 100vh; background: var(--usa-color-base-lightest); }
+    .app-sidebar { background: var(--usa-color-primary-darker); color: #fff; padding: 1rem; }
+    .app-sidebar .usa-sidenav a { color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+    .app-sidebar .usa-current { background-color: rgba(255, 255, 255, 0.2); color: #fff; font-weight: 700; }
+    .app-main { padding: 1.5rem; }
+    .menu-icon { width: 1.1rem; height: 1.1rem; fill: currentColor; }
+    .search-layout { display: grid; grid-template-columns: minmax(300px, 390px) 1fr; gap: 1rem; align-items: start; }
+    .result-list .usa-collection__item { padding: 1rem 0; }
+    .result-content { display: grid; grid-template-columns: 1fr auto; gap: 1rem; }
+    .result-content--active { border-left: 0.25rem solid var(--usa-color-primary); padding-left: 0.75rem; }
+    .result-meta { margin: 0.5rem 0; color: var(--usa-color-base-dark); font-size: 0.95rem; }
+    .result-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.75rem; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+    .metric { border: 1px solid var(--usa-color-base-lighter); border-radius: 0.35rem; padding: 0.5rem; background: var(--usa-color-base-lightest); }
+    .metric-label { display: block; font-size: 0.7rem; text-transform: uppercase; color: var(--usa-color-base-dark); letter-spacing: 0.04em; }
+    .metric-value { font-weight: 700; font-size: 0.95rem; }
     @media (max-width: 63.99em) {
-      .search-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .result-card {
-        grid-template-columns: 1fr;
-      }
-
-      .app-sidebar {
-        margin-bottom: 1rem;
-      }
+      .search-layout, .result-content, .metrics-grid { grid-template-columns: 1fr; }
+      .app-sidebar { margin-bottom: 1rem; }
     }
-
     @media (min-width: 64em) {
-      .app-shell {
-        display: grid;
-        grid-template-columns: 260px 1fr;
-      }
+      .app-shell { display: grid; grid-template-columns: 260px 1fr; }
     }
   </style>
 </head>
@@ -123,11 +39,11 @@
       <h1 class="margin-top-0 font-sans-lg">CSP Contacts</h1>
       <nav aria-label="Section navigation">
         <ul class="usa-sidenav margin-top-2">
-          <li class="usa-sidenav__item"><a class="usa-current" href="csp_contact_management_mock.html" aria-current="page">Search</a></li>
-          <li class="usa-sidenav__item"><a href="create_contact.html">Create</a></li>
-          <li class="usa-sidenav__item"><a href="#">Approvals</a></li>
-          <li class="usa-sidenav__item"><a href="full_contact_details.html">Full Details</a></li>
-          <li class="usa-sidenav__item"><a href="duplicate_review_merge.html">Duplicate Review</a></li>
+          <li class="usa-sidenav__item"><a class="usa-current" href="csp_contact_management_mock.html" aria-current="page"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#search"></use></svg>Search</a></li>
+          <li class="usa-sidenav__item"><a href="create_contact.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#add"></use></svg>Create</a></li>
+          <li class="usa-sidenav__item"><a href="#"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#assignment"></use></svg>Approvals</a></li>
+          <li class="usa-sidenav__item"><a href="full_contact_details.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#description"></use></svg>Full Details</a></li>
+          <li class="usa-sidenav__item"><a href="duplicate_review_merge.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#content_copy"></use></svg>Duplicate Review</a></li>
         </ul>
       </nav>
     </aside>
@@ -135,7 +51,7 @@
     <main class="app-main" id="main-content">
       <header class="display-flex flex-justify flex-align-center margin-bottom-2">
         <h2 class="margin-y-0">Contact Search</h2>
-        <a href="create_contact.html" class="usa-button">+ New</a>
+        <a href="create_contact.html" class="usa-button">New Contact</a>
       </header>
 
       <div class="search-layout">
@@ -199,51 +115,19 @@
               </div>
 
               <h4 class="margin-top-3 margin-bottom-1">Advanced filters</h4>
-
               <div class="grid-row grid-gap">
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="fein">FEIN (Employer)</label>
-                  <input class="usa-input" id="fein" />
-                </div>
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="company">Company name</label>
-                  <input class="usa-input" id="company" />
-                </div>
-              </div>
-
-              <div class="grid-row grid-gap margin-top-2">
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="updated-by">Updated by</label>
-                  <input class="usa-input" id="updated-by" />
-                </div>
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="updated-date">Updated date</label>
-                  <input class="usa-input" id="updated-date" type="date" />
-                </div>
-              </div>
-
-              <div class="grid-row grid-gap margin-top-2">
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="tags">Tags</label>
-                  <input class="usa-input" id="tags" placeholder="e.g., Technical, Primary" />
-                </div>
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="tag-mode">Tag matching</label>
-                  <select class="usa-select" id="tag-mode">
-                    <option>Match Any</option>
-                    <option>Match All</option>
-                  </select>
-                </div>
+                <div class="tablet:grid-col-6"><label class="usa-label" for="fein">FEIN (Employer)</label><input class="usa-input" id="fein" /></div>
+                <div class="tablet:grid-col-6"><label class="usa-label" for="company">Company name</label><input class="usa-input" id="company" /></div>
               </div>
             </div>
             <div class="usa-card__footer display-flex flex-wrap gap-1">
-              <button class="usa-button" type="button">Search</button>
-              <button class="usa-button usa-button--outline" type="button">Clear</button>
+              <button id="search-button" class="usa-button" type="button">Search</button>
+              <button id="clear-button" class="usa-button usa-button--outline" type="button">Clear</button>
             </div>
           </div>
         </section>
 
-        <section class="usa-card" aria-label="Search Results">
+        <section id="results-panel" class="usa-card" aria-label="Search Results" hidden>
           <div class="usa-card__container">
             <div class="usa-card__header display-flex flex-justify flex-align-end flex-wrap gap-1">
               <div>
@@ -262,52 +146,50 @@
             </div>
             <div class="usa-card__body">
               <div class="usa-alert usa-alert--info" role="status">
-                <div class="usa-alert__body">
-                  <p class="usa-alert__text">Tip: Use FEIN + Application to narrow duplicates. Showing active and pending matches across State IV-D agency records.</p>
-                </div>
+                <div class="usa-alert__body"><p class="usa-alert__text">Tip: Use FEIN + Application to narrow duplicates.</p></div>
               </div>
 
-              <article class="result-card result-card--active">
-                <div>
-                  <h4 class="margin-y-0">Karen Mitchell <span class="usa-tag bg-green-20v text-green-70v">Primary Match</span> <span class="usa-tag bg-blue-20v text-blue-70v">Active</span></h4>
-                  <p class="result-meta">MD Child Support · Director, Locate Operations<br>(410) 555-0187 · karen.mitchell@maryland.gov</p>
-                  <div class="result-tags">
-                    <span class="usa-tag usa-tag--big">Locate</span>
-                    <span class="usa-tag usa-tag--big">Technical POC</span>
-                    <span class="usa-tag usa-tag--big">Primary</span>
-                  </div>
-                  <div class="metrics-grid">
-                    <div class="metric"><span class="metric-label">Last Updated</span><span class="metric-value">2026-03-19</span></div>
-                    <div class="metric"><span class="metric-label">Updated By</span><span class="metric-value">A. Johnson</span></div>
-                    <div class="metric"><span class="metric-label">Duplicates</span><span class="metric-value">1 Possible</span></div>
-                  </div>
-                </div>
-                <div>
-                  <a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a>
-                </div>
-              </article>
-
-              <article class="result-card">
-                <div>
-                  <h4 class="margin-y-0">Karen Mitchell <span class="usa-tag bg-yellow-10v text-yellow-70v">Possible Duplicate</span></h4>
-                  <p class="result-meta">MD CSA · Program Coordinator<br>(410) 555-7712 · kmitchell@mdcsa.gov</p>
-                </div>
-                <div class="display-flex flex-column gap-1">
-                  <a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a>
-                  <button class="usa-button usa-button--outline" type="button">Mark Not Duplicate</button>
-                </div>
-              </article>
-
-              <article class="result-card">
-                <div>
-                  <h4 class="margin-y-0">Karin Mitchell <span class="usa-tag bg-blue-20v text-blue-70v">Name Variant</span></h4>
-                  <p class="result-meta">Maryland Department of Human Services · Enterprise Liaison<br>(443) 555-0441 · karin.mitchell@maryland.gov</p>
-                </div>
-                <div class="display-flex flex-column gap-1">
-                  <a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a>
-                  <button class="usa-button usa-button--outline" type="button">Compare Record</button>
-                </div>
-              </article>
+              <ul class="usa-collection result-list" aria-label="Contact search result list">
+                <li class="usa-collection__item">
+                  <article class="result-content result-content--active">
+                    <div>
+                      <h4 class="margin-y-0">Karen Mitchell <span class="usa-tag bg-green-20v text-green-70v">Primary Match</span> <span class="usa-tag bg-blue-20v text-blue-70v">Active</span></h4>
+                      <p class="result-meta">MD Child Support · Director, Locate Operations<br>(410) 555-0187 · karen.mitchell@maryland.gov</p>
+                      <div class="result-tags"><span class="usa-tag">Locate</span><span class="usa-tag">Technical POC</span><span class="usa-tag">Primary</span></div>
+                      <div class="metrics-grid">
+                        <div class="metric"><span class="metric-label">Last Updated</span><span class="metric-value">2026-03-19</span></div>
+                        <div class="metric"><span class="metric-label">Updated By</span><span class="metric-value">A. Johnson</span></div>
+                        <div class="metric"><span class="metric-label">Duplicates</span><span class="metric-value">1 Possible</span></div>
+                      </div>
+                    </div>
+                    <div><a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a></div>
+                  </article>
+                </li>
+                <li class="usa-collection__item">
+                  <article class="result-content">
+                    <div>
+                      <h4 class="margin-y-0">Karen Mitchell <span class="usa-tag bg-yellow-10v text-yellow-70v">Possible Duplicate</span></h4>
+                      <p class="result-meta">MD CSA · Program Coordinator<br>(410) 555-7712 · kmitchell@mdcsa.gov</p>
+                    </div>
+                    <div class="display-flex flex-column gap-1">
+                      <a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a>
+                      <button class="usa-button usa-button--outline" type="button">Mark Not Duplicate</button>
+                    </div>
+                  </article>
+                </li>
+                <li class="usa-collection__item">
+                  <article class="result-content">
+                    <div>
+                      <h4 class="margin-y-0">Karin Mitchell <span class="usa-tag bg-blue-20v text-blue-70v">Name Variant</span></h4>
+                      <p class="result-meta">Maryland Department of Human Services · Enterprise Liaison<br>(443) 555-0441 · karin.mitchell@maryland.gov</p>
+                    </div>
+                    <div class="display-flex flex-column gap-1">
+                      <a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a>
+                      <button class="usa-button usa-button--outline" type="button">Compare Record</button>
+                    </div>
+                  </article>
+                </li>
+              </ul>
             </div>
           </div>
         </section>
@@ -315,6 +197,16 @@
     </main>
   </div>
 
+  <script>
+    const resultsPanel = document.getElementById('results-panel');
+    document.getElementById('search-button').addEventListener('click', () => {
+      resultsPanel.hidden = false;
+    });
+    document.getElementById('clear-button').addEventListener('click', () => {
+      document.getElementById('search-query').value = '';
+      resultsPanel.hidden = true;
+    });
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/js/uswds.min.js"></script>
 </body>
 </html>
