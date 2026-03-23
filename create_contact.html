@@ -47,6 +47,7 @@
                 <div class="tablet:grid-col-6"><label class="usa-label" for="firstName">First Name</label><input class="usa-input" id="firstName" name="firstName" required /></div>
                 <div class="tablet:grid-col-6"><label class="usa-label" for="lastName">Last Name</label><input class="usa-input" id="lastName" name="lastName" required /></div>
               </div>
+              <label class="usa-label" for="title">Title</label><input class="usa-input" id="title" name="title" placeholder="Example: Technical Program Manager" required />
               <label class="usa-label" for="email">Email</label><input class="usa-input" id="email" name="email" type="email" required />
               <div class="grid-row grid-gap">
                 <div class="tablet:grid-col-6"><label class="usa-label" for="phone">Phone</label><input class="usa-input" id="phone" name="phone" required /></div>
@@ -121,6 +122,7 @@
       const contact = {
         firstName: formData.get('firstName'),
         lastName: formData.get('lastName'),
+        title: formData.get('title'),
         email: formData.get('email'),
         phone: formData.get('phone'),
         application: formData.get('application'),
