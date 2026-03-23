@@ -6,23 +6,26 @@
   <title>Full Contact Details</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/css/uswds.min.css" />
   <style>
-    .app-shell { min-height: 100vh; background: var(--usa-color-base-lightest); }
-    .app-sidebar { background: var(--usa-color-primary-darker); color: #fff; padding: 1rem; }
-    .app-sidebar .usa-sidenav a { color: #fff; display: flex; align-items: center; gap: 0.5rem; }
-    .app-sidebar .usa-current { background-color: rgba(255, 255, 255, 0.2); color: #fff; font-weight: 700; }
-    .app-main { padding: 1.5rem; }
-    .menu-icon { width: 1.1rem; height: 1.1rem; fill: currentColor; }
-    .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
-    .detail-box { border: 1px solid var(--usa-color-base-lighter); border-radius: 0.25rem; padding: 0.75rem; background: #fff; }
-    .label { font-size: 0.85rem; color: var(--usa-color-base-dark); margin: 0 0 0.2rem; }
-    @media (min-width: 64em) { .app-shell { display: grid; grid-template-columns: 260px 1fr; } }
-    @media (max-width: 63.99em) { .app-sidebar { margin-bottom: 1rem; } .detail-grid { grid-template-columns: 1fr; } }
+    .app-shell { min-height: 100vh; }
+    .app-sidebar { background: var(--usa-color-primary-darker); color: #fff; }
+    .app-sidebar .usa-sidenav a { color: #fff; }
+    .app-sidebar .usa-current { background-color: rgb(255 255 255 / 20%); color: #fff; font-weight: 700; }
+    .menu-icon { width: 1.1rem; height: 1.1rem; fill: currentColor; margin-right: 0.5rem; vertical-align: text-bottom; }
+
+    @media (min-width: 64em) {
+      .app-shell { display: grid; grid-template-columns: 260px 1fr; }
+    }
+
+    @media (max-width: 63.99em) {
+      .app-sidebar { margin-bottom: 1rem; }
+    }
   </style>
 </head>
-<body>
+<body class="bg-base-lightest">
   <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
   <div class="app-shell">
-    <aside class="app-sidebar" aria-label="Primary navigation">
+    <aside class="app-sidebar padding-2" aria-label="Primary navigation">
       <h1 class="margin-top-0 font-sans-lg">CSP Contacts</h1>
       <nav aria-label="Section navigation">
         <ul class="usa-sidenav margin-top-2">
@@ -35,55 +38,96 @@
       </nav>
     </aside>
 
-    <main class="app-main" id="main-content">
-      <section class="usa-card">
-        <div class="usa-card__container">
-          <div class="usa-card__header">
-            <h2 class="usa-card__heading">Karen Mitchell <span class="usa-tag bg-green-20v text-green-70v">Active</span></h2>
-            <p class="margin-y-1 text-base-dark">Comprehensive view of contact, organization, and access details.</p>
-          </div>
-          <div class="usa-card__body">
-            <h3>Contact Details</h3>
-            <div class="detail-grid margin-bottom-2">
-              <div class="detail-box"><p class="label">First Name</p><strong>Karen</strong></div>
-              <div class="detail-box"><p class="label">Last Name</p><strong>Mitchell</strong></div>
-              <div class="detail-box"><p class="label">Job Title</p><strong>Technical Program Manager</strong></div>
-              <div class="detail-box"><p class="label">Relationship Type</p><strong>State IV-D Agency</strong></div>
-              <div class="detail-box"><p class="label">Primary Email</p><strong>karen.mitchell@state.md.gov</strong></div>
-              <div class="detail-box"><p class="label">Secondary Email</p><strong>k.mitchell@maryland.gov</strong></div>
-            </div>
-
-            <h3>Organization Details</h3>
-            <div class="detail-grid margin-bottom-2">
-              <div class="detail-box"><p class="label">Organization</p><strong>Maryland Child Support Administration</strong></div>
-              <div class="detail-box"><p class="label">FEIN</p><strong>52-6002033</strong></div>
-              <div class="detail-box"><p class="label">Address</p><strong>311 W. Saratoga St, Baltimore, MD 21201</strong></div>
-              <div class="detail-box"><p class="label">Preferred Contact Method</p><strong>Email</strong></div>
-            </div>
-
-            <h3>Program Access</h3>
-            <ul class="usa-collection margin-bottom-2">
-              <li class="usa-collection__item display-flex flex-justify"><span>Locate</span><span class="usa-tag">Primary Technical POC</span></li>
-              <li class="usa-collection__item display-flex flex-justify"><span>State Profile Admin</span><span class="usa-tag">Secondary Contact</span></li>
-              <li class="usa-collection__item display-flex flex-justify"><span>Employer Services</span><span class="usa-tag">Authorized User</span></li>
-            </ul>
-
-            <h3>Audit</h3>
-            <div class="detail-grid">
-              <div class="detail-box"><p class="label">Created Date</p><strong>Mar 15, 2024</strong></div>
-              <div class="detail-box"><p class="label">Created By</p><strong>OCSS Admin</strong></div>
-              <div class="detail-box"><p class="label">Last Updated</p><strong>Mar 18, 2026</strong></div>
-              <div class="detail-box"><p class="label">Updated By</p><strong>MD Partner Admin</strong></div>
-            </div>
-          </div>
-          <div class="usa-card__footer display-flex gap-1 flex-wrap">
-            <a class="usa-button" href="csp_contact_management_mock.html">Back to Contact Search</a>
-            <a class="usa-button usa-button--outline" href="create_contact.html">Create New Contact</a>
-          </div>
+    <main class="padding-3" id="main-content">
+      <div class="usa-alert usa-alert--info margin-bottom-3" role="status">
+        <div class="usa-alert__body">
+          <h2 class="usa-alert__heading">Karen Mitchell <span class="usa-tag bg-green-20v text-green-70v">Active</span></h2>
+          <p class="usa-alert__text">Comprehensive view of contact, organization, and access details.</p>
         </div>
+      </div>
+
+      <section aria-labelledby="contact-details-heading" class="margin-bottom-3">
+        <h3 id="contact-details-heading" class="margin-bottom-2">Contact details</h3>
+        <dl class="usa-list usa-list--unstyled bg-white padding-2 radius-md border border-base-lighter">
+          <div class="grid-row grid-gap margin-bottom-1">
+            <dt class="tablet:grid-col-4 text-base-dark">First name</dt><dd class="tablet:grid-col-8 margin-0 text-bold">Karen</dd>
+          </div>
+          <div class="grid-row grid-gap margin-bottom-1">
+            <dt class="tablet:grid-col-4 text-base-dark">Last name</dt><dd class="tablet:grid-col-8 margin-0 text-bold">Mitchell</dd>
+          </div>
+          <div class="grid-row grid-gap margin-bottom-1">
+            <dt class="tablet:grid-col-4 text-base-dark">Job title</dt><dd class="tablet:grid-col-8 margin-0 text-bold">Technical Program Manager</dd>
+          </div>
+          <div class="grid-row grid-gap margin-bottom-1">
+            <dt class="tablet:grid-col-4 text-base-dark">Relationship type</dt><dd class="tablet:grid-col-8 margin-0 text-bold">State IV-D Agency</dd>
+          </div>
+          <div class="grid-row grid-gap margin-bottom-1">
+            <dt class="tablet:grid-col-4 text-base-dark">Primary email</dt><dd class="tablet:grid-col-8 margin-0 text-bold"><a href="mailto:karen.mitchell@state.md.gov">karen.mitchell@state.md.gov</a></dd>
+          </div>
+          <div class="grid-row grid-gap">
+            <dt class="tablet:grid-col-4 text-base-dark">Secondary email</dt><dd class="tablet:grid-col-8 margin-0 text-bold"><a href="mailto:k.mitchell@maryland.gov">k.mitchell@maryland.gov</a></dd>
+          </div>
+        </dl>
       </section>
+
+      <section aria-labelledby="organization-details-heading" class="margin-bottom-3">
+        <h3 id="organization-details-heading" class="margin-bottom-2">Organization details</h3>
+        <dl class="usa-list usa-list--unstyled bg-white padding-2 radius-md border border-base-lighter">
+          <div class="grid-row grid-gap margin-bottom-1">
+            <dt class="tablet:grid-col-4 text-base-dark">Organization</dt><dd class="tablet:grid-col-8 margin-0 text-bold">Maryland Child Support Administration</dd>
+          </div>
+          <div class="grid-row grid-gap margin-bottom-1">
+            <dt class="tablet:grid-col-4 text-base-dark">FEIN</dt><dd class="tablet:grid-col-8 margin-0 text-bold">52-6002033</dd>
+          </div>
+          <div class="grid-row grid-gap margin-bottom-1">
+            <dt class="tablet:grid-col-4 text-base-dark">Address</dt><dd class="tablet:grid-col-8 margin-0 text-bold">311 W. Saratoga St, Baltimore, MD 21201</dd>
+          </div>
+          <div class="grid-row grid-gap">
+            <dt class="tablet:grid-col-4 text-base-dark">Preferred contact method</dt><dd class="tablet:grid-col-8 margin-0 text-bold">Email</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section aria-labelledby="program-access-heading" class="margin-bottom-3">
+        <h3 id="program-access-heading" class="margin-bottom-2">Program access</h3>
+        <ul class="usa-collection">
+          <li class="usa-collection__item display-flex flex-justify">
+            <span>Locate</span><span class="usa-tag">Primary Technical POC</span>
+          </li>
+          <li class="usa-collection__item display-flex flex-justify">
+            <span>State Profile Admin</span><span class="usa-tag">Secondary Contact</span>
+          </li>
+          <li class="usa-collection__item display-flex flex-justify">
+            <span>Employer Services</span><span class="usa-tag">Authorized User</span>
+          </li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="audit-heading" class="margin-bottom-3">
+        <h3 id="audit-heading" class="margin-bottom-2">Audit</h3>
+        <dl class="usa-list usa-list--unstyled bg-white padding-2 radius-md border border-base-lighter">
+          <div class="grid-row grid-gap margin-bottom-1">
+            <dt class="tablet:grid-col-4 text-base-dark">Created date</dt><dd class="tablet:grid-col-8 margin-0 text-bold">March 15, 2024</dd>
+          </div>
+          <div class="grid-row grid-gap margin-bottom-1">
+            <dt class="tablet:grid-col-4 text-base-dark">Created by</dt><dd class="tablet:grid-col-8 margin-0 text-bold">OCSS Admin</dd>
+          </div>
+          <div class="grid-row grid-gap margin-bottom-1">
+            <dt class="tablet:grid-col-4 text-base-dark">Last updated</dt><dd class="tablet:grid-col-8 margin-0 text-bold">March 18, 2026</dd>
+          </div>
+          <div class="grid-row grid-gap">
+            <dt class="tablet:grid-col-4 text-base-dark">Updated by</dt><dd class="tablet:grid-col-8 margin-0 text-bold">MD Partner Admin</dd>
+          </div>
+        </dl>
+      </section>
+
+      <div class="display-flex gap-1 flex-wrap">
+        <a class="usa-button" href="csp_contact_management_mock.html">Back to Contact Search</a>
+        <a class="usa-button usa-button--outline" href="create_contact.html">Create New Contact</a>
+      </div>
     </main>
   </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/js/uswds.min.js"></script>
 </body>
 </html>
