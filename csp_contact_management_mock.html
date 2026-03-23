@@ -18,6 +18,9 @@
     .result-content--active { border-left: 0.25rem solid var(--usa-color-primary); padding-left: 0.75rem; }
     .result-meta { margin: 0.5rem 0; color: var(--usa-color-base-dark); font-size: 0.95rem; }
     .result-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.75rem; }
+    .result-activity { border-left: 0.25rem solid var(--usa-color-primary-lighter); background: var(--usa-color-primary-lightest); padding: 0.75rem; margin-bottom: 0.75rem; border-radius: 0.25rem; }
+    .result-activity__label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--usa-color-primary-dark); margin-bottom: 0.25rem; font-weight: 700; }
+    .result-activity__text { margin: 0; color: var(--usa-color-base-darkest); font-size: 0.95rem; }
     .metrics-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
     .metric { border: 1px solid var(--usa-color-base-lighter); border-radius: 0.35rem; padding: 0.5rem; background: var(--usa-color-base-lightest); }
     .metric-label { display: block; font-size: 0.7rem; text-transform: uppercase; color: var(--usa-color-base-dark); letter-spacing: 0.04em; }
@@ -180,6 +183,11 @@
 
     const pageSize = 10;
     let currentPage = 1;
+    const activityTemplates = [
+      'Note added on 2026-03-22: Verified direct line and updated preferred contact window.',
+      'Call logged on 2026-03-21: Coordinated Locate onboarding checklist with employer services.',
+      'Case update on 2026-03-20: Confirmed intergovernmental routing and escalation contact.'
+    ];
 
     const searchResults = [
       {
@@ -329,6 +337,12 @@
       }
     ];
 
+    searchResults.forEach((result, index) => {
+      if (!result.activity) {
+        result.activity = activityTemplates[index % activityTemplates.length];
+      }
+    });
+
     function getTotalPages() {
       return Math.max(1, Math.ceil(searchResults.length / pageSize));
     }
@@ -350,6 +364,9 @@
 
         const badges = result.badges.map((badge, index) => `<span class="usa-tag ${result.badgeClasses[index]}">${badge}</span>`).join(' ');
         const tags = result.tags ? `<div class="result-tags">${result.tags.map((tag) => `<span class="usa-tag">${tag}</span>`).join('')}</div>` : '';
+        const activity = result.activity
+          ? `<div class="result-activity"><span class="result-activity__label">Latest Activity</span><p class="result-activity__text">${result.activity}</p></div>`
+          : '';
         const metrics = result.metrics
           ? `<div class="metrics-grid">${result.metrics.map((metric) => `<div class="metric"><span class="metric-label">${metric.label}</span><span class="metric-value">${metric.value}</span></div>`).join('')}</div>`
           : '';
@@ -360,9 +377,13 @@
               <h4 class="margin-y-0">${result.name} ${badges}</h4>
               <p class="result-meta">${result.meta}</p>
               ${tags}
+              ${activity}
               ${metrics}
             </div>
-            <div><a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a></div>
+            <div class="display-flex flex-column gap-1">
+              <button class="usa-button" type="button">Add Note Activity</button>
+              <a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a>
+            </div>
           </article>
         `;
 
