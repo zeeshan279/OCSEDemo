@@ -71,9 +71,8 @@
             </div>
 
             <div class="display-flex gap-1 flex-wrap margin-top-2 margin-bottom-2">
-              <button class="usa-button" type="button">Merge as Primary A</button>
-              <button class="usa-button usa-button--outline" type="button">Merge as Primary B</button>
-              <button class="usa-button usa-button--outline" type="button">Mark as Not Duplicate</button>
+              <button id="merge-button" class="usa-button" type="button">Merge</button>
+              <button id="do-not-merge-button" class="usa-button usa-button--outline" type="button">Do not merge</button>
             </div>
 
             <h3>Review Queue</h3>
@@ -93,6 +92,20 @@
         const appShell = document.querySelector('.app-shell');
         appShell.classList.toggle('menu-hidden');
         menuToggle.textContent = appShell.classList.contains('menu-hidden') ? 'Show menu' : 'Hide menu';
+      });
+    }
+
+    const mergeButton = document.getElementById('merge-button');
+    if (mergeButton) {
+      mergeButton.addEventListener('click', () => {
+        window.location.href = 'merge_result_records.html';
+      });
+    }
+
+    const doNotMergeButton = document.getElementById('do-not-merge-button');
+    if (doNotMergeButton) {
+      doNotMergeButton.addEventListener('click', () => {
+        window.location.href = 'csp_contact_management_mock.html';
       });
     }
   </script>
