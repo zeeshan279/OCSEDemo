@@ -131,6 +131,8 @@
                 <div class="tablet:grid-col-6"><label class="usa-label" for="fein">FEIN (Employer)</label><input class="usa-input" id="fein" /></div>
                 <div class="tablet:grid-col-6"><label class="usa-label" for="company">Company name</label><input class="usa-input" id="company" /></div>
               </div>
+              <label class="usa-label margin-top-2" for="tag-filter">Tags</label>
+              <input class="usa-input" id="tag-filter" placeholder="Filter by tags (comma-separated, e.g., Locate, Technical POC)" />
             </div>
             <div class="usa-card__footer display-flex flex-wrap gap-1">
               <button id="search-button" class="usa-button" type="button">Search</button>
@@ -185,6 +187,7 @@
     const paginationWrapper = document.getElementById('pagination-wrapper');
     const pagination = document.getElementById('pagination');
     const searchQuery = document.getElementById('search-query');
+    const tagFilterInput = document.getElementById('tag-filter');
     const searchButton = document.getElementById('search-button');
     const clearButton = document.getElementById('clear-button');
 
@@ -208,19 +211,22 @@
         name: 'Karen Mitchell',
         badges: ['Possible Duplicate'],
         badgeClasses: ['bg-yellow-10v text-yellow-70v'],
-        meta: 'MD CSA · Program Coordinator<br>(410) 555-7712 · kmitchell@mdcsa.gov'
+        meta: 'MD CSA · Program Coordinator<br>(410) 555-7712 · kmitchell@mdcsa.gov',
+        tags: ['Employer Services', 'Program Lead', 'Duplicate Review']
       },
       {
         name: 'Karin Mitchell',
         badges: ['Name Variant'],
         badgeClasses: ['bg-blue-20v text-blue-70v'],
-        meta: 'Maryland Department of Human Services · Enterprise Liaison<br>(443) 555-0441 · karin.mitchell@maryland.gov'
+        meta: 'Maryland Department of Human Services · Enterprise Liaison<br>(443) 555-0441 · karin.mitchell@maryland.gov',
+        tags: ['Data Access', 'Enterprise Liaison']
       },
       {
         name: 'Karen M. Mitchell',
         badges: ['Active'],
         badgeClasses: ['bg-green-20v text-green-70v'],
-        meta: 'Maryland Child Support Enforcement · Regional Director<br>(410) 555-9931 · karenm@mdchildsupport.gov'
+        meta: 'Maryland Child Support Enforcement · Regional Director<br>(410) 555-9931 · karenm@mdchildsupport.gov',
+        tags: ['Locate', 'Program Lead']
       },
       {
         name: 'K. Mitchell',
@@ -268,7 +274,8 @@
         name: 'Karen Mitchell',
         badges: ['Pending Approval'],
         badgeClasses: ['bg-gold-10v text-gold-70v'],
-        meta: 'Montgomery County CSA · Onboarding Request<br>(301) 555-0747 · karen.mitchell@montgomerycountymd.gov'
+        meta: 'Montgomery County CSA · Onboarding Request<br>(301) 555-0747 · karen.mitchell@montgomerycountymd.gov',
+        tags: ['Onboarding', 'Pending Review']
       },
       {
         name: 'Karen M. Mitchel',
@@ -286,7 +293,8 @@
         name: 'Karen Mitchell',
         badges: ['Inactive'],
         badgeClasses: ['bg-base-lighter text-base-darkest'],
-        meta: 'Former Contact · Allegany County CSA<br>(301) 555-9982 · karen.mitchell.old@alleganymd.gov'
+        meta: 'Former Contact · Allegany County CSA<br>(301) 555-9982 · karen.mitchell.old@alleganymd.gov',
+        tags: ['Inactive', 'Historical']
       },
       {
         name: 'Karin A. Mitchell',
@@ -334,22 +342,50 @@
         name: 'Karen Mitchell',
         badges: ['Active'],
         badgeClasses: ['bg-green-20v text-green-70v'],
-        meta: 'MD Data Access · External Liaison<br>(410) 555-7814 · kmitchell.data@maryland.gov'
+        meta: 'MD Data Access · External Liaison<br>(410) 555-7814 · kmitchell.data@maryland.gov',
+        tags: ['Data Access', 'External Liaison']
       }
     ];
 
-    function getTotalPages() {
-      return Math.max(1, Math.ceil(searchResults.length / pageSize));
+    const defaultTags = ['Contact', 'Directory', 'Candidate'];
+
+    function getResultTags(result) {
+      return result.tags || defaultTags;
+    }
+
+    function getFilteredResults() {
+      const query = searchQuery.value.trim().toLowerCase();
+      const tagFilters = tagFilterInput.value
+        .split(',')
+        .map((tag) => tag.trim().toLowerCase())
+        .filter(Boolean);
+
+      return searchResults.filter((result) => {
+        const searchableContent = `${result.name} ${result.meta}`.toLowerCase();
+        const resultTags = getResultTags(result).map((tag) => tag.toLowerCase());
+        const queryMatches = !query
+          || searchableContent.includes(query)
+          || resultTags.some((tag) => tag.includes(query));
+        const tagsMatch = tagFilters.every((filterTag) => resultTags.some((tag) => tag.includes(filterTag)));
+        return queryMatches && tagsMatch;
+      });
+    }
+
+    function getTotalPages(resultCount) {
+      return Math.max(1, Math.ceil(resultCount / pageSize));
     }
 
     function renderResults() {
-      const totalPages = getTotalPages();
+      const filteredResults = getFilteredResults();
+      const totalPages = getTotalPages(filteredResults.length);
       currentPage = Math.min(Math.max(1, currentPage), totalPages);
       const start = (currentPage - 1) * pageSize;
-      const pageResults = searchResults.slice(start, start + pageSize);
+      const pageResults = filteredResults.slice(start, start + pageSize);
       const query = searchQuery.value.trim() || 'all contacts';
+      const tagQuery = tagFilterInput.value.trim();
+      const summaryDetails = tagQuery ? `${query} (tags: ${tagQuery})` : query;
 
-      resultsSummary.innerHTML = `<strong>${searchResults.length} results</strong> for “${query}”`;
+      resultsSummary.innerHTML = `<strong>${filteredResults.length} results</strong> for “${summaryDetails}”`;
       resultsList.innerHTML = '';
       emptyResults.hidden = pageResults.length > 0;
 
@@ -365,8 +401,7 @@
           return acc;
         }, []);
 
-        const defaultTags = ['Contact', 'Directory', 'Candidate'];
-        const tags = `<div class="result-tags">${(result.tags || defaultTags).map((tag) => `<span class="usa-tag">${tag}</span>`).join('')}</div>`;
+        const tags = `<div class="result-tags">${getResultTags(result).map((tag) => `<span class="usa-tag">${tag}</span>`).join('')}</div>`;
 
         const defaultMetrics = [
           { label: 'Last Updated', value: `2026-03-${String(19 - ((start + pageIndex) % 8)).padStart(2, '0')}` },
@@ -440,7 +475,7 @@
 
       event.preventDefault();
       const targetPage = Number(link.dataset.page);
-      const totalPages = getTotalPages();
+      const totalPages = getTotalPages(getFilteredResults().length);
       if (!Number.isNaN(targetPage) && targetPage >= 1 && targetPage <= totalPages) {
         currentPage = targetPage;
         renderResults();
@@ -455,6 +490,7 @@
 
     clearButton.addEventListener('click', () => {
       searchQuery.value = '';
+      tagFilterInput.value = '';
       resultsList.innerHTML = '';
       resultsSummary.textContent = 'No results to display.';
       emptyResults.hidden = false;
