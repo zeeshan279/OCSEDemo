@@ -52,9 +52,10 @@
               <div class="grid-row grid-gap">
                 <div class="tablet:grid-col-6"><label class="usa-label" for="phone">Phone</label><input class="usa-input" id="phone" name="phone" required /></div>
                 <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="application">Application</label>
-                  <select class="usa-select" id="application" name="application" required>
-                    <option value="">Application</option><option value="Locate">Locate</option><option value="State Profile Admin">State Profile Admin</option><option value="Employer Services">Employer Services</option><option value="IRG">IRG</option><option value="Data Access">Data Access</option><option value="Federal Collections">Federal Collections</option><option value="Insurance Match">Insurance Match</option><option value="Communication Center">Communication Center</option>
+                  <label class="usa-label" for="applications">Applications</label>
+                  <span class="usa-hint" id="applications-hint">Select one or more applications.</span>
+                  <select class="usa-select" id="applications" name="applications" multiple size="8" aria-describedby="applications-hint" required>
+                    <option value="Locate">Locate</option><option value="State Profile Admin">State Profile Admin</option><option value="Employer Services">Employer Services</option><option value="IRG">IRG</option><option value="Data Access">Data Access</option><option value="Federal Collections">Federal Collections</option><option value="Insurance Match">Insurance Match</option><option value="Communication Center">Communication Center</option>
                   </select>
                 </div>
               </div>
@@ -125,7 +126,7 @@
         title: formData.get('title'),
         email: formData.get('email'),
         phone: formData.get('phone'),
-        application: formData.get('application'),
+        applications: formData.getAll('applications'),
         relationshipType: formData.get('relationshipType'),
         status: formData.get('status'),
         contactRole: formData.get('contactRole'),
