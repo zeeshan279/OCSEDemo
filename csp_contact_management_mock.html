@@ -360,7 +360,7 @@
         .map((tag) => tag.trim().toLowerCase())
         .filter(Boolean);
 
-      return searchResults.filter((result) => {
+      const matchingResults = searchResults.filter((result) => {
         const searchableContent = `${result.name} ${result.meta}`.toLowerCase();
         const resultTags = getResultTags(result).map((tag) => tag.toLowerCase());
         const queryMatches = !query
@@ -368,6 +368,14 @@
           || resultTags.some((tag) => tag.includes(query));
         const tagsMatch = tagFilters.every((filterTag) => resultTags.some((tag) => tag.includes(filterTag)));
         return queryMatches && tagsMatch;
+      });
+
+      const seenContacts = new Set();
+      return matchingResults.filter((result) => {
+        const key = result.name.trim().toLowerCase();
+        if (seenContacts.has(key)) return false;
+        seenContacts.add(key);
+        return true;
       });
     }
 
