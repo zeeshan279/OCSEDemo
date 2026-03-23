@@ -66,15 +66,30 @@ button{border:none;border-radius:10px;padding:10px 14px;font-weight:600;cursor:p
           <div>
             <label for="application">Application</label>
             <select id="application" name="application" required>
-              <option value="">Select an app</option>
+              <option value="">Application</option>
               <option>Locate</option>
               <option>State Profile Admin</option>
               <option>Employer Services</option>
               <option>IRG</option>
               <option>Data Access</option>
+              <option>Federal Collections</option>
+              <option>Insurance Match</option>
+              <option>Communication Center</option>
             </select>
           </div>
         </div>
+
+        <label for="relationshipType">Relationship Type</label>
+        <select id="relationshipType" name="relationshipType" required>
+          <option value="">Relationship Type</option>
+          <option>State IV-D Agency</option>
+          <option>Tribal IV-D Agency</option>
+          <option>Employer</option>
+          <option>Federal Agency</option>
+          <option>International Partner</option>
+          <option>Vendor / Contractor</option>
+          <option>OCSE Internal</option>
+        </select>
 
         <label for="organization">Organization</label>
         <input id="organization" name="organization" required />
@@ -141,6 +156,7 @@ document.getElementById('contactForm').addEventListener('submit', async (event) 
     email: formData.get('email'),
     phone: formData.get('phone'),
     application: formData.get('application'),
+    relationshipType: formData.get('relationshipType'),
     organization: formData.get('organization'),
     notes: formData.get('notes'),
     createdAt: new Date().toISOString()
