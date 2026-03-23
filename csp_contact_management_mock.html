@@ -74,7 +74,7 @@
             </div>
             <div class="usa-card__body">
               <label class="usa-label" for="search-query">Search</label>
-              <input class="usa-input" id="search-query" placeholder="Name, Company, FEIN, or Email" value="Karen Mitchell" />
+              <input class="usa-input" id="search-query" placeholder="Name, Company, FEIN, or Email" value="Mitchell" />
 
               <div class="grid-row grid-gap margin-top-2">
                 <div class="tablet:grid-col-6">
@@ -194,163 +194,36 @@
     const pageSize = 10;
     let currentPage = 1;
     const searchResults = [
-      {
-        name: 'Karen Mitchell',
-        badges: ['Primary Match', 'Active'],
-        badgeClasses: ['bg-green-20v text-green-70v', 'bg-blue-20v text-blue-70v'],
-        meta: 'MD Child Support · Director, Locate Operations<br>(410) 555-0187 · karen.mitchell@maryland.gov',
-        tags: ['Locate', 'Technical POC', 'Primary'],
-        metrics: [
-          { label: 'Last Updated', value: '2026-03-19' },
-          { label: 'Updated By', value: 'A. Johnson' },
-          { label: 'Duplicates', value: '1 Possible' }
-        ],
-        active: true
-      },
-      {
-        name: 'Karen Mitchell',
-        badges: ['Possible Duplicate'],
-        badgeClasses: ['bg-yellow-10v text-yellow-70v'],
-        meta: 'MD CSA · Program Coordinator<br>(410) 555-7712 · kmitchell@mdcsa.gov',
-        tags: ['Employer Services', 'Program Lead', 'Duplicate Review']
-      },
-      {
-        name: 'Karin Mitchell',
-        badges: ['Name Variant'],
-        badgeClasses: ['bg-blue-20v text-blue-70v'],
-        meta: 'Maryland Department of Human Services · Enterprise Liaison<br>(443) 555-0441 · karin.mitchell@maryland.gov',
-        tags: ['Data Access', 'Enterprise Liaison']
-      },
-      {
-        name: 'Karen M. Mitchell',
-        badges: ['Active'],
-        badgeClasses: ['bg-green-20v text-green-70v'],
-        meta: 'Maryland Child Support Enforcement · Regional Director<br>(410) 555-9931 · karenm@mdchildsupport.gov',
-        tags: ['Locate', 'Program Lead']
-      },
-      {
-        name: 'K. Mitchell',
-        badges: ['Possible Duplicate'],
-        badgeClasses: ['bg-yellow-10v text-yellow-70v'],
-        meta: 'MD Child Support · Program Analyst<br>(410) 555-7132 · kmitchell2@maryland.gov'
-      },
-      {
-        name: 'Karen Ann Mitchell',
-        badges: ['Active'],
-        badgeClasses: ['bg-green-20v text-green-70v'],
-        meta: 'Baltimore County DSS · Intergovernmental Lead<br>(443) 555-0672 · karen.ann.mitchell@bcmd.gov'
-      },
-      {
-        name: 'Karen Mitchell-Smith',
-        badges: ['Active'],
-        badgeClasses: ['bg-green-20v text-green-70v'],
-        meta: 'Maryland DHS · IV-D Operations Manager<br>(667) 555-1222 · karen.mitchell-smith@maryland.gov'
-      },
-      {
-        name: 'Karyn Mitchell',
-        badges: ['Name Variant'],
-        badgeClasses: ['bg-blue-20v text-blue-70v'],
-        meta: 'Harford County Child Support · Case Liaison<br>(410) 555-4401 · karyn.mitchell@harfordmd.gov'
-      },
-      {
-        name: 'K. A. Mitchell',
-        badges: ['Possible Duplicate'],
-        badgeClasses: ['bg-yellow-10v text-yellow-70v'],
-        meta: 'MD State Profile Team · Data Coordinator<br>(410) 555-2121 · kamitchell@maryland.gov'
-      },
-      {
-        name: 'Karen Mitchell',
-        badges: ['Active'],
-        badgeClasses: ['bg-green-20v text-green-70v'],
-        meta: 'Anne Arundel County CSA · Program Contact<br>(410) 555-3010 · karen.mitchell@aacounty.gov'
-      },
-      {
-        name: 'Karen Mitchell',
-        badges: ['Active'],
-        badgeClasses: ['bg-green-20v text-green-70v'],
-        meta: 'Howard County CSS · Technical POC<br>(410) 555-6319 · kmitchell@howardcountymd.gov'
-      },
-      {
-        name: 'Karen Mitchell',
-        badges: ['Pending Approval'],
-        badgeClasses: ['bg-gold-10v text-gold-70v'],
-        meta: 'Montgomery County CSA · Onboarding Request<br>(301) 555-0747 · karen.mitchell@montgomerycountymd.gov',
-        tags: ['Onboarding', 'Pending Review']
-      },
-      {
-        name: 'Karen M. Mitchel',
-        badges: ['Possible Duplicate'],
-        badgeClasses: ['bg-yellow-10v text-yellow-70v'],
-        meta: 'MD Child Support · Regional Support<br>(410) 555-1243 · karen.mitchel@maryland.gov'
-      },
-      {
-        name: 'K. Mitchell',
-        badges: ['Active'],
-        badgeClasses: ['bg-green-20v text-green-70v'],
-        meta: 'Prince George\'s County CSA · Program Office<br>(301) 555-6173 · k.mitchell@pgc.gov'
-      },
-      {
-        name: 'Karen Mitchell',
-        badges: ['Inactive'],
-        badgeClasses: ['bg-base-lighter text-base-darkest'],
-        meta: 'Former Contact · Allegany County CSA<br>(301) 555-9982 · karen.mitchell.old@alleganymd.gov',
-        tags: ['Inactive', 'Historical']
-      },
-      {
-        name: 'Karin A. Mitchell',
-        badges: ['Name Variant'],
-        badgeClasses: ['bg-blue-20v text-blue-70v'],
-        meta: 'Maryland DHS · Enterprise Services<br>(410) 555-7303 · karin.a.mitchell@maryland.gov'
-      },
-      {
-        name: 'Karen Mitchell',
-        badges: ['Active'],
-        badgeClasses: ['bg-green-20v text-green-70v'],
-        meta: 'Frederick County CSA · Program Manager<br>(301) 555-7235 · karen.mitchell@frederickmd.gov'
-      },
-      {
-        name: 'Karen Mitchell',
-        badges: ['Active'],
-        badgeClasses: ['bg-green-20v text-green-70v'],
-        meta: 'Washington County CSA · Security Contact<br>(240) 555-1184 · kmitchell@washco-md.net'
-      },
-      {
-        name: 'K. Mitchell',
-        badges: ['Possible Duplicate'],
-        badgeClasses: ['bg-yellow-10v text-yellow-70v'],
-        meta: 'MD Insurance Match Team · Operations<br>(410) 555-9055 · kmitchell.ins@maryland.gov'
-      },
-      {
-        name: 'Karen Mitchell',
-        badges: ['Active'],
-        badgeClasses: ['bg-green-20v text-green-70v'],
-        meta: 'Carroll County CSA · Supervisor<br>(410) 555-3334 · karen.mitchell@carrollcountymd.gov'
-      },
-      {
-        name: 'Karen A Mitchell',
-        badges: ['Possible Duplicate'],
-        badgeClasses: ['bg-yellow-10v text-yellow-70v'],
-        meta: 'MD Employer Services · Enrollment Support<br>(410) 555-2511 · karen.a.mitchell@maryland.gov'
-      },
-      {
-        name: 'K. Mitchell',
-        badges: ['Active'],
-        badgeClasses: ['bg-green-20v text-green-70v'],
-        meta: 'Dorchester County CSA · Program Lead<br>(410) 555-6648 · kmitchell@dorchestermd.gov'
-      },
-      {
-        name: 'Karen Mitchell',
-        badges: ['Active'],
-        badgeClasses: ['bg-green-20v text-green-70v'],
-        meta: 'MD Data Access · External Liaison<br>(410) 555-7814 · kmitchell.data@maryland.gov',
-        tags: ['Data Access', 'External Liaison']
-      }
+      { name: 'Karen Mitchell', relationshipType: 'State IV-D Agency', badges: ['Primary Match', 'Active'], badgeClasses: ['bg-green-20v text-green-70v', 'bg-blue-20v text-blue-70v'], meta: 'MD Child Support · Director, Locate Operations<br>(410) 555-0187 · karen.mitchell@maryland.gov', tags: ['Locate', 'Technical POC', 'Primary'], active: true },
+      { name: 'Karin Mitchell', relationshipType: 'Tribal IV-D Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Navajo Nation Child Support · Program Liaison<br>(505) 555-0101 · karin.mitchell@navajo.gov', tags: ['IRG', 'Intergovernmental', 'Case Coordination'] },
+      { name: 'Kay Mitchell', relationshipType: 'Employer', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Blue Harbor Logistics · Payroll Contact<br>(443) 555-0102 · kay.mitchell@blueharbor.com', tags: ['Employer Services', 'Payroll', 'Wage Withholding'] },
+      { name: 'Keisha Mitchell', relationshipType: 'Federal Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Office of Child Support Services · Federal Partner Manager<br>(202) 555-0103 · keisha.mitchell@acf.hhs.gov', tags: ['Federal Collections', 'Policy', 'Escalation'] },
+      { name: 'Kendall Mitchell', relationshipType: 'International Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Ontario Family Responsibility Office · Cross-Border Coordinator<br>(613) 555-0104 · kendall.mitchell@ontario.ca', tags: ['International', 'IRG', 'Reciprocity'] },
+      { name: 'Kelsey Mitchell', relationshipType: 'Vendor / Contractor', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'CivisTech Solutions · Platform Support Lead<br>(410) 555-0105 · kelsey.mitchell@civistech.com', tags: ['Technical POC', 'Platform Support', 'Production'] },
+      { name: 'Kim Mitchell', relationshipType: 'OCSE Internal', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'OCSE Internal Operations · Access Administrator<br>(202) 555-0106 · kim.mitchell@acf.hhs.gov', tags: ['Data Access', 'Security', 'Admin'] },
+      { name: 'Kyle Mitchell', relationshipType: 'Court System', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland Family Court · Judicial Interface Analyst<br>(410) 555-0107 · kyle.mitchell@mdcourts.gov', tags: ['Court Liaison', 'Case Updates', 'Compliance'] },
+      { name: 'Kara Mitchell', relationshipType: 'County Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Baltimore County DSS · Regional Supervisor<br>(443) 555-0108 · kara.mitchell@baltimorecountymd.gov', tags: ['Locate', 'Supervisor', 'Regional'] },
+      { name: 'Kurt Mitchell', relationshipType: 'State IT Office', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland DoIT · Integration Engineer<br>(410) 555-0109 · kurt.mitchell@maryland.gov', tags: ['Integration', 'State Profile Admin', 'API'] },
+      { name: 'Kira Mitchell', relationshipType: 'Financial Institution', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'First Atlantic Bank · Child Support Processing Lead<br>(301) 555-0110 · kira.mitchell@firstatlantic.com', tags: ['Insurance Match', 'Payments', 'Reconciliation'] },
+      { name: 'Keenan Mitchell', relationshipType: 'Law Enforcement', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'State Enforcement Unit · Case Investigator<br>(301) 555-0111 · keenan.mitchell@stateenforce.gov', tags: ['Locate', 'Enforcement', 'Field Ops'] },
+      { name: 'Kyla Mitchell', relationshipType: 'Healthcare Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland Health Exchange · Eligibility Coordinator<br>(410) 555-0112 · kyla.mitchell@mhbe.gov', tags: ['Eligibility', 'Data Access', 'Verification'] },
+      { name: 'Kori Mitchell', relationshipType: 'Education Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland Department of Education · Outreach Specialist<br>(410) 555-0113 · kori.mitchell@maryland.gov', tags: ['Outreach', 'Program Lead', 'Training'] },
+      { name: 'Kris Mitchell', relationshipType: 'Military Liaison', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Defense Manpower Data Center · Records Liaison<br>(703) 555-0114 · kris.mitchell@dmc.mil', tags: ['Federal Collections', 'Military', 'Verification'] },
+      { name: 'Kristen Mitchell', relationshipType: 'Insurance Provider', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'TriState Benefits Group · Benefits Analyst<br>(240) 555-0115 · kristen.mitchell@tristatebenefits.com', tags: ['Insurance Match', 'Benefits', 'Support'] },
+      { name: 'Khalil Mitchell', relationshipType: 'Legal Aid Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland Legal Aid · Family Law Attorney Liaison<br>(410) 555-0116 · khalil.mitchell@mdlegalaid.org', tags: ['Legal', 'Intergovernmental', 'Escalation'] },
+      { name: 'Kiara Mitchell', relationshipType: 'Nonprofit Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Families First Coalition · Community Advocate<br>(443) 555-0117 · kiara.mitchell@familiesfirst.org', tags: ['Community', 'Outreach', 'Referrals'] },
+      { name: 'Kingston Mitchell', relationshipType: 'Tax Authority', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Comptroller of Maryland · Tax Offset Specialist<br>(410) 555-0118 · kingston.mitchell@marylandtax.gov', tags: ['Federal Collections', 'Offsets', 'Finance'] },
+      { name: 'Kaitlyn Mitchell', relationshipType: 'Payment Processor', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'GovPay Processing Services · Disbursement Manager<br>(410) 555-0119 · kaitlyn.mitchell@govpay.com', tags: ['Payments', 'Disbursement', 'Batch Processing'] },
+      { name: 'Kaleb Mitchell', relationshipType: 'Call Center Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'CSP Communication Center · Customer Care Lead<br>(410) 555-0120 · kaleb.mitchell@cspcenter.org', tags: ['Communication Center', 'Customer Support', 'Tier 2'] },
+      { name: 'Kathryn Mitchell', relationshipType: 'Data Exchange Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Interstate Data Hub · Exchange Administrator<br>(202) 555-0121 · kathryn.mitchell@idhub.org', tags: ['Data Access', 'Enterprise Liaison', 'Interstate'] }
     ];
 
     const defaultTags = ['Contact', 'Directory', 'Candidate'];
 
     function getResultTags(result) {
-      return result.tags || defaultTags;
+      const contactTags = result.tags || defaultTags;
+      const relationshipTag = result.relationshipType ? [`Relationship: ${result.relationshipType}`] : [];
+      return [...relationshipTag, ...contactTags];
     }
 
     function getFilteredResults() {
