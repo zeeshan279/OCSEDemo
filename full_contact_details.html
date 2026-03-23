@@ -8,11 +8,14 @@
 :root{--bg:#f6f8fc;--panel:#fff;--text:#1f2937;--muted:#6b7280;--line:#e5eaf2;--blue:#2563eb;--soft:#eef4ff;--green:#059669;--radius:16px}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial;background:var(--bg);color:var(--text)}
 .layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.layout.sidebar-collapsed{grid-template-columns:1fr}
 .sidebar{background:#0f4c81;color:#fff;padding:20px}
+.layout.sidebar-collapsed .sidebar{display:none}
 .sidebar h1{font-size:16px;margin:0 0 12px}
 .nav a{display:block;padding:10px 12px;border-radius:10px;color:#fff;text-decoration:none;margin-bottom:6px}
 .nav a.active,.nav a:hover{background:rgba(255,255,255,.12)}
 .main{padding:20px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
 h2{margin:0 0 12px}
 .section{margin-top:18px;font-weight:800;color:#0f4c81;font-size:13px;text-transform:uppercase}
@@ -45,6 +48,9 @@ h2{margin:0 0 12px}
   </aside>
 
   <main class="main">
+    <div class="top">
+      <button class="btn secondary" id="toggleSidebarBtn" type="button" onclick="toggleSidebar()">Collapse Menu</button>
+    </div>
     <div class="panel">
       <h2>Karen Mitchell <span class="badge">Active</span></h2>
       <p style="margin:0;color:var(--muted)">Comprehensive view of contact, organization, and access details.</p>
@@ -86,11 +92,20 @@ h2{margin:0 0 12px}
       </div>
 
       <div class="actions">
-        <a class="btn primary" href="csp_contact_management_mock.html">Back to Contact Management</a>
+        <a class="btn primary" href="csp_contact_management_mock.html">Back to Contact Search</a>
         <a class="btn secondary" href="create_contact.html">Create New Contact</a>
       </div>
     </div>
   </main>
 </div>
+<script>
+function toggleSidebar() {
+  const layout = document.querySelector('.layout');
+  const toggleButton = document.getElementById('toggleSidebarBtn');
+  layout.classList.toggle('sidebar-collapsed');
+  const isCollapsed = layout.classList.contains('sidebar-collapsed');
+  toggleButton.textContent = isCollapsed ? 'Expand Menu' : 'Collapse Menu';
+}
+</script>
 </body>
 </html>

@@ -9,13 +9,16 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:Inter,Segoe UI,Arial;background:var(--bg);color:var(--text)}
 .layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.layout.sidebar-collapsed{grid-template-columns:1fr}
 .sidebar{background:#0f4c81;color:#fff;padding:20px}
+.layout.sidebar-collapsed .sidebar{display:none}
 .sidebar h1{font-size:16px;margin:0 0 12px}
 .nav a{display:block;padding:10px 12px;border-radius:10px;color:#fff;text-decoration:none;margin-bottom:6px}
 .nav a.active,.nav a:hover{background:rgba(255,255,255,.12)}
 .main{padding:20px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:16px}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;max-width:760px}
-h2{margin:0 0 16px}
+h2{margin:0}
 label{display:block;font-size:12px;font-weight:700;margin-bottom:6px}
 input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);margin-bottom:12px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -35,13 +38,17 @@ button{border:none;border-radius:10px;padding:10px 14px;font-weight:600;cursor:p
     <div class="nav">
       <a href="csp_contact_management_mock.html">Search</a>
       <a class="active" href="create_contact.html">Create</a>
+      <a href="full_contact_details.html">Full Details</a>
       <a>Approvals</a>
       <a>Duplicate Review</a>
     </div>
   </aside>
 
   <main class="main">
-    <h2>Create Contact</h2>
+    <div class="top">
+      <button class="secondary" id="toggleSidebarBtn" type="button" onclick="toggleSidebar()">Collapse Menu</button>
+      <h2>Create Contact</h2>
+    </div>
     <div class="panel">
       <form id="contactForm">
         <div class="row">
@@ -90,6 +97,27 @@ button{border:none;border-radius:10px;padding:10px 14px;font-weight:600;cursor:p
           <option value="Vendor / Contractor">Vendor / Contractor</option>
           <option value="OCSE Internal">OCSE Internal</option>
         </select>
+
+        <div class="row">
+          <div>
+            <label for="status">Status</label>
+            <select id="status" name="status" required>
+              <option value="">Status</option>
+              <option value="Active">Active</option>
+              <option value="Pending Approval">Pending Approval</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+          <div>
+            <label for="contactRole">Contact Role</label>
+            <select id="contactRole" name="contactRole" required>
+              <option value="">Contact Role</option>
+              <option value="Primary Contact">Primary Contact</option>
+              <option value="Technical POC">Technical POC</option>
+              <option value="Program Lead">Program Lead</option>
+            </select>
+          </div>
+        </div>
 
         <label for="organization">Organization</label>
         <input id="organization" name="organization" required />
@@ -157,6 +185,8 @@ document.getElementById('contactForm').addEventListener('submit', async (event) 
     phone: formData.get('phone'),
     application: formData.get('application'),
     relationshipType: formData.get('relationshipType'),
+    status: formData.get('status'),
+    contactRole: formData.get('contactRole'),
     organization: formData.get('organization'),
     notes: formData.get('notes'),
     createdAt: new Date().toISOString()
@@ -170,6 +200,14 @@ document.getElementById('contactForm').addEventListener('submit', async (event) 
     setMessage(`Failed to save contact: ${error.message}`, 'error');
   }
 });
+
+function toggleSidebar() {
+  const layout = document.querySelector('.layout');
+  const toggleButton = document.getElementById('toggleSidebarBtn');
+  layout.classList.toggle('sidebar-collapsed');
+  const isCollapsed = layout.classList.contains('sidebar-collapsed');
+  toggleButton.textContent = isCollapsed ? 'Expand Menu' : 'Collapse Menu';
+}
 </script>
 </body>
 </html>
