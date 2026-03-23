@@ -8,13 +8,20 @@
 :root{--bg:#f6f8fc;--panel:#fff;--text:#1f2937;--muted:#6b7280;--line:#e5eaf2;--blue:#2563eb;--radius:16px;--green:#059669;--red:#b91c1c}
 *{box-sizing:border-box}
 body{margin:0;font-family:Inter,Segoe UI,Arial;background:var(--bg);color:var(--text)}
-.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
-.layout.sidebar-collapsed{grid-template-columns:1fr}
-.sidebar{background:#0f4c81;color:#fff;padding:20px}
-.layout.sidebar-collapsed .sidebar{display:none}
-.sidebar h1{font-size:16px;margin:0 0 12px}
-.nav a{display:block;padding:10px 12px;border-radius:10px;color:#fff;text-decoration:none;margin-bottom:6px}
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh;transition:grid-template-columns .2s ease}
+.layout.sidebar-collapsed{grid-template-columns:84px 1fr}
+.sidebar{background:#0f4c81;color:#fff;padding:16px 12px}
+.sidebar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sidebar h1{font-size:16px;margin:0;white-space:nowrap}
+.menu-toggle{border:1px solid rgba(255,255,255,.32);background:transparent;color:#fff;border-radius:10px;width:42px;height:38px;padding:0;font-size:20px;cursor:pointer}
+.nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:#fff;text-decoration:none;margin-bottom:6px}
+.nav .icon{width:20px;text-align:center;flex-shrink:0}
+.nav .label{white-space:nowrap}
 .nav a.active,.nav a:hover{background:rgba(255,255,255,.12)}
+.layout.sidebar-collapsed .sidebar h1,.layout.sidebar-collapsed .nav .label{display:none}
+.layout.sidebar-collapsed .sidebar{padding:16px 10px}
+.layout.sidebar-collapsed .sidebar-header{justify-content:center}
+.layout.sidebar-collapsed .nav a{justify-content:center;padding:10px 8px}
 .main{padding:20px}
 .top{display:flex;align-items:center;gap:10px;margin-bottom:16px}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;max-width:760px}
@@ -28,25 +35,27 @@ button{border:none;border-radius:10px;padding:10px 14px;font-weight:600;cursor:p
 .message{margin-top:12px;padding:10px;border-radius:10px;font-size:14px;display:none}
 .success{background:#d1fae5;color:var(--green);display:block}
 .error{background:#fee2e2;color:var(--red);display:block}
-@media(max-width:1000px){.layout{grid-template-columns:1fr}.row{grid-template-columns:1fr}}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.row{grid-template-columns:1fr}.sidebar h1,.layout.sidebar-collapsed .sidebar h1,.nav .label,.layout.sidebar-collapsed .nav .label{display:inline}.nav a,.layout.sidebar-collapsed .nav a{justify-content:flex-start;padding:10px 12px}.sidebar-header,.layout.sidebar-collapsed .sidebar-header{justify-content:space-between}}
 </style>
 </head>
 <body>
-<div class="layout">
+<div class="layout" id="layout">
   <aside class="sidebar">
-    <h1>CSP Contacts</h1>
+    <div class="sidebar-header">
+      <h1>CSP Contacts</h1>
+      <button class="menu-toggle" type="button" aria-label="Toggle menu" onclick="toggleSidebar()">☰</button>
+    </div>
     <div class="nav">
-      <a href="csp_contact_management_mock.html">Search</a>
-      <a class="active" href="create_contact.html">Create</a>
-      <a href="full_contact_details.html">Full Details</a>
-      <a>Approvals</a>
-      <a>Duplicate Review</a>
+      <a href="csp_contact_management_mock.html"><span class="icon">🔎</span><span class="label">Search</span></a>
+      <a class="active" href="create_contact.html"><span class="icon">➕</span><span class="label">Create</span></a>
+      <a href="full_contact_details.html"><span class="icon">📄</span><span class="label">Full Details</span></a>
+      <a><span class="icon">✅</span><span class="label">Approvals</span></a>
+      <a href="duplicate_review_merge.html"><span class="icon">🧬</span><span class="label">Duplicate Review</span></a>
     </div>
   </aside>
 
   <main class="main">
     <div class="top">
-      <button class="secondary" id="toggleSidebarBtn" type="button" onclick="toggleSidebar()">Collapse Menu</button>
       <h2>Create Contact</h2>
     </div>
     <div class="panel">
@@ -202,11 +211,8 @@ document.getElementById('contactForm').addEventListener('submit', async (event) 
 });
 
 function toggleSidebar() {
-  const layout = document.querySelector('.layout');
-  const toggleButton = document.getElementById('toggleSidebarBtn');
+  const layout = document.getElementById('layout');
   layout.classList.toggle('sidebar-collapsed');
-  const isCollapsed = layout.classList.contains('sidebar-collapsed');
-  toggleButton.textContent = isCollapsed ? 'Expand Menu' : 'Collapse Menu';
 }
 </script>
 </body>
