@@ -19,8 +19,10 @@
     .result-list .usa-collection__item { padding: 1rem 0; }
     .result-content { display: block; }
     .result-content--active { border-left: 0.25rem solid var(--usa-color-primary); padding-left: 0.75rem; }
-    .result-action { margin-top: 0.75rem; }
-    .result-action .usa-button { width: 100%; margin-right: 0; }
+    .result-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; }
+    .result-header .margin-y-0 { flex: 1; }
+    .result-action { margin-top: 0; flex-shrink: 0; }
+    .result-action .usa-button { width: auto; margin-right: 0; margin-bottom: 0; }
     .result-meta { margin: 0.5rem 0; color: var(--usa-color-base-dark); font-size: 0.95rem; }
     .result-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.75rem; }
     .result-activity { border-left: 0.25rem solid var(--usa-color-primary-lighter); background: var(--usa-color-primary-lightest); padding: 0.75rem; margin-bottom: 0.75rem; border-radius: 0.25rem; }
@@ -35,7 +37,7 @@
       .search-layout, .result-content, .metrics-grid { grid-template-columns: 1fr; }
       .app-sidebar { margin-bottom: 1rem; }
       .pagination-wrapper { justify-content: flex-start; }
-      .result-action .usa-button { width: auto; }
+      .result-header { flex-direction: column; align-items: flex-start; }
     }
     @media (min-width: 64em) {
       .app-shell { display: grid; grid-template-columns: 260px 1fr; }
@@ -369,12 +371,14 @@
         li.innerHTML = `
           <article class="result-content ${result.active ? 'result-content--active' : ''}">
             <div>
-              <h4 class="margin-y-0">${result.name}${badges ? ` ${badges}` : ""}</h4>
+              <div class="result-header">
+                <h4 class="margin-y-0">${result.name}${badges ? ` ${badges}` : ""}</h4>
+                <div class="result-action"><a href="full_contact_details.html" class="usa-button usa-button--outline">View details</a></div>
+              </div>
               <p class="result-meta">${result.meta}</p>
               ${tags}
               ${metrics}
             </div>
-            <div class="result-action"><a href="full_contact_details.html" class="usa-button usa-button--outline">View details</a></div>
           </article>
         `;
 
