@@ -1,689 +1,320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CSP Contact Search (Search Results Redesign)</title>
-<style>
-:root {
-  --bg: #f3f6fb;
-  --panel: #ffffff;
-  --panel-soft: #f8fbff;
-  --text: #111827;
-  --muted: #6b7280;
-  --line: #dbe3ef;
-  --blue: #2563eb;
-  --blue-dark: #1d4ed8;
-  --blue-soft: #eaf2ff;
-  --green: #059669;
-  --amber: #b45309;
-  --radius: 14px;
-  --shadow: 0 6px 18px rgba(15, 76, 129, 0.08);
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSP Contact Search (USWDS)</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/css/uswds.min.css" />
+  <style>
+    .app-shell {
+      min-height: 100vh;
+      background: var(--usa-color-base-lightest);
+    }
 
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-}
+    .app-sidebar {
+      background: var(--usa-color-primary-darker);
+      color: #fff;
+      padding: 1rem;
+    }
 
-.layout {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  min-height: 100vh;
-  transition: grid-template-columns 0.2s ease;
-}
+    .app-sidebar .usa-sidenav a {
+      color: #fff;
+    }
 
-.layout.sidebar-collapsed {
-  grid-template-columns: 84px 1fr;
-}
+    .app-sidebar .usa-current {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-weight: 700;
+    }
 
-.sidebar {
-  background: #0f4c81;
-  color: #fff;
-  padding: 16px 12px;
-}
+    .app-main {
+      padding: 1.5rem;
+    }
 
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
+    .search-layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 380px) 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
 
-.sidebar h1 {
-  font-size: 16px;
-  margin: 0;
-  letter-spacing: 0.2px;
-  white-space: nowrap;
-}
+    .result-card {
+      border: 1px solid var(--usa-color-base-lighter);
+      border-radius: 0.5rem;
+      background: #fff;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+    }
 
-.menu-toggle {
-  border: 1px solid rgba(255, 255, 255, 0.32);
-  background: transparent;
-  color: #fff;
-  border-radius: 10px;
-  width: 42px;
-  height: 38px;
-  padding: 0;
-  font-size: 20px;
-}
+    .result-card--active {
+      border-color: var(--usa-color-primary);
+      box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--usa-color-primary) 15%, white);
+    }
 
-.nav a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  color: #fff;
-  text-decoration: none;
-  margin-bottom: 6px;
-  font-weight: 500;
-}
+    .result-meta {
+      margin: 0.5rem 0;
+      color: var(--usa-color-base-dark);
+      font-size: 0.95rem;
+    }
 
-.nav .icon {
-  width: 20px;
-  text-align: center;
-  font-size: 16px;
-  flex-shrink: 0;
-}
+    .result-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 0.75rem;
+    }
 
-.nav .label {
-  white-space: nowrap;
-}
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
 
-.layout.sidebar-collapsed .sidebar h1,
-.layout.sidebar-collapsed .nav .label {
-  display: none;
-}
+    .metric {
+      border: 1px solid var(--usa-color-base-lighter);
+      border-radius: 0.35rem;
+      padding: 0.5rem;
+      background: var(--usa-color-base-lightest);
+    }
 
-.layout.sidebar-collapsed .sidebar {
-  padding: 16px 10px;
-}
+    .metric-label {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: var(--usa-color-base-dark);
+      letter-spacing: 0.04em;
+    }
 
-.layout.sidebar-collapsed .sidebar-header {
-  justify-content: center;
-}
+    .metric-value {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
 
-.layout.sidebar-collapsed .nav a {
-  justify-content: center;
-  padding: 10px 8px;
-}
+    @media (max-width: 63.99em) {
+      .search-layout {
+        grid-template-columns: 1fr;
+      }
 
-.nav a.active,
-.nav a:hover {
-  background: rgba(255, 255, 255, 0.14);
-}
+      .result-card {
+        grid-template-columns: 1fr;
+      }
 
-.main {
-  padding: 20px;
-}
+      .app-sidebar {
+        margin-bottom: 1rem;
+      }
+    }
 
-.top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.top-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-button {
-  border: none;
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.primary {
-  background: var(--blue);
-  color: #fff;
-}
-
-.primary:hover { background: var(--blue-dark); }
-
-.secondary {
-  background: #fff;
-  border: 1px solid var(--line);
-  color: #0f172a;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 16px;
-}
-
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: var(--shadow);
-}
-
-.panel h3 {
-  margin: 0 0 12px;
-  font-size: 18px;
-}
-
-input,
-select {
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: #fff;
-}
-
-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 4px;
-  display: block;
-}
-
-.row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.section {
-  margin-top: 18px;
-  font-weight: 800;
-  color: #0f4c81;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.actions .primary { flex: 1; }
-
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-
-.meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.meta strong { color: #0f172a; }
-
-.list-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.list-controls select {
-  width: auto;
-  min-width: 180px;
-}
-
-.search-tips {
-  background: var(--panel-soft);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 10px;
-  margin-bottom: 12px;
-  font-size: 12px;
-  color: #334155;
-}
-
-.results {
-  display: grid;
-  gap: 10px;
-}
-
-.result-card {
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 14px;
-  background: #fff;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-}
-
-.result-card.active {
-  border-color: #9ec5fe;
-  background: var(--blue-soft);
-}
-
-.result-top {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.result-title {
-  font-weight: 800;
-  font-size: 16px;
-}
-
-.badge {
-  font-size: 11px;
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-weight: 700;
-}
-
-.b-green { background: #d1fae5; color: #047857; }
-.b-amber { background: #fef3c7; color: #92400e; }
-.b-blue { background: #dbeafe; color: #1d4ed8; }
-
-.result-sub {
-  margin-top: 6px;
-  color: #334155;
-  font-size: 13px;
-  display: grid;
-  gap: 3px;
-}
-
-.tags {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-top: 8px;
-}
-
-.tags span {
-  font-size: 11px;
-  border: 1px solid var(--line);
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: #fff;
-}
-
-.metrics {
-  margin-top: 10px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.metric {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 8px;
-  background: #fbfdff;
-}
-
-.metric .k {
-  font-size: 10px;
-  color: var(--muted);
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.metric .v {
-  font-size: 13px;
-  font-weight: 600;
-  margin-top: 3px;
-}
-
-.result-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  justify-content: center;
-  min-width: 170px;
-}
-
-.result-actions button {
-  width: 100%;
-  text-align: center;
-}
-
-@media (max-width: 1100px) {
-  .layout,
-  .grid { grid-template-columns: 1fr; }
-
-  .sidebar,
-  .layout.sidebar-collapsed .sidebar { padding: 16px 12px; }
-
-  .sidebar h1,
-  .layout.sidebar-collapsed .sidebar h1,
-  .nav .label,
-  .layout.sidebar-collapsed .nav .label { display: inline; }
-
-  .nav a,
-  .layout.sidebar-collapsed .nav a { justify-content: flex-start; padding: 10px 12px; }
-
-  .sidebar-header,
-  .layout.sidebar-collapsed .sidebar-header { justify-content: space-between; }
-
-  .result-card {
-    grid-template-columns: 1fr;
-  }
-
-  .result-actions {
-    flex-direction: row;
-    min-width: auto;
-  }
-}
-
-@media (max-width: 680px) {
-  .row,
-  .metrics { grid-template-columns: 1fr; }
-
-  .list-controls {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .list-controls select {
-    min-width: 0;
-    width: 100%;
-  }
-}
-</style>
+    @media (min-width: 64em) {
+      .app-shell {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-<div class="layout" id="layout">
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <h1>CSP Contacts</h1>
-      <button class="menu-toggle" type="button" aria-label="Toggle menu" onclick="toggleSidebar()">☰</button>
-    </div>
-    <div class="nav">
-      <a class="active" href="csp_contact_management_mock.html"><span class="icon">🔎</span><span class="label">Search</span></a>
-      <a href="create_contact.html"><span class="icon">➕</span><span class="label">Create</span></a>
-      <a><span class="icon">✅</span><span class="label">Approvals</span></a>
-      <a href="full_contact_details.html"><span class="icon">📄</span><span class="label">Full Details</span></a>
-      <a href="duplicate_review_merge.html"><span class="icon">🧬</span><span class="label">Duplicate Review</span></a>
-    </div>
-  </aside>
+  <a class="usa-skipnav" href="#main-content">Skip to main content</a>
 
-  <main class="main">
-    <div class="top">
-      <div class="top-left">
-        <h2>Contact Search</h2>
+  <div class="app-shell">
+    <aside class="app-sidebar" aria-label="Primary navigation">
+      <h1 class="margin-top-0 font-sans-lg">CSP Contacts</h1>
+      <nav aria-label="Section navigation">
+        <ul class="usa-sidenav margin-top-2">
+          <li class="usa-sidenav__item"><a class="usa-current" href="csp_contact_management_mock.html" aria-current="page">Search</a></li>
+          <li class="usa-sidenav__item"><a href="create_contact.html">Create</a></li>
+          <li class="usa-sidenav__item"><a href="#">Approvals</a></li>
+          <li class="usa-sidenav__item"><a href="full_contact_details.html">Full Details</a></li>
+          <li class="usa-sidenav__item"><a href="duplicate_review_merge.html">Duplicate Review</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="app-main" id="main-content">
+      <header class="display-flex flex-justify flex-align-center margin-bottom-2">
+        <h2 class="margin-y-0">Contact Search</h2>
+        <a href="create_contact.html" class="usa-button">+ New</a>
+      </header>
+
+      <div class="search-layout">
+        <section class="usa-card">
+          <div class="usa-card__container">
+            <div class="usa-card__header">
+              <h3 class="usa-card__heading">Search filters</h3>
+            </div>
+            <div class="usa-card__body">
+              <label class="usa-label" for="search-query">Search</label>
+              <input class="usa-input" id="search-query" placeholder="Name, Company, FEIN, or Email" value="Karen Mitchell" />
+
+              <div class="grid-row grid-gap margin-top-2">
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="application">Application</label>
+                  <select class="usa-select" id="application">
+                    <option>Application</option>
+                    <option selected>Locate</option>
+                    <option>State Profile Admin</option>
+                    <option>Employer Services</option>
+                    <option>IRG</option>
+                    <option>Data Access</option>
+                    <option>Federal Collections</option>
+                    <option>Insurance Match</option>
+                    <option>Communication Center</option>
+                  </select>
+                </div>
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="status-filter">Status</label>
+                  <select class="usa-select" id="status-filter">
+                    <option selected>Active</option>
+                    <option>Pending Approval</option>
+                    <option>Inactive</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid-row grid-gap margin-top-2">
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="relationship-type">Relationship type</label>
+                  <select class="usa-select" id="relationship-type">
+                    <option>Relationship Type</option>
+                    <option selected>State IV-D Agency</option>
+                    <option>Tribal IV-D Agency</option>
+                    <option>Employer</option>
+                    <option>Federal Agency</option>
+                    <option>International Partner</option>
+                    <option>Vendor / Contractor</option>
+                    <option>OCSE Internal</option>
+                  </select>
+                </div>
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="role-filter">Contact role</label>
+                  <select class="usa-select" id="role-filter">
+                    <option selected>Any Role</option>
+                    <option>Primary Contact</option>
+                    <option>Technical POC</option>
+                    <option>Program Lead</option>
+                  </select>
+                </div>
+              </div>
+
+              <h4 class="margin-top-3 margin-bottom-1">Advanced filters</h4>
+
+              <div class="grid-row grid-gap">
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="fein">FEIN (Employer)</label>
+                  <input class="usa-input" id="fein" />
+                </div>
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="company">Company name</label>
+                  <input class="usa-input" id="company" />
+                </div>
+              </div>
+
+              <div class="grid-row grid-gap margin-top-2">
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="updated-by">Updated by</label>
+                  <input class="usa-input" id="updated-by" />
+                </div>
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="updated-date">Updated date</label>
+                  <input class="usa-input" id="updated-date" type="date" />
+                </div>
+              </div>
+
+              <div class="grid-row grid-gap margin-top-2">
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="tags">Tags</label>
+                  <input class="usa-input" id="tags" placeholder="e.g., Technical, Primary" />
+                </div>
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="tag-mode">Tag matching</label>
+                  <select class="usa-select" id="tag-mode">
+                    <option>Match Any</option>
+                    <option>Match All</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="usa-card__footer display-flex flex-wrap gap-1">
+              <button class="usa-button" type="button">Search</button>
+              <button class="usa-button usa-button--outline" type="button">Clear</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="usa-card" aria-label="Search Results">
+          <div class="usa-card__container">
+            <div class="usa-card__header display-flex flex-justify flex-align-end flex-wrap gap-1">
+              <div>
+                <h3 class="usa-card__heading">Search Results</h3>
+                <p class="margin-top-05 margin-bottom-0"><strong>6 results</strong> for “Karen Mitchell”</p>
+              </div>
+              <div>
+                <label class="usa-label margin-top-0" for="sort-results">Sort results</label>
+                <select class="usa-select" id="sort-results">
+                  <option selected>Best Match</option>
+                  <option>Recently Updated</option>
+                  <option>Last Name A-Z</option>
+                  <option>Organization A-Z</option>
+                </select>
+              </div>
+            </div>
+            <div class="usa-card__body">
+              <div class="usa-alert usa-alert--info" role="status">
+                <div class="usa-alert__body">
+                  <p class="usa-alert__text">Tip: Use FEIN + Application to narrow duplicates. Showing active and pending matches across State IV-D agency records.</p>
+                </div>
+              </div>
+
+              <article class="result-card result-card--active">
+                <div>
+                  <h4 class="margin-y-0">Karen Mitchell <span class="usa-tag bg-green-20v text-green-70v">Primary Match</span> <span class="usa-tag bg-blue-20v text-blue-70v">Active</span></h4>
+                  <p class="result-meta">MD Child Support · Director, Locate Operations<br>(410) 555-0187 · karen.mitchell@maryland.gov</p>
+                  <div class="result-tags">
+                    <span class="usa-tag usa-tag--big">Locate</span>
+                    <span class="usa-tag usa-tag--big">Technical POC</span>
+                    <span class="usa-tag usa-tag--big">Primary</span>
+                  </div>
+                  <div class="metrics-grid">
+                    <div class="metric"><span class="metric-label">Last Updated</span><span class="metric-value">2026-03-19</span></div>
+                    <div class="metric"><span class="metric-label">Updated By</span><span class="metric-value">A. Johnson</span></div>
+                    <div class="metric"><span class="metric-label">Duplicates</span><span class="metric-value">1 Possible</span></div>
+                  </div>
+                </div>
+                <div>
+                  <a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a>
+                </div>
+              </article>
+
+              <article class="result-card">
+                <div>
+                  <h4 class="margin-y-0">Karen Mitchell <span class="usa-tag bg-yellow-10v text-yellow-70v">Possible Duplicate</span></h4>
+                  <p class="result-meta">MD CSA · Program Coordinator<br>(410) 555-7712 · kmitchell@mdcsa.gov</p>
+                </div>
+                <div class="display-flex flex-column gap-1">
+                  <a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a>
+                  <button class="usa-button usa-button--outline" type="button">Mark Not Duplicate</button>
+                </div>
+              </article>
+
+              <article class="result-card">
+                <div>
+                  <h4 class="margin-y-0">Karin Mitchell <span class="usa-tag bg-blue-20v text-blue-70v">Name Variant</span></h4>
+                  <p class="result-meta">Maryland Department of Human Services · Enterprise Liaison<br>(443) 555-0441 · karin.mitchell@maryland.gov</p>
+                </div>
+                <div class="display-flex flex-column gap-1">
+                  <a href="full_contact_details.html" class="usa-button usa-button--outline">View Contact Details</a>
+                  <button class="usa-button usa-button--outline" type="button">Compare Record</button>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
       </div>
-      <a href="create_contact.html"><button class="primary">+ New</button></a>
-    </div>
+    </main>
+  </div>
 
-    <div class="grid">
-      <section class="panel" aria-label="Search Filters">
-        <h3>Search</h3>
-
-        <label for="search-query">Search</label>
-        <input id="search-query" placeholder="Name, Company, FEIN, or Email" value="Karen Mitchell" />
-
-        <label for="application" style="margin-top:10px;">Application</label>
-        <div class="row" style="margin-top:4px">
-          <select id="application">
-            <option>Application</option>
-            <option selected>Locate</option>
-            <option>State Profile Admin</option>
-            <option>Employer Services</option>
-            <option>IRG</option>
-            <option>Data Access</option>
-            <option>Federal Collections</option>
-            <option>Insurance Match</option>
-            <option>Communication Center</option>
-          </select>
-          <select aria-label="Status filter">
-            <option selected>Active</option>
-            <option>Pending Approval</option>
-            <option>Inactive</option>
-          </select>
-        </div>
-
-        <label for="relationship-type" style="margin-top:10px;">Relationship Type</label>
-        <div class="row" style="margin-top:4px">
-          <select id="relationship-type">
-            <option>Relationship Type</option>
-            <option selected>State IV-D Agency</option>
-            <option>Tribal IV-D Agency</option>
-            <option>Employer</option>
-            <option>Federal Agency</option>
-            <option>International Partner</option>
-            <option>Vendor / Contractor</option>
-            <option>OCSE Internal</option>
-          </select>
-          <select aria-label="Contact role filter">
-            <option selected>Any Role</option>
-            <option>Primary Contact</option>
-            <option>Technical POC</option>
-            <option>Program Lead</option>
-          </select>
-        </div>
-
-        <div class="section">Advanced Filters</div>
-
-        <label style="margin-top:10px;">Organization</label>
-        <div class="row" style="margin-top:4px">
-          <input placeholder="FEIN (Employer)" />
-          <input placeholder="Company Name" />
-        </div>
-
-        <label style="margin-top:10px;">Audit Filters</label>
-        <div class="row" style="margin-top:4px">
-          <input placeholder="Updated By" />
-          <input placeholder="Updated Date" />
-        </div>
-
-        <label style="margin-top:10px;">Tags</label>
-        <div class="row" style="margin-top:4px">
-          <input placeholder="e.g., Technical, Primary" />
-          <select>
-            <option>Match Any</option>
-            <option>Match All</option>
-          </select>
-        </div>
-
-        <div class="actions">
-          <button class="primary">Search</button>
-          <button class="secondary">Clear</button>
-        </div>
-      </section>
-
-      <section class="panel" aria-label="Search Results">
-        <div class="toolbar">
-          <div>
-            <h3 style="margin-bottom:4px;">Search Results</h3>
-            <div class="meta"><strong>6 results</strong> for “Karen Mitchell”</div>
-          </div>
-          <div class="list-controls">
-            <select aria-label="Sort results">
-              <option selected>Sort: Best Match</option>
-              <option>Sort: Recently Updated</option>
-              <option>Sort: Last Name A-Z</option>
-              <option>Sort: Organization A-Z</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="search-tips">
-          Tip: Use FEIN + Application to narrow duplicates. Showing active and pending matches across State IV-D agency records.
-        </div>
-
-        <div class="results">
-          <article class="result-card active">
-            <div>
-              <div class="result-top">
-                <span class="result-title">Karen Mitchell</span>
-                <span class="badge b-green">Primary Match</span>
-                <span class="badge b-blue">Active</span>
-              </div>
-              <div class="result-sub">
-                <span>MD Child Support · Director, Locate Operations</span>
-                <span>(410) 555-0187 · karen.mitchell@maryland.gov</span>
-              </div>
-              <div class="tags">
-                <span>Locate</span><span>Technical POC</span><span>Primary</span>
-              </div>
-              <div class="metrics">
-                <div class="metric"><div class="k">Last Updated</div><div class="v">2026-03-19</div></div>
-                <div class="metric"><div class="k">Updated By</div><div class="v">A. Johnson</div></div>
-                <div class="metric"><div class="k">Duplicates</div><div class="v">1 Possible</div></div>
-              </div>
-            </div>
-            <div class="result-actions">
-              <a href="full_contact_details.html"><button class="secondary">View Contact Details</button></a>
-            </div>
-          </article>
-
-          <article class="result-card">
-            <div>
-              <div class="result-top">
-                <span class="result-title">Karen Mitchell</span>
-                <span class="badge b-amber">Possible Duplicate</span>
-              </div>
-              <div class="result-sub">
-                <span>MD CSA · Program Coordinator</span>
-                <span>(410) 555-7712 · kmitchell@mdcsa.gov</span>
-              </div>
-              <div class="tags">
-                <span>State Profile</span><span>Secondary</span>
-              </div>
-              <div class="metrics">
-                <div class="metric"><div class="k">Last Updated</div><div class="v">2026-01-11</div></div>
-                <div class="metric"><div class="k">Updated By</div><div class="v">J. Perez</div></div>
-                <div class="metric"><div class="k">Confidence</div><div class="v">76%</div></div>
-              </div>
-            </div>
-            <div class="result-actions">
-              <a href="full_contact_details.html"><button class="secondary">View Contact Details</button></a>
-              <button class="secondary">Mark Not Duplicate</button>
-            </div>
-          </article>
-
-          <article class="result-card">
-            <div>
-              <div class="result-top">
-                <span class="result-title">Karin Mitchell</span>
-                <span class="badge b-blue">Name Variant</span>
-              </div>
-              <div class="result-sub">
-                <span>Maryland Department of Human Services · Enterprise Liaison</span>
-                <span>(443) 555-0441 · karin.mitchell@maryland.gov</span>
-              </div>
-              <div class="tags">
-                <span>Data Access</span><span>Employer Services</span>
-              </div>
-              <div class="metrics">
-                <div class="metric"><div class="k">Last Updated</div><div class="v">2025-12-05</div></div>
-                <div class="metric"><div class="k">Updated By</div><div class="v">M. Lee</div></div>
-                <div class="metric"><div class="k">Confidence</div><div class="v">61%</div></div>
-              </div>
-            </div>
-            <div class="result-actions">
-              <a href="full_contact_details.html"><button class="secondary">View Contact Details</button></a>
-              <button class="secondary">Compare Record</button>
-            </div>
-          </article>
-
-          <article class="result-card">
-            <div>
-              <div class="result-top">
-                <span class="result-title">Karen A. Mitchell</span>
-                <span class="badge b-blue">Related Org</span>
-              </div>
-              <div class="result-sub">
-                <span>Maryland Employer Services Unit · Senior Manager</span>
-                <span>(410) 555-2199 · k.a.mitchell@des.md.gov</span>
-              </div>
-              <div class="tags">
-                <span>Employer Services</span><span>Primary</span>
-              </div>
-              <div class="metrics">
-                <div class="metric"><div class="k">Last Updated</div><div class="v">2025-10-28</div></div>
-                <div class="metric"><div class="k">Updated By</div><div class="v">S. Adams</div></div>
-                <div class="metric"><div class="k">Confidence</div><div class="v">58%</div></div>
-              </div>
-            </div>
-            <div class="result-actions">
-              <a href="full_contact_details.html"><button class="secondary">View Contact Details</button></a>
-              <button class="secondary">Add to Review Queue</button>
-            </div>
-          </article>
-
-          <article class="result-card">
-            <div>
-              <div class="result-top">
-                <span class="result-title">Karen Mitchell</span>
-                <span class="badge b-blue">IRG Contact</span>
-              </div>
-              <div class="result-sub">
-                <span>Intergovernmental Reference Group · State Liaison</span>
-                <span>(202) 555-6031 · karen.mitchell@irg.gov</span>
-              </div>
-              <div class="tags">
-                <span>IRG</span><span>Federal Collections</span>
-              </div>
-              <div class="metrics">
-                <div class="metric"><div class="k">Last Updated</div><div class="v">2025-08-16</div></div>
-                <div class="metric"><div class="k">Updated By</div><div class="v">R. Shah</div></div>
-                <div class="metric"><div class="k">Confidence</div><div class="v">54%</div></div>
-              </div>
-            </div>
-            <div class="result-actions">
-              <a href="full_contact_details.html"><button class="secondary">View Contact Details</button></a>
-              <button class="secondary">Compare Record</button>
-            </div>
-          </article>
-
-          <article class="result-card">
-            <div>
-              <div class="result-top">
-                <span class="result-title">K. Mitchell</span>
-                <span class="badge b-blue">Partial Match</span>
-              </div>
-              <div class="result-sub">
-                <span>MD Child Support Field Office 3 · Regional Support</span>
-                <span>(410) 555-9922 · kmitchell.field@mdcs.gov</span>
-              </div>
-              <div class="tags">
-                <span>Communication Center</span><span>Technical</span>
-              </div>
-              <div class="metrics">
-                <div class="metric"><div class="k">Last Updated</div><div class="v">2025-07-01</div></div>
-                <div class="metric"><div class="k">Updated By</div><div class="v">T. Young</div></div>
-                <div class="metric"><div class="k">Confidence</div><div class="v">49%</div></div>
-              </div>
-            </div>
-            <div class="result-actions">
-              <a href="full_contact_details.html"><button class="secondary">View Contact Details</button></a>
-              <button class="secondary">Add to Review Queue</button>
-            </div>
-          </article>
-        </div>
-      </section>
-    </div>
-  </main>
-</div>
-<script>
-function toggleSidebar() {
-  const layout = document.getElementById('layout');
-  layout.classList.toggle('sidebar-collapsed');
-}
-</script>
+  <script src="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/js/uswds.min.js"></script>
 </body>
 </html>
