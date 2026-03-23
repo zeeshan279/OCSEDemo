@@ -108,6 +108,77 @@
         </ul>
       </section>
 
+      <section aria-labelledby="activities-heading" class="margin-bottom-3">
+        <div class="display-flex flex-align-center flex-justify gap-1 margin-bottom-2 flex-wrap">
+          <h3 id="activities-heading" class="margin-y-0">Activities</h3>
+          <button class="usa-button usa-button--outline" type="button" data-toggle="activity-form">Add activity</button>
+        </div>
+
+        <div id="activity-form-wrapper" class="bg-white padding-2 radius-md border border-base-lighter margin-bottom-2 display-none">
+          <form id="activity-form" class="grid-row grid-gap" novalidate>
+            <div class="tablet:grid-col-4">
+              <label class="usa-label" for="activity-type">Activity type</label>
+              <select class="usa-select" id="activity-type" required>
+                <option value="">- Select -</option>
+                <option value="Meeting">Meeting</option>
+                <option value="Call">Call</option>
+                <option value="Email">Email</option>
+                <option value="Follow-up">Follow-up</option>
+              </select>
+            </div>
+            <div class="tablet:grid-col-4">
+              <label class="usa-label" for="activity-date">Date</label>
+              <input class="usa-input" id="activity-date" type="date" required />
+            </div>
+            <div class="tablet:grid-col-4">
+              <label class="usa-label" for="activity-owner">Owner</label>
+              <input class="usa-input" id="activity-owner" type="text" placeholder="Name" required />
+            </div>
+            <div class="grid-col-12">
+              <label class="usa-label" for="activity-details">Details</label>
+              <textarea class="usa-textarea" id="activity-details" rows="3" required></textarea>
+            </div>
+            <div class="grid-col-12 display-flex gap-1">
+              <button class="usa-button" type="submit">Save activity</button>
+              <button class="usa-button usa-button--unstyled text-no-underline" type="button" data-cancel-activity>Cancel</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="bg-white radius-md border border-base-lighter overflow-auto">
+          <table class="usa-table usa-table--borderless width-full margin-0" aria-label="Activity details">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Type</th>
+                <th scope="col">Details</th>
+                <th scope="col">Owner</th>
+              </tr>
+            </thead>
+            <tbody id="activities-tbody">
+              <tr>
+                <td>March 20, 2026</td>
+                <td>Meeting</td>
+                <td>Reviewed Q2 interstate onboarding timeline with state leadership team.</td>
+                <td>MD Partner Admin</td>
+              </tr>
+              <tr>
+                <td>March 11, 2026</td>
+                <td>Email</td>
+                <td>Sent follow-up guidance for updated security attestation package.</td>
+                <td>OCSS Admin</td>
+              </tr>
+              <tr>
+                <td>February 27, 2026</td>
+                <td>Call</td>
+                <td>Confirmed technical test window for employer services release.</td>
+                <td>Karen Mitchell</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section aria-labelledby="audit-heading" class="margin-bottom-3">
         <h3 id="audit-heading" class="margin-bottom-2">Audit</h3>
         <dl class="usa-list usa-list--unstyled bg-white padding-2 radius-md border border-base-lighter">
@@ -140,6 +211,59 @@
         const appShell = document.querySelector('.app-shell');
         appShell.classList.toggle('menu-hidden');
         menuToggle.textContent = appShell.classList.contains('menu-hidden') ? 'Show menu' : 'Hide menu';
+      });
+    }
+
+    const activityFormWrapper = document.getElementById('activity-form-wrapper');
+    const activityForm = document.getElementById('activity-form');
+    const activityRows = document.getElementById('activities-tbody');
+    const toggleButtons = document.querySelectorAll('[data-toggle="activity-form"]');
+    const cancelButton = document.querySelector('[data-cancel-activity]');
+
+    const toggleActivityForm = (show) => {
+      if (!activityFormWrapper) return;
+      activityFormWrapper.classList.toggle('display-none', !show);
+      if (show) {
+        document.getElementById('activity-type').focus();
+      }
+    };
+
+    toggleButtons.forEach((button) => {
+      button.addEventListener('click', () => toggleActivityForm(true));
+    });
+
+    if (cancelButton) {
+      cancelButton.addEventListener('click', () => {
+        activityForm.reset();
+        toggleActivityForm(false);
+      });
+    }
+
+    if (activityForm) {
+      activityForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        if (!activityForm.checkValidity()) {
+          activityForm.reportValidity();
+          return;
+        }
+
+        const type = document.getElementById('activity-type').value;
+        const activityDate = new Date(document.getElementById('activity-date').value + 'T00:00:00');
+        const owner = document.getElementById('activity-owner').value.trim();
+        const details = document.getElementById('activity-details').value.trim();
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${activityDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</td>
+          <td>${type}</td>
+          <td>${details}</td>
+          <td>${owner}</td>
+        `;
+
+        activityRows.prepend(row);
+        activityForm.reset();
+        toggleActivityForm(false);
       });
     }
   </script>
