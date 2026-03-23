@@ -46,7 +46,7 @@
     <main class="app-main" id="main-content">
       <header class="display-flex flex-align-center gap-1 margin-bottom-2">
         <h2 class="margin-y-0">Full Contact Details</h2>
-        <a class="usa-button usa-button--outline" href="create_contact.html?mode=edit&contact=karen-mitchell">Edit Contact</a>
+        <a id="edit-contact-link" class="usa-button usa-button--outline" href="edit_contact.html">Edit Contact</a>
         <button id="menu-toggle" class="usa-button usa-button--outline menu-toggle" type="button">Show menu</button>
       </header>
       <div class="usa-alert usa-alert--info margin-bottom-3" role="status">
@@ -60,22 +60,22 @@
         <h3 id="contact-details-heading" class="margin-bottom-2">Contact details</h3>
         <dl class="usa-list usa-list--unstyled bg-white padding-2 radius-md border border-base-lighter">
           <div class="grid-row grid-gap margin-bottom-1">
-            <dt class="tablet:grid-col-4 text-base-dark">First name</dt><dd class="tablet:grid-col-8 margin-0 text-bold">Karen</dd>
+            <dt class="tablet:grid-col-4 text-base-dark">First name</dt><dd id="detail-first-name" class="tablet:grid-col-8 margin-0 text-bold">Karen</dd>
           </div>
           <div class="grid-row grid-gap margin-bottom-1">
-            <dt class="tablet:grid-col-4 text-base-dark">Last name</dt><dd class="tablet:grid-col-8 margin-0 text-bold">Mitchell</dd>
+            <dt class="tablet:grid-col-4 text-base-dark">Last name</dt><dd id="detail-last-name" class="tablet:grid-col-8 margin-0 text-bold">Mitchell</dd>
           </div>
           <div class="grid-row grid-gap margin-bottom-1">
-            <dt class="tablet:grid-col-4 text-base-dark">Job title</dt><dd class="tablet:grid-col-8 margin-0 text-bold">Technical Program Manager</dd>
+            <dt class="tablet:grid-col-4 text-base-dark">Job title</dt><dd id="detail-title" class="tablet:grid-col-8 margin-0 text-bold">Technical Program Manager</dd>
           </div>
           <div class="grid-row grid-gap margin-bottom-1">
-            <dt class="tablet:grid-col-4 text-base-dark">Relationship type</dt><dd class="tablet:grid-col-8 margin-0 text-bold">State IV-D Agency</dd>
+            <dt class="tablet:grid-col-4 text-base-dark">Relationship type</dt><dd id="detail-relationship-type" class="tablet:grid-col-8 margin-0 text-bold">State IV-D Agency</dd>
           </div>
           <div class="grid-row grid-gap margin-bottom-1">
-            <dt class="tablet:grid-col-4 text-base-dark">Primary email</dt><dd class="tablet:grid-col-8 margin-0 text-bold"><a href="mailto:karen.mitchell@state.md.gov">karen.mitchell@state.md.gov</a></dd>
+            <dt class="tablet:grid-col-4 text-base-dark">Primary email</dt><dd id="detail-primary-email" class="tablet:grid-col-8 margin-0 text-bold"><a href="mailto:karen.mitchell@state.md.gov">karen.mitchell@state.md.gov</a></dd>
           </div>
           <div class="grid-row grid-gap">
-            <dt class="tablet:grid-col-4 text-base-dark">Secondary email</dt><dd class="tablet:grid-col-8 margin-0 text-bold"><a href="mailto:k.mitchell@maryland.gov">k.mitchell@maryland.gov</a></dd>
+            <dt class="tablet:grid-col-4 text-base-dark">Secondary email</dt><dd id="detail-secondary-email" class="tablet:grid-col-8 margin-0 text-bold"><a href="mailto:k.mitchell@maryland.gov">k.mitchell@maryland.gov</a></dd>
           </div>
         </dl>
       </section>
@@ -84,7 +84,7 @@
         <h3 id="organization-details-heading" class="margin-bottom-2">Organization details</h3>
         <dl class="usa-list usa-list--unstyled bg-white padding-2 radius-md border border-base-lighter">
           <div class="grid-row grid-gap margin-bottom-1">
-            <dt class="tablet:grid-col-4 text-base-dark">Organization</dt><dd class="tablet:grid-col-8 margin-0 text-bold">Maryland Child Support Administration</dd>
+            <dt class="tablet:grid-col-4 text-base-dark">Organization</dt><dd id="detail-organization" class="tablet:grid-col-8 margin-0 text-bold">Maryland Child Support Administration</dd>
           </div>
           <div class="grid-row grid-gap margin-bottom-1">
             <dt class="tablet:grid-col-4 text-base-dark">FEIN</dt><dd class="tablet:grid-col-8 margin-0 text-bold">52-6002033</dd>
@@ -333,6 +333,27 @@
         activityForm.reset();
         toggleActivityForm(false);
       });
+    }
+
+    const editContactLink = document.getElementById('edit-contact-link');
+    if (editContactLink) {
+      const getDetailValue = (id) => {
+        const element = document.getElementById(id);
+        if (!element) return '';
+        return element.textContent.trim();
+      };
+
+      const editParams = new URLSearchParams({
+        firstName: getDetailValue('detail-first-name'),
+        lastName: getDetailValue('detail-last-name'),
+        title: getDetailValue('detail-title'),
+        relationshipType: getDetailValue('detail-relationship-type'),
+        primaryEmail: getDetailValue('detail-primary-email'),
+        secondaryEmail: getDetailValue('detail-secondary-email'),
+        organization: getDetailValue('detail-organization')
+      });
+
+      editContactLink.href = `edit_contact.html?${editParams.toString()}`;
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/js/uswds.min.js"></script>
