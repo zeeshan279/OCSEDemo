@@ -15,6 +15,9 @@
     .app-shell.menu-hidden { grid-template-columns: 1fr !important; }
     .app-shell.menu-hidden .app-sidebar { display: none; }
     .menu-toggle { margin-left: auto; }
+    .contact-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .contact-tag { display: inline-flex; align-items: center; gap: 0.35rem; border: 1px solid var(--usa-color-primary-light); border-radius: 999px; padding: 0.25rem 0.65rem; background: var(--usa-color-primary-lightest); font-weight: 600; }
+    .contact-tag button { border: 0; background: transparent; color: var(--usa-color-primary-dark); font-weight: 700; cursor: pointer; line-height: 1; padding: 0; }
 
     @media (min-width: 64em) {
       .app-shell { display: grid; grid-template-columns: 260px 1fr; }
@@ -92,6 +95,22 @@
             <dt class="tablet:grid-col-4 text-base-dark">Preferred contact method</dt><dd class="tablet:grid-col-8 margin-0 text-bold">Email</dd>
           </div>
         </dl>
+      </section>
+
+      <section aria-labelledby="contact-tags-heading" class="margin-bottom-3">
+        <h3 id="contact-tags-heading" class="margin-bottom-2">Contact tags</h3>
+        <div class="bg-white padding-2 radius-md border border-base-lighter">
+          <p class="margin-top-0 margin-bottom-1 text-base-dark">Use tags to categorize this contact for quick filtering in search results.</p>
+          <div id="contact-tags-list" class="contact-tags margin-bottom-2" aria-live="polite"></div>
+          <form id="tag-form" class="display-flex flex-align-end gap-1 flex-wrap">
+            <div class="flex-1">
+              <label class="usa-label margin-top-0" for="new-tag">Add tag</label>
+              <input class="usa-input" id="new-tag" name="new-tag" type="text" placeholder="Example: Interstate Lead" required />
+            </div>
+            <button class="usa-button margin-bottom-05" type="submit">Add tag</button>
+          </form>
+          <div id="tag-form-message" class="margin-top-1 text-base-dark" aria-live="polite"></div>
+        </div>
       </section>
 
       <section aria-labelledby="program-access-heading" class="margin-bottom-3">
@@ -218,8 +237,55 @@
     const activityFormWrapper = document.getElementById('activity-form-wrapper');
     const activityForm = document.getElementById('activity-form');
     const activityRows = document.getElementById('activities-tbody');
+    const tagForm = document.getElementById('tag-form');
+    const newTagInput = document.getElementById('new-tag');
+    const contactTagsList = document.getElementById('contact-tags-list');
+    const tagFormMessage = document.getElementById('tag-form-message');
     const toggleButtons = document.querySelectorAll('[data-toggle="activity-form"]');
     const cancelButton = document.querySelector('[data-cancel-activity]');
+    const contactTags = ['Locate', 'Technical POC', 'Primary'];
+
+    function renderContactTags() {
+      if (!contactTagsList) return;
+      contactTagsList.innerHTML = contactTags.map((tag, index) => `
+        <span class="contact-tag">
+          ${tag}
+          <button type="button" data-remove-tag="${index}" aria-label="Remove ${tag} tag">×</button>
+        </span>
+      `).join('');
+    }
+
+    if (contactTagsList) {
+      contactTagsList.addEventListener('click', (event) => {
+        const button = event.target.closest('button[data-remove-tag]');
+        if (!button) return;
+        const tagIndex = Number(button.dataset.removeTag);
+        if (Number.isNaN(tagIndex) || !contactTags[tagIndex]) return;
+        const [removedTag] = contactTags.splice(tagIndex, 1);
+        renderContactTags();
+        tagFormMessage.textContent = `Removed tag: ${removedTag}`;
+      });
+    }
+
+    if (tagForm) {
+      tagForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const newTag = newTagInput.value.trim();
+        if (!newTag) return;
+        const duplicateTag = contactTags.some((tag) => tag.toLowerCase() === newTag.toLowerCase());
+        if (duplicateTag) {
+          tagFormMessage.textContent = `Tag "${newTag}" is already added.`;
+          return;
+        }
+        contactTags.push(newTag);
+        renderContactTags();
+        tagFormMessage.textContent = `Added tag: ${newTag}`;
+        tagForm.reset();
+        newTagInput.focus();
+      });
+    }
+
+    renderContactTags();
 
     const toggleActivityForm = (show) => {
       if (!activityFormWrapper) return;
