@@ -135,6 +135,20 @@
               </div>
               <label class="usa-label margin-top-2" for="title-filter">Title</label>
               <input class="usa-input" id="title-filter" placeholder="Filter by contact title" />
+              <label class="usa-label margin-top-2" for="state-filter">State</label>
+              <select class="usa-select" id="state-filter">
+                <option value="" selected>Any state</option>
+                <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option>
+                <option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option>
+                <option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option>
+                <option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option>
+                <option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option>
+                <option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option>
+                <option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option>
+                <option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option>
+                <option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option>
+                <option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+              </select>
               <label class="usa-label margin-top-2" for="tag-filter">Tags</label>
               <input class="usa-input" id="tag-filter" placeholder="Filter by tags (comma-separated, e.g., Locate, Technical Contact)" />
             </div>
@@ -193,6 +207,7 @@
     const pagination = document.getElementById('pagination');
     const searchQuery = document.getElementById('search-query');
     const titleFilterInput = document.getElementById('title-filter');
+    const stateFilterSelect = document.getElementById('state-filter');
     const tagFilterInput = document.getElementById('tag-filter');
     const sortResultsSelect = document.getElementById('sort-results');
     const searchButton = document.getElementById('search-button');
@@ -226,6 +241,7 @@
     ];
     const seededResults = searchResults.map((result, index) => ({
       ...result,
+      state: result.state || 'Maryland',
       lastUpdated: result.lastUpdated || `2026-03-${String(22 - (index % 10)).padStart(2, '0')}`
     }));
 
@@ -240,6 +256,7 @@
     function getFilteredResults() {
       const query = searchQuery.value.trim().toLowerCase();
       const titleFilter = titleFilterInput.value.trim().toLowerCase();
+      const stateFilter = stateFilterSelect.value.trim().toLowerCase();
       const tagFilters = tagFilterInput.value
         .split(',')
         .map((tag) => tag.trim().toLowerCase())
@@ -252,8 +269,9 @@
           || searchableContent.includes(query)
           || resultTags.some((tag) => tag.includes(query));
         const titleMatches = !titleFilter || (result.title || '').toLowerCase().includes(titleFilter);
+        const stateMatches = !stateFilter || (result.state || '').toLowerCase() === stateFilter;
         const tagsMatch = tagFilters.every((filterTag) => resultTags.some((tag) => tag.includes(filterTag)));
-        return queryMatches && titleMatches && tagsMatch;
+        return queryMatches && titleMatches && stateMatches && tagsMatch;
       });
 
       const seenContacts = new Set();
@@ -404,10 +422,17 @@
       renderResults();
     });
 
+    stateFilterSelect.addEventListener('change', () => {
+      if (resultsPanel.hidden) return;
+      currentPage = 1;
+      renderResults();
+    });
+
     clearButton.addEventListener('click', () => {
       searchQuery.value = '';
       tagFilterInput.value = '';
       titleFilterInput.value = '';
+      stateFilterSelect.value = '';
       sortResultsSelect.value = 'Best Match';
       resultsList.innerHTML = '';
       resultsSummary.textContent = 'No results to display.';
