@@ -18,6 +18,7 @@
     .contact-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
     .contact-tag { display: inline-flex; align-items: center; gap: 0.35rem; border: 1px solid var(--usa-color-primary-light); border-radius: 999px; padding: 0.25rem 0.65rem; background: var(--usa-color-primary-lightest); font-weight: 600; }
     .contact-tag button { border: 0; background: transparent; color: var(--usa-color-primary-dark); font-weight: 700; cursor: pointer; line-height: 1; padding: 0; }
+    .activity-type-icon { width: 1.15rem; height: 1.15rem; fill: var(--usa-color-primary); vertical-align: middle; }
 
     @media (min-width: 64em) {
       .app-shell { display: grid; grid-template-columns: 260px 1fr; }
@@ -188,37 +189,37 @@
             <tbody id="activities-tbody">
               <tr>
                 <td>March 20, 2026</td>
-                <td>Meeting</td>
+                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#event"></use></svg><span class="usa-sr-only">Meeting</span></td>
                 <td>Reviewed Q2 interstate onboarding timeline with state leadership team.</td>
                 <td>Melissa Diaz</td>
               </tr>
               <tr>
                 <td>March 18, 2026</td>
-                <td>Audit</td>
+                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#edit"></use></svg><span class="usa-sr-only">Audit</span></td>
                 <td>Contact record updated: revised preferred contact method and secondary email details.</td>
                 <td>Melissa Diaz</td>
               </tr>
               <tr>
                 <td>March 11, 2026</td>
-                <td>Email</td>
+                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#mail"></use></svg><span class="usa-sr-only">Email</span></td>
                 <td>Sent follow-up guidance for updated security attestation package.</td>
                 <td>Omar Castillo</td>
               </tr>
               <tr>
                 <td>February 27, 2026</td>
-                <td>Call</td>
+                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#phone"></use></svg><span class="usa-sr-only">Call</span></td>
                 <td>Confirmed technical test window for employer services release.</td>
                 <td>Karen Mitchell</td>
               </tr>
               <tr>
                 <td>January 9, 2026</td>
-                <td>Audit</td>
+                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#edit"></use></svg><span class="usa-sr-only">Audit</span></td>
                 <td>Contact record updated: changed job title to Technical Program Manager.</td>
                 <td>Omar Castillo</td>
               </tr>
               <tr>
                 <td>March 15, 2024</td>
-                <td>Audit</td>
+                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#edit"></use></svg><span class="usa-sr-only">Audit</span></td>
                 <td>Contact record created in CSP Contacts.</td>
                 <td>OCSS Admin</td>
               </tr>
@@ -334,6 +335,18 @@
       });
     }
 
+    const getActivityTypeIcon = (type) => {
+      const iconByType = {
+        Meeting: 'event',
+        Call: 'phone',
+        Email: 'mail',
+        'Follow-up': 'update',
+        Audit: 'edit'
+      };
+      const iconName = iconByType[type] || 'info';
+      return `<svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#${iconName}"></use></svg><span class="usa-sr-only">${type}</span>`;
+    };
+
     if (activityForm) {
       activityForm.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -351,7 +364,7 @@
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>${activityDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</td>
-          <td>${type}</td>
+          <td>${getActivityTypeIcon(type)}</td>
           <td>${details}</td>
           <td>${owner}</td>
         `;
