@@ -70,7 +70,10 @@
             <dt class="tablet:grid-col-4 text-base-dark">Job title</dt><dd id="detail-title" class="tablet:grid-col-8 margin-0 text-bold">Technical Program Manager</dd>
           </div>
           <div class="grid-row grid-gap margin-bottom-1">
-            <dt class="tablet:grid-col-4 text-base-dark">Relationship type</dt><dd id="detail-relationship-type" class="tablet:grid-col-8 margin-0 text-bold">State IV-D Agency</dd>
+            <dt class="tablet:grid-col-4 text-base-dark">Stakeholder group(s)</dt><dd id="detail-stakeholder-groups" class="tablet:grid-col-8 margin-0 text-bold">State &amp; Local Agencies; Federal Data Exchange Partners</dd>
+          </div>
+          <div class="grid-row grid-gap margin-bottom-1">
+            <dt class="tablet:grid-col-4 text-base-dark">Stakeholder(s)</dt><dd id="detail-stakeholders" class="tablet:grid-col-8 margin-0 text-bold">State IV-D Agencies (All States, DC, Territories); Internal Revenue Service (IRS)</dd>
           </div>
           <div class="grid-row grid-gap margin-bottom-1">
             <dt class="tablet:grid-col-4 text-base-dark">Applications</dt><dd id="detail-applications" class="tablet:grid-col-8 margin-0 text-bold">Locate, State Profile Admin, Employer Services</dd>
@@ -383,11 +386,23 @@
         return element.textContent.trim();
       };
 
+      const stakeholderGroups = getDetailValue('detail-stakeholder-groups')
+        .split(';')
+        .map((value) => value.trim())
+        .filter(Boolean);
+      const stakeholders = getDetailValue('detail-stakeholders')
+        .split(';')
+        .map((value) => value.trim())
+        .filter(Boolean);
+      const stakeholderAssignments = stakeholderGroups.map((group, index) => (
+        `${group}::${stakeholders[index] || ''}`
+      )).join('||');
+
       const editParams = new URLSearchParams({
         firstName: getDetailValue('detail-first-name'),
         lastName: getDetailValue('detail-last-name'),
         title: getDetailValue('detail-title'),
-        relationshipType: getDetailValue('detail-relationship-type'),
+        stakeholderAssignments,
         applications: getDetailValue('detail-applications'),
         primaryEmail: getDetailValue('detail-primary-email'),
         secondaryEmail: getDetailValue('detail-secondary-email'),
