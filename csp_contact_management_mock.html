@@ -86,10 +86,7 @@
                     <option value="">Any Stakeholder Group</option>
                   </select>
                 </div>
-              </div>
-
-              <div class="grid-row grid-gap margin-top-2" id="stakeholder-filter-wrapper" hidden>
-                <div class="tablet:grid-col-6">
+                <div class="tablet:grid-col-6" id="stakeholder-filter-wrapper" hidden>
                   <label class="usa-label" for="stakeholder-filter">Stakeholder</label>
                   <select class="usa-select" id="stakeholder-filter" disabled>
                     <option value="">Select Stakeholder Group first</option>
@@ -113,6 +110,10 @@
                     <option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option>
                     <option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
                   </select>
+                </div>
+                <div class="tablet:grid-col-6" id="company-filter-wrapper" hidden>
+                  <label class="usa-label" for="company">Organization name</label>
+                  <input class="usa-input" id="company" />
                 </div>
               </div>
 
@@ -144,8 +145,8 @@
                   </div>
                 </div>
                 <div class="grid-row grid-gap margin-top-2">
-                  <div class="tablet:grid-col-6"><label class="usa-label" for="fein">FEIN</label><input class="usa-input" id="fein" /></div>
-                  <div class="tablet:grid-col-6"><label class="usa-label" for="company">Organization name</label><input class="usa-input" id="company" /></div>
+                  <div class="tablet:grid-col-6"><label class="usa-label" for="fein">Organization FEIN</label><input class="usa-input" id="fein" /></div>
+                  <div class="tablet:grid-col-6"><label class="usa-label" for="tags-filter">Tags</label><input class="usa-input" id="tags-filter" placeholder="Search by tag" /></div>
                 </div>
               </details>
             </div>
@@ -212,6 +213,9 @@
     const searchButton = document.getElementById('search-button');
     const clearButton = document.getElementById('clear-button');
     const stakeholderStorageKey = 'cspStakeholderMappings';
+    const companyFilterInput = document.getElementById('company');
+    const companyFilterWrapper = document.getElementById('company-filter-wrapper');
+    const tagsFilterInput = document.getElementById('tags-filter');
     const defaultStakeholderMappings = {
       'Federal Partners': [
         'Administration for Children and Families (ACF Leadership)',
@@ -405,8 +409,13 @@
       stakeholderFilterWrapper.hidden = !selectedGroup;
       const shouldShowStateFilter = selectedGroup === 'State & Local Agencies';
       stateFilterWrapper.hidden = !shouldShowStateFilter;
+      const shouldShowCompanyFilter = Boolean(selectedGroup) && !shouldShowStateFilter;
+      companyFilterWrapper.hidden = !shouldShowCompanyFilter;
       if (!shouldShowStateFilter) {
         stateFilterSelect.value = '';
+      }
+      if (!shouldShowCompanyFilter) {
+        companyFilterInput.value = '';
       }
     }
 
@@ -442,6 +451,8 @@
     function getFilteredResults() {
       const query = searchQuery.value.trim().toLowerCase();
       const stateFilter = stateFilterSelect.value.trim().toLowerCase();
+      const organizationFilter = companyFilterInput.value.trim().toLowerCase();
+      const tagFilter = tagsFilterInput.value.trim().toLowerCase();
       const selectedStakeholderGroup = stakeholderGroupFilter.value.trim();
       const selectedStakeholder = stakeholderFilter.value.trim();
 
@@ -449,9 +460,13 @@
         const searchableContent = `${result.name} ${result.title || ''}`.toLowerCase();
         const queryMatches = !query || searchableContent.includes(query);
         const stateMatches = !stateFilter || (result.state || '').toLowerCase() === stateFilter;
+        const organizationName = (result.meta || '').split('<br>')[0].toLowerCase();
+        const organizationMatches = !organizationFilter || organizationName.includes(organizationFilter);
         const stakeholderGroupMatches = !selectedStakeholderGroup || result.stakeholderGroup === selectedStakeholderGroup;
         const stakeholderMatches = !selectedStakeholder || result.stakeholder === selectedStakeholder;
-        return queryMatches && stateMatches && stakeholderGroupMatches && stakeholderMatches;
+        const tags = getResultTags(result).map((tag) => tag.toLowerCase());
+        const tagMatches = !tagFilter || tags.some((tag) => tag.includes(tagFilter));
+        return queryMatches && stateMatches && organizationMatches && stakeholderGroupMatches && stakeholderMatches && tagMatches;
       });
 
       const seenContacts = new Set();
@@ -624,6 +639,8 @@
       stateFilterSelect.value = '';
       stakeholderGroupFilter.value = '';
       stakeholderGroupFilter.dispatchEvent(new Event('change'));
+      companyFilterInput.value = '';
+      tagsFilterInput.value = '';
       sortResultsSelect.value = 'Best Match';
       resultsList.innerHTML = '';
       resultsSummary.textContent = 'No results to display.';
