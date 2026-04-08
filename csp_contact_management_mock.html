@@ -101,52 +101,60 @@
                 </select>
               </div>
 
-              <div class="grid-row grid-gap margin-top-2">
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="stakeholder-group-filter">Stakeholder Group</label>
-                  <select class="usa-select" id="stakeholder-group-filter">
-                    <option value="">Any Stakeholder Group</option>
-                  </select>
-                </div>
-                <div class="tablet:grid-col-6" id="stakeholder-filter-wrapper" hidden>
-                  <label class="usa-label" for="stakeholder-filter">Stakeholder</label>
-                  <select class="usa-select" id="stakeholder-filter" disabled>
-                    <option value="">Select Stakeholder Group first</option>
-                  </select>
-                </div>
+              <div class="margin-top-2">
+                <label class="usa-label" for="stakeholder-group-filter">Stakeholder Group</label>
+                <select class="usa-select" id="stakeholder-group-filter">
+                  <option value="">Any Stakeholder Group</option>
+                </select>
+              </div>
+              <div class="margin-top-2" id="stakeholder-filter-wrapper" hidden>
+                <label class="usa-label" for="stakeholder-filter">Stakeholder</label>
+                <select class="usa-select" id="stakeholder-filter" disabled>
+                  <option value="">Select Stakeholder Group first</option>
+                </select>
               </div>
 
               <details class="margin-top-3">
                 <summary class="text-bold">Advanced filters</summary>
-                <div class="grid-row grid-gap margin-top-2">
-                  <div class="tablet:grid-col-6">
-                    <label class="usa-label" for="application">Source Application</label>
-                    <select class="usa-select" id="application">
-                      <option>Any Source Application</option>
-                      <option selected>Locate</option>
-                      <option>State Profile Admin</option>
-                      <option>Employer Services</option>
-                      <option>IRG</option>
-                      <option>Data Access</option>
-                      <option>Federal Collections</option>
-                      <option>Insurance Match</option>
-                      <option>Communication Center</option>
-                      <option>Contact Management</option>
-                    </select>
-                  </div>
-                  <div class="tablet:grid-col-6">
-                    <label class="usa-label" for="role-filter">Contact type</label>
-                    <select class="usa-select" id="role-filter">
-                      <option selected>Any Contact Type</option>
-                      <option>Primary Contact</option>
-                      <option>Technical Contact</option>
-                      <option>Business Contact</option>
-                    </select>
-                  </div>
+                <div class="margin-top-2">
+                  <label class="usa-label" for="application">Source Application</label>
+                  <select class="usa-select" id="application">
+                    <option>Any Source Application</option>
+                    <option selected>Locate</option>
+                    <option>State Profile Admin</option>
+                    <option>Employer Services</option>
+                    <option>IRG</option>
+                    <option>Data Access</option>
+                    <option>Federal Collections</option>
+                    <option>Insurance Match</option>
+                    <option>Communication Center</option>
+                    <option>Contact Management</option>
+                  </select>
                 </div>
-                <div class="grid-row grid-gap margin-top-2">
-                  <div class="tablet:grid-col-6"><label class="usa-label" for="fein">Organization FEIN</label><input class="usa-input" id="fein" /></div>
-                  <div class="tablet:grid-col-6"><label class="usa-label" for="tags-filter">Tags</label><input class="usa-input" id="tags-filter" placeholder="Search by tag(s), separated by commas" /></div>
+                <div class="margin-top-2">
+                  <label class="usa-label" for="role-filter">Contact type</label>
+                  <select class="usa-select" id="role-filter">
+                    <option selected>Any Contact Type</option>
+                    <option>Primary Contact</option>
+                    <option>Technical Contact</option>
+                    <option>Business Contact</option>
+                  </select>
+                </div>
+                <div class="margin-top-2">
+                  <label class="usa-label" for="contact-status-filter">Contact Status</label>
+                  <select class="usa-select" id="contact-status-filter">
+                    <option value="" selected>Any Contact Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </div>
+                <div class="margin-top-2">
+                  <label class="usa-label" for="fein">Organization FEIN</label>
+                  <input class="usa-input" id="fein" />
+                </div>
+                <div class="margin-top-2">
+                  <label class="usa-label" for="tags-filter">Tags</label>
+                  <input class="usa-input" id="tags-filter" placeholder="Search by tag(s), separated by commas" />
                 </div>
               </details>
             </div>
@@ -176,10 +184,6 @@
               </div>
             </div>
             <div class="usa-card__body">
-              <div class="usa-alert usa-alert--info" role="status">
-                <div class="usa-alert__body"><p class="usa-alert__text">Tip: Use FEIN + Application to narrow duplicates.</p></div>
-              </div>
-
               <div id="empty-results" class="usa-alert usa-alert--warning margin-top-2" role="status">
                 <div class="usa-alert__body"><p class="usa-alert__text">Run a search to load contact results.</p></div>
               </div>
@@ -216,6 +220,7 @@
     const companyFilterInput = document.getElementById('company');
     const companyFilterWrapper = document.getElementById('company-filter-wrapper');
     const tagsFilterInput = document.getElementById('tags-filter');
+    const contactStatusFilterSelect = document.getElementById('contact-status-filter');
     const defaultStakeholderMappings = {
       'Federal Partners': [
         'Administration for Children and Families (ACF Leadership)',
@@ -457,6 +462,7 @@
         .filter(Boolean);
       const selectedStakeholderGroup = stakeholderGroupFilter.value.trim();
       const selectedStakeholder = stakeholderFilter.value.trim();
+      const contactStatusFilter = contactStatusFilterSelect.value.trim();
 
       const matchingResults = seededResults.filter((result) => {
         const searchableContent = `${result.name} ${result.title || ''}`.toLowerCase();
@@ -466,9 +472,11 @@
         const organizationMatches = !organizationFilter || organizationName.includes(organizationFilter);
         const stakeholderGroupMatches = !selectedStakeholderGroup || result.stakeholderGroup === selectedStakeholderGroup;
         const stakeholderMatches = !selectedStakeholder || result.stakeholder === selectedStakeholder;
+        const contactStatus = result.active ? 'active' : 'inactive';
+        const contactStatusMatches = !contactStatusFilter || contactStatus === contactStatusFilter;
         const tags = getResultTags(result).map((tag) => tag.toLowerCase());
         const tagMatches = !tagFilters.length || tagFilters.every((tagFilter) => tags.some((tag) => tag.includes(tagFilter)));
-        return queryMatches && stateMatches && organizationMatches && stakeholderGroupMatches && stakeholderMatches && tagMatches;
+        return queryMatches && stateMatches && organizationMatches && stakeholderGroupMatches && stakeholderMatches && contactStatusMatches && tagMatches;
       });
 
       const seenContacts = new Set();
@@ -636,6 +644,12 @@
       renderResults();
     });
 
+    contactStatusFilterSelect.addEventListener('change', () => {
+      if (resultsPanel.hidden) return;
+      currentPage = 1;
+      renderResults();
+    });
+
     clearButton.addEventListener('click', () => {
       searchQuery.value = '';
       stateFilterSelect.value = '';
@@ -643,6 +657,7 @@
       stakeholderGroupFilter.dispatchEvent(new Event('change'));
       companyFilterInput.value = '';
       tagsFilterInput.value = '';
+      contactStatusFilterSelect.value = '';
       sortResultsSelect.value = 'Best Match';
       resultsList.innerHTML = '';
       resultsSummary.textContent = 'No results to display.';
