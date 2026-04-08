@@ -49,16 +49,7 @@
               </div>
               <label class="usa-label" for="title">Title</label><input class="usa-input" id="title" name="title" placeholder="Example: Technical Program Manager" required />
               <label class="usa-label" for="email">Email</label><input class="usa-input" id="email" name="email" type="email" required />
-              <div class="grid-row grid-gap">
-                <div class="tablet:grid-col-6"><label class="usa-label" for="phone">Phone</label><input class="usa-input" id="phone" name="phone" required /></div>
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="applications">Applications</label>
-                  <span class="usa-hint" id="applications-hint">Select one or more applications.</span>
-                  <select class="usa-select" id="applications" name="applications" multiple size="8" aria-describedby="applications-hint" required>
-                    <option value="Locate">Locate</option><option value="State Profile Admin">State Profile Admin</option><option value="Employer Services">Employer Services</option><option value="IRG">IRG</option><option value="Data Access">Data Access</option><option value="Federal Collections">Federal Collections</option><option value="Insurance Match">Insurance Match</option><option value="Communication Center">Communication Center</option>
-                  </select>
-                </div>
-              </div>
+              <label class="usa-label" for="phone">Phone</label><input class="usa-input" id="phone" name="phone" required />
               <div class="grid-row grid-gap">
                 <div class="tablet:grid-col-6">
                   <label class="usa-label" for="stakeholderGroup">Stakeholder Group</label>
@@ -222,7 +213,6 @@
         title: formData.get('title'),
         email: formData.get('email'),
         phone: formData.get('phone'),
-        applications: formData.getAll('applications'),
         stakeholderGroup: formData.get('stakeholderGroup'),
         stakeholder: formData.get('stakeholder'),
         status: formData.get('status'),
