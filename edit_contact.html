@@ -48,10 +48,20 @@
                 <div class="tablet:grid-col-6"><label class="usa-label" for="lastName">Last Name</label><input class="usa-input" id="lastName" name="lastName" required /></div>
               </div>
               <label class="usa-label" for="title">Job Title</label><input class="usa-input" id="title" name="title" required />
-              <label class="usa-label" for="relationshipType">Relationship Type</label>
-              <select class="usa-select" id="relationshipType" name="relationshipType" required>
-                <option value="">Relationship Type</option><option value="State IV-D Agency">State IV-D Agency</option><option value="Tribal IV-D Agency">Tribal IV-D Agency</option><option value="Employer">Employer</option><option value="Federal Agency">Federal Agency</option><option value="International Partner">International Partner</option><option value="Vendor / Contractor">Vendor / Contractor</option><option value="OCSE Internal">OCSE Internal</option>
-              </select>
+              <div class="grid-row grid-gap">
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="stakeholderGroup">Stakeholder Group</label>
+                  <select class="usa-select" id="stakeholderGroup" name="stakeholderGroup" required>
+                    <option value="">Stakeholder Group</option>
+                  </select>
+                </div>
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="stakeholder">Stakeholder</label>
+                  <select class="usa-select" id="stakeholder" name="stakeholder" required disabled>
+                    <option value="">Select Stakeholder Group first</option>
+                  </select>
+                </div>
+              </div>
               <label class="usa-label" for="applications">Applications</label>
               <span class="usa-hint" id="applications-hint">Select one or more applications linked to this contact.</span>
               <select class="usa-select" id="applications" name="applications" multiple size="8" aria-describedby="applications-hint" required>
@@ -84,11 +94,64 @@
       });
     }
 
+    const stakeholderMappings = {
+      'Federal Partners': [
+        'Administration for Children and Families (ACF Leadership)',
+        'U.S. Department of Health and Human Services (HHS)',
+        'Office of Management and Budget (OMB)',
+        'HHS Office of the Chief Information Officer (OCIO)',
+        'Office of Child Support Enforcement (OCSE Leadership & DFS)'
+      ],
+      'State & Local Agencies': [
+        'State IV-D Agencies (All States, DC, Territories)',
+        'County & Local Child Support Offices',
+        'State IT & Data Teams'
+      ],
+      'Tribal Programs': [
+        'Tribal IV-D Programs',
+        'Tribal Program Administrators & Caseworkers'
+      ],
+      'Federal Data Exchange Partners': [
+        'Social Security Administration (SSA)',
+        'Internal Revenue Service (IRS)',
+        'Department of Defense (DoD)',
+        'Department of Labor (DOL)'
+      ],
+      'Employers & Income Providers': [
+        'Private Employers',
+        'Multistate Employers',
+        'Payroll Service Providers',
+        'Federal Employers'
+      ],
+      'Courts & Legal Entities': [
+        'State Family Courts',
+        'Judges & Magistrates',
+        'Attorneys & Legal Representatives'
+      ],
+      'Families & End Users': [
+        'Custodial Parents',
+        'Noncustodial Parents',
+        'Children & Families Receiving Support'
+      ],
+      'Contractors & Vendors': [
+        'O&M Contractors',
+        'IV&V Providers',
+        'Cloud & Technology Vendors',
+        'Data & Analytics Partners'
+      ],
+      'Advocacy & Policy Organizations': [
+        'Child Welfare Organizations',
+        'Family Advocacy Groups',
+        'Policy Think Tanks'
+      ]
+    };
+
     const defaults = {
       firstName: 'Karen',
       lastName: 'Mitchell',
       title: 'Technical Program Manager',
-      relationshipType: 'State IV-D Agency',
+      stakeholderGroup: 'State & Local Agencies',
+      stakeholder: 'State IV-D Agencies (All States, DC, Territories)',
       applications: ['Locate', 'State Profile Admin', 'Employer Services'],
       primaryEmail: 'karen.mitchell@state.md.gov',
       secondaryEmail: 'k.mitchell@maryland.gov',
@@ -99,13 +162,61 @@
 
     const params = new URLSearchParams(window.location.search);
 
+    function initializeStakeholderFields(selectedGroup, selectedStakeholder) {
+      const stakeholderGroupSelect = document.getElementById('stakeholderGroup');
+      const stakeholderSelect = document.getElementById('stakeholder');
+      const stakeholderGroups = Object.keys(stakeholderMappings);
+
+      stakeholderGroupSelect.innerHTML = '<option value="">Stakeholder Group</option>';
+      stakeholderGroups.forEach((group) => {
+        const option = document.createElement('option');
+        option.value = group;
+        option.textContent = group;
+        stakeholderGroupSelect.appendChild(option);
+      });
+
+      function populateStakeholders(group, preferredStakeholder = '') {
+        const stakeholders = stakeholderMappings[group] || [];
+        stakeholderSelect.innerHTML = '';
+
+        if (!group) {
+          stakeholderSelect.disabled = true;
+          stakeholderSelect.innerHTML = '<option value="">Select Stakeholder Group first</option>';
+          return;
+        }
+
+        stakeholderSelect.disabled = false;
+        stakeholderSelect.innerHTML = '<option value="">Stakeholder</option>';
+        stakeholders.forEach((stakeholder) => {
+          const option = document.createElement('option');
+          option.value = stakeholder;
+          option.textContent = stakeholder;
+          stakeholderSelect.appendChild(option);
+        });
+
+        if (preferredStakeholder && stakeholders.includes(preferredStakeholder)) {
+          stakeholderSelect.value = preferredStakeholder;
+        }
+      }
+
+      stakeholderGroupSelect.addEventListener('change', () => {
+        populateStakeholders(stakeholderGroupSelect.value);
+      });
+
+      stakeholderGroupSelect.value = selectedGroup || '';
+      populateStakeholders(stakeholderGroupSelect.value, selectedStakeholder);
+    }
+
     Object.keys(defaults).forEach((key) => {
-      if (key === 'applications') return;
+      if (key === 'applications' || key === 'stakeholderGroup' || key === 'stakeholder') return;
       const input = document.getElementById(key);
       if (!input) return;
       const value = params.get(key) || defaults[key];
       input.value = value;
     });
+    const stakeholderGroupValue = params.get('stakeholderGroup') || defaults.stakeholderGroup;
+    const stakeholderValue = params.get('stakeholder') || defaults.stakeholder;
+    initializeStakeholderFields(stakeholderGroupValue, stakeholderValue);
 
     const selectedApplications = (params.get('applications') || defaults.applications.join(','))
       .split(',')
