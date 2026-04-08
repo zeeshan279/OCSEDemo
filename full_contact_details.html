@@ -189,37 +189,37 @@
             <tbody id="activities-tbody">
               <tr>
                 <td>March 20, 2026</td>
-                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#event"></use></svg><span class="usa-sr-only">Meeting</span></td>
+                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#content_copy"></use></svg><span class="usa-sr-only">Meeting</span></td>
                 <td>Reviewed Q2 interstate onboarding timeline with state leadership team.</td>
                 <td>Melissa Diaz</td>
               </tr>
               <tr>
                 <td>March 18, 2026</td>
-                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#edit"></use></svg><span class="usa-sr-only">Audit</span></td>
+                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#add"></use></svg><span class="usa-sr-only">Audit</span></td>
                 <td>Contact record updated: revised preferred contact method and secondary email details.</td>
                 <td>Melissa Diaz</td>
               </tr>
               <tr>
                 <td>March 11, 2026</td>
-                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#mail"></use></svg><span class="usa-sr-only">Email</span></td>
+                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#search"></use></svg><span class="usa-sr-only">Email</span></td>
                 <td>Sent follow-up guidance for updated security attestation package.</td>
                 <td>Omar Castillo</td>
               </tr>
               <tr>
                 <td>February 27, 2026</td>
-                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#phone"></use></svg><span class="usa-sr-only">Call</span></td>
+                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#navigate_next"></use></svg><span class="usa-sr-only">Call</span></td>
                 <td>Confirmed technical test window for employer services release.</td>
                 <td>Karen Mitchell</td>
               </tr>
               <tr>
                 <td>January 9, 2026</td>
-                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#edit"></use></svg><span class="usa-sr-only">Audit</span></td>
+                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#add"></use></svg><span class="usa-sr-only">Audit</span></td>
                 <td>Contact record updated: changed job title to Technical Program Manager.</td>
                 <td>Omar Castillo</td>
               </tr>
               <tr>
                 <td>March 15, 2024</td>
-                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#edit"></use></svg><span class="usa-sr-only">Audit</span></td>
+                <td><svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#add"></use></svg><span class="usa-sr-only">Audit</span></td>
                 <td>Contact record created in CSP Contacts.</td>
                 <td>OCSS Admin</td>
               </tr>
@@ -337,13 +337,13 @@
 
     const getActivityTypeIcon = (type) => {
       const iconByType = {
-        Meeting: 'event',
-        Call: 'phone',
-        Email: 'mail',
-        'Follow-up': 'update',
-        Audit: 'edit'
+        Meeting: 'content_copy',
+        Call: 'navigate_next',
+        Email: 'search',
+        'Follow-up': 'navigate_before',
+        Audit: 'add'
       };
-      const iconName = iconByType[type] || 'info';
+      const iconName = iconByType[type] || 'search';
       return `<svg class="activity-type-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#${iconName}"></use></svg><span class="usa-sr-only">${type}</span>`;
     };
 
