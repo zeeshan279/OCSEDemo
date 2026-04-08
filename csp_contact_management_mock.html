@@ -76,10 +76,28 @@
               <h3 class="usa-card__heading">Search filters</h3>
             </div>
             <div class="usa-card__body">
-              <label class="usa-label" for="search-query">Search</label>
-              <input class="usa-input" id="search-query" placeholder="Name, Organization, FEIN, or Email" value="Mitchell" />
+              <label class="usa-label" for="search-query">Search (name or title)</label>
+              <input class="usa-input" id="search-query" placeholder="Search by name or title" value="Mitchell" />
 
               <div class="grid-row grid-gap margin-top-2">
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="stakeholder-group-filter">Stakeholder Group</label>
+                  <select class="usa-select" id="stakeholder-group-filter">
+                    <option value="">Any Stakeholder Group</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid-row grid-gap margin-top-2" id="stakeholder-filter-wrapper" hidden>
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="stakeholder-filter">Stakeholder</label>
+                  <select class="usa-select" id="stakeholder-filter" disabled>
+                    <option value="">Select Stakeholder Group first</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid-row grid-gap margin-top-2" id="state-filter-wrapper" hidden>
                 <div class="tablet:grid-col-6">
                   <label class="usa-label" for="state-filter">State</label>
                   <select class="usa-select" id="state-filter">
@@ -96,65 +114,40 @@
                     <option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
                   </select>
                 </div>
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="application">Application</label>
-                  <select class="usa-select" id="application">
-                    <option>Application</option>
-                    <option selected>Locate</option>
-                    <option>State Profile Admin</option>
-                    <option>Employer Services</option>
-                    <option>IRG</option>
-                    <option>Data Access</option>
-                    <option>Federal Collections</option>
-                    <option>Insurance Match</option>
-                    <option>Communication Center</option>
-                  </select>
-                </div>
               </div>
 
-              <div class="grid-row grid-gap margin-top-2">
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="stakeholder-group-filter">Stakeholder Group</label>
-                  <select class="usa-select" id="stakeholder-group-filter">
-                    <option value="">Any Stakeholder Group</option>
-                  </select>
+              <details class="margin-top-3">
+                <summary class="text-bold">Advanced filters</summary>
+                <div class="grid-row grid-gap margin-top-2">
+                  <div class="tablet:grid-col-6">
+                    <label class="usa-label" for="application">Source Application</label>
+                    <select class="usa-select" id="application">
+                      <option>Any Source Application</option>
+                      <option selected>Locate</option>
+                      <option>State Profile Admin</option>
+                      <option>Employer Services</option>
+                      <option>IRG</option>
+                      <option>Data Access</option>
+                      <option>Federal Collections</option>
+                      <option>Insurance Match</option>
+                      <option>Communication Center</option>
+                    </select>
+                  </div>
+                  <div class="tablet:grid-col-6">
+                    <label class="usa-label" for="role-filter">Contact type</label>
+                    <select class="usa-select" id="role-filter">
+                      <option selected>Any Contact Type</option>
+                      <option>Primary Contact</option>
+                      <option>Technical Contact</option>
+                      <option>Business Contact</option>
+                    </select>
+                  </div>
                 </div>
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="stakeholder-filter">Stakeholder</label>
-                  <select class="usa-select" id="stakeholder-filter" disabled>
-                    <option value="">Select Stakeholder Group first</option>
-                  </select>
+                <div class="grid-row grid-gap margin-top-2">
+                  <div class="tablet:grid-col-6"><label class="usa-label" for="fein">FEIN</label><input class="usa-input" id="fein" /></div>
+                  <div class="tablet:grid-col-6"><label class="usa-label" for="company">Organization name</label><input class="usa-input" id="company" /></div>
                 </div>
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="role-filter">Contact role</label>
-                  <select class="usa-select" id="role-filter">
-                    <option selected>Any Role</option>
-                    <option>Primary Contact</option>
-                    <option>Technical Contact</option>
-                    <option>Business Contact</option>
-                  </select>
-                </div>
-              </div>
-
-              <h4 class="margin-top-3 margin-bottom-1">Advanced filters</h4>
-              <div class="grid-row grid-gap">
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="status-filter">Status</label>
-                  <select class="usa-select" id="status-filter">
-                    <option selected>Active</option>
-                    <option>Pending Approval</option>
-                    <option>Inactive</option>
-                  </select>
-                </div>
-                <div class="tablet:grid-col-6"><label class="usa-label" for="fein">FEIN (Employer)</label><input class="usa-input" id="fein" /></div>
-              </div>
-              <div class="grid-row grid-gap margin-top-2">
-                <div class="tablet:grid-col-6"><label class="usa-label" for="company">Organization name</label><input class="usa-input" id="company" /></div>
-              </div>
-              <label class="usa-label margin-top-2" for="title-filter">Title</label>
-              <input class="usa-input" id="title-filter" placeholder="Filter by contact title" />
-              <label class="usa-label margin-top-2" for="tag-filter">Tags</label>
-              <input class="usa-input" id="tag-filter" placeholder="Filter by tags (comma-separated, e.g., Locate, Technical Contact)" />
+              </details>
             </div>
             <div class="usa-card__footer display-flex flex-wrap gap-1">
               <button id="search-button" class="usa-button" type="button">Search</button>
@@ -210,9 +203,9 @@
     const paginationWrapper = document.getElementById('pagination-wrapper');
     const pagination = document.getElementById('pagination');
     const searchQuery = document.getElementById('search-query');
-    const titleFilterInput = document.getElementById('title-filter');
     const stateFilterSelect = document.getElementById('state-filter');
-    const tagFilterInput = document.getElementById('tag-filter');
+    const stateFilterWrapper = document.getElementById('state-filter-wrapper');
+    const stakeholderFilterWrapper = document.getElementById('stakeholder-filter-wrapper');
     const sortResultsSelect = document.getElementById('sort-results');
     const stakeholderGroupFilter = document.getElementById('stakeholder-group-filter');
     const stakeholderFilter = document.getElementById('stakeholder-filter');
@@ -385,6 +378,7 @@
     function populateStakeholderSelect(selectedGroup = '', selectedStakeholder = '') {
       stakeholderFilter.innerHTML = '';
       const stakeholders = stakeholderMappings[selectedGroup] || [];
+      updateConditionalFilterVisibility();
 
       if (!selectedGroup) {
         stakeholderFilter.disabled = true;
@@ -403,6 +397,16 @@
 
       if (selectedStakeholder && stakeholders.includes(selectedStakeholder)) {
         stakeholderFilter.value = selectedStakeholder;
+      }
+    }
+
+    function updateConditionalFilterVisibility() {
+      const selectedGroup = stakeholderGroupFilter.value.trim();
+      stakeholderFilterWrapper.hidden = !selectedGroup;
+      const shouldShowStateFilter = selectedGroup === 'State & Local Agencies';
+      stateFilterWrapper.hidden = !shouldShowStateFilter;
+      if (!shouldShowStateFilter) {
+        stateFilterSelect.value = '';
       }
     }
 
@@ -437,27 +441,17 @@
 
     function getFilteredResults() {
       const query = searchQuery.value.trim().toLowerCase();
-      const titleFilter = titleFilterInput.value.trim().toLowerCase();
       const stateFilter = stateFilterSelect.value.trim().toLowerCase();
       const selectedStakeholderGroup = stakeholderGroupFilter.value.trim();
       const selectedStakeholder = stakeholderFilter.value.trim();
-      const tagFilters = tagFilterInput.value
-        .split(',')
-        .map((tag) => tag.trim().toLowerCase())
-        .filter(Boolean);
 
       const matchingResults = seededResults.filter((result) => {
-        const searchableContent = `${result.name} ${result.title || ''} ${result.meta}`.toLowerCase();
-        const resultTags = getResultTags(result).map((tag) => tag.toLowerCase());
-        const queryMatches = !query
-          || searchableContent.includes(query)
-          || resultTags.some((tag) => tag.includes(query));
-        const titleMatches = !titleFilter || (result.title || '').toLowerCase().includes(titleFilter);
+        const searchableContent = `${result.name} ${result.title || ''}`.toLowerCase();
+        const queryMatches = !query || searchableContent.includes(query);
         const stateMatches = !stateFilter || (result.state || '').toLowerCase() === stateFilter;
         const stakeholderGroupMatches = !selectedStakeholderGroup || result.stakeholderGroup === selectedStakeholderGroup;
         const stakeholderMatches = !selectedStakeholder || result.stakeholder === selectedStakeholder;
-        const tagsMatch = tagFilters.every((filterTag) => resultTags.some((tag) => tag.includes(filterTag)));
-        return queryMatches && titleMatches && stateMatches && stakeholderGroupMatches && stakeholderMatches && tagsMatch;
+        return queryMatches && stateMatches && stakeholderGroupMatches && stakeholderMatches;
       });
 
       const seenContacts = new Set();
@@ -499,10 +493,8 @@
       const start = (currentPage - 1) * pageSize;
       const pageResults = filteredResults.slice(start, start + pageSize);
       const query = searchQuery.value.trim() || 'all contacts';
-      const tagQuery = tagFilterInput.value.trim();
-      const summaryDetails = tagQuery ? `${query} (tags: ${tagQuery})` : query;
 
-      resultsSummary.innerHTML = `<strong>${filteredResults.length} results</strong> for “${summaryDetails}”`;
+      resultsSummary.innerHTML = `<strong>${filteredResults.length} results</strong> for “${query}”`;
       resultsList.innerHTML = '';
       emptyResults.hidden = pageResults.length > 0;
 
@@ -629,8 +621,6 @@
 
     clearButton.addEventListener('click', () => {
       searchQuery.value = '';
-      tagFilterInput.value = '';
-      titleFilterInput.value = '';
       stateFilterSelect.value = '';
       stakeholderGroupFilter.value = '';
       stakeholderGroupFilter.dispatchEvent(new Event('change'));
@@ -667,6 +657,7 @@
     });
 
     initializeStakeholderFilters();
+    updateConditionalFilterVisibility();
   </script>
   <script>
     const menuToggle = document.getElementById('menu-toggle');
