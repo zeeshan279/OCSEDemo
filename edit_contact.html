@@ -48,20 +48,12 @@
                 <div class="tablet:grid-col-6"><label class="usa-label" for="lastName">Last Name</label><input class="usa-input" id="lastName" name="lastName" required /></div>
               </div>
               <label class="usa-label" for="title">Job Title</label><input class="usa-input" id="title" name="title" required />
-              <div class="grid-row grid-gap">
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="stakeholderGroup">Stakeholder Group</label>
-                  <select class="usa-select" id="stakeholderGroup" name="stakeholderGroup" required>
-                    <option value="">Stakeholder Group</option>
-                  </select>
-                </div>
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="stakeholder">Stakeholder</label>
-                  <select class="usa-select" id="stakeholder" name="stakeholder" required disabled>
-                    <option value="">Select Stakeholder Group first</option>
-                  </select>
-                </div>
-              </div>
+              <fieldset class="usa-fieldset margin-top-2">
+                <legend class="usa-legend">Stakeholder assignment(s)</legend>
+                <p class="usa-hint margin-top-neg-1">Add one or more stakeholder group and stakeholder pairs for this contact.</p>
+                <div id="stakeholder-assignments" class="display-flex flex-column gap-1"></div>
+                <button class="usa-button usa-button--outline margin-top-1" type="button" id="add-stakeholder-assignment">Add stakeholder assignment</button>
+              </fieldset>
               <label class="usa-label" for="applications">Applications</label>
               <span class="usa-hint" id="applications-hint">Select one or more applications linked to this contact.</span>
               <select class="usa-select" id="applications" name="applications" multiple size="8" aria-describedby="applications-hint" required>
@@ -150,8 +142,16 @@
       firstName: 'Karen',
       lastName: 'Mitchell',
       title: 'Technical Program Manager',
-      stakeholderGroup: 'State & Local Agencies',
-      stakeholder: 'State IV-D Agencies (All States, DC, Territories)',
+      stakeholderAssignments: [
+        {
+          group: 'State & Local Agencies',
+          stakeholder: 'State IV-D Agencies (All States, DC, Territories)'
+        },
+        {
+          group: 'Federal Data Exchange Partners',
+          stakeholder: 'Internal Revenue Service (IRS)'
+        }
+      ],
       applications: ['Locate', 'State Profile Admin', 'Employer Services'],
       primaryEmail: 'karen.mitchell@state.md.gov',
       secondaryEmail: 'k.mitchell@maryland.gov',
@@ -162,22 +162,23 @@
 
     const params = new URLSearchParams(window.location.search);
 
-    function initializeStakeholderFields(selectedGroup, selectedStakeholder) {
-      const stakeholderGroupSelect = document.getElementById('stakeholderGroup');
-      const stakeholderSelect = document.getElementById('stakeholder');
+    function initializeStakeholderAssignments(assignments) {
+      const assignmentsContainer = document.getElementById('stakeholder-assignments');
+      const addAssignmentButton = document.getElementById('add-stakeholder-assignment');
       const stakeholderGroups = Object.keys(stakeholderMappings);
 
-      stakeholderGroupSelect.innerHTML = '<option value="">Stakeholder Group</option>';
-      stakeholderGroups.forEach((group) => {
-        const option = document.createElement('option');
-        option.value = group;
-        option.textContent = group;
-        stakeholderGroupSelect.appendChild(option);
-      });
+      function createSelectOptions(selectElement, options, placeholder) {
+        selectElement.innerHTML = `<option value="">${placeholder}</option>`;
+        options.forEach((optionValue) => {
+          const option = document.createElement('option');
+          option.value = optionValue;
+          option.textContent = optionValue;
+          selectElement.appendChild(option);
+        });
+      }
 
-      function populateStakeholders(group, preferredStakeholder = '') {
+      function populateStakeholders(group, stakeholderSelect, preferredStakeholder = '') {
         const stakeholders = stakeholderMappings[group] || [];
-        stakeholderSelect.innerHTML = '';
 
         if (!group) {
           stakeholderSelect.disabled = true;
@@ -186,37 +187,94 @@
         }
 
         stakeholderSelect.disabled = false;
-        stakeholderSelect.innerHTML = '<option value="">Stakeholder</option>';
-        stakeholders.forEach((stakeholder) => {
-          const option = document.createElement('option');
-          option.value = stakeholder;
-          option.textContent = stakeholder;
-          stakeholderSelect.appendChild(option);
-        });
+        createSelectOptions(stakeholderSelect, stakeholders, 'Stakeholder');
 
         if (preferredStakeholder && stakeholders.includes(preferredStakeholder)) {
           stakeholderSelect.value = preferredStakeholder;
         }
       }
 
-      stakeholderGroupSelect.addEventListener('change', () => {
-        populateStakeholders(stakeholderGroupSelect.value);
-      });
+      function addStakeholderAssignment(selectedGroup = '', selectedStakeholder = '') {
+        const assignmentRow = document.createElement('div');
+        assignmentRow.className = 'grid-row grid-gap flex-align-end';
 
-      stakeholderGroupSelect.value = selectedGroup || '';
-      populateStakeholders(stakeholderGroupSelect.value, selectedStakeholder);
+        const groupContainer = document.createElement('div');
+        groupContainer.className = 'tablet:grid-col-5';
+        const groupLabel = document.createElement('label');
+        groupLabel.className = 'usa-label';
+        groupLabel.textContent = 'Stakeholder Group';
+        const groupSelect = document.createElement('select');
+        groupSelect.className = 'usa-select';
+        groupSelect.required = true;
+
+        const stakeholderContainer = document.createElement('div');
+        stakeholderContainer.className = 'tablet:grid-col-5';
+        const stakeholderLabel = document.createElement('label');
+        stakeholderLabel.className = 'usa-label';
+        stakeholderLabel.textContent = 'Stakeholder';
+        const stakeholderSelect = document.createElement('select');
+        stakeholderSelect.className = 'usa-select';
+        stakeholderSelect.required = true;
+
+        const removeContainer = document.createElement('div');
+        removeContainer.className = 'tablet:grid-col-2';
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'usa-button usa-button--unstyled text-no-underline margin-top-4';
+        removeButton.textContent = 'Remove';
+
+        createSelectOptions(groupSelect, stakeholderGroups, 'Stakeholder Group');
+        groupSelect.value = selectedGroup;
+        populateStakeholders(selectedGroup, stakeholderSelect, selectedStakeholder);
+
+        groupSelect.addEventListener('change', () => {
+          populateStakeholders(groupSelect.value, stakeholderSelect);
+        });
+
+        removeButton.addEventListener('click', () => {
+          assignmentRow.remove();
+          if (!assignmentsContainer.querySelector('.grid-row')) {
+            addStakeholderAssignment();
+          }
+        });
+
+        groupContainer.appendChild(groupLabel);
+        groupContainer.appendChild(groupSelect);
+        stakeholderContainer.appendChild(stakeholderLabel);
+        stakeholderContainer.appendChild(stakeholderSelect);
+        removeContainer.appendChild(removeButton);
+        assignmentRow.appendChild(groupContainer);
+        assignmentRow.appendChild(stakeholderContainer);
+        assignmentRow.appendChild(removeContainer);
+        assignmentsContainer.appendChild(assignmentRow);
+      }
+
+      addAssignmentButton.addEventListener('click', () => addStakeholderAssignment());
+      assignmentsContainer.innerHTML = '';
+      (assignments || []).forEach(({ group, stakeholder }) => addStakeholderAssignment(group, stakeholder));
+      if (!assignments || assignments.length === 0) {
+        addStakeholderAssignment();
+      }
     }
 
     Object.keys(defaults).forEach((key) => {
-      if (key === 'applications' || key === 'stakeholderGroup' || key === 'stakeholder') return;
+      if (key === 'applications' || key === 'stakeholderAssignments') return;
       const input = document.getElementById(key);
       if (!input) return;
       const value = params.get(key) || defaults[key];
       input.value = value;
     });
-    const stakeholderGroupValue = params.get('stakeholderGroup') || defaults.stakeholderGroup;
-    const stakeholderValue = params.get('stakeholder') || defaults.stakeholder;
-    initializeStakeholderFields(stakeholderGroupValue, stakeholderValue);
+    const stakeholderAssignmentValue = params.get('stakeholderAssignments');
+    const stakeholderAssignments = stakeholderAssignmentValue
+      ? stakeholderAssignmentValue
+        .split('||')
+        .map((pair) => {
+          const [group, stakeholder] = pair.split('::');
+          return { group: (group || '').trim(), stakeholder: (stakeholder || '').trim() };
+        })
+        .filter((assignment) => assignment.group || assignment.stakeholder)
+      : defaults.stakeholderAssignments;
+    initializeStakeholderAssignments(stakeholderAssignments);
 
     const selectedApplications = (params.get('applications') || defaults.applications.join(','))
       .split(',')
