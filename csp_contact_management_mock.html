@@ -55,6 +55,7 @@
           <li class="usa-sidenav__item"><a class="usa-current" href="csp_contact_management_mock.html" aria-current="page"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#search"></use></svg>Search</a></li>
           <li class="usa-sidenav__item"><a href="create_contact.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#add"></use></svg>Create</a></li>
           <li class="usa-sidenav__item"><a href="duplicate_review_merge.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#content_copy"></use></svg>Duplicate Review</a></li>
+          <li class="usa-sidenav__item"><a href="stakeholder_relationship_management.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#groups"></use></svg>Stakeholder Mapping</a></li>
         </ul>
       </nav>
     </aside>
@@ -64,6 +65,7 @@
         <h2 class="margin-y-0">Contact Search</h2>
         <div class="display-flex flex-align-center gap-1">
           <button id="menu-toggle" class="usa-button usa-button--outline" type="button">Show menu</button>
+          <a href="stakeholder_relationship_management.html" class="usa-button usa-button--outline">Manage Stakeholders</a>
           <a href="create_contact.html" class="usa-button">New Contact</a>
         </div>
       </header>
@@ -76,9 +78,25 @@
             </div>
             <div class="usa-card__body">
               <label class="usa-label" for="search-query">Search</label>
-              <input class="usa-input" id="search-query" placeholder="Name, Company, FEIN, or Email" value="Mitchell" />
+              <input class="usa-input" id="search-query" placeholder="Name, Organization, FEIN, or Email" value="Mitchell" />
 
               <div class="grid-row grid-gap margin-top-2">
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="state-filter">State</label>
+                  <select class="usa-select" id="state-filter">
+                    <option value="" selected>Any state</option>
+                    <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option>
+                    <option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option>
+                    <option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option>
+                    <option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option>
+                    <option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option>
+                    <option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option>
+                    <option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option>
+                    <option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option>
+                    <option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option>
+                    <option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+                  </select>
+                </div>
                 <div class="tablet:grid-col-6">
                   <label class="usa-label" for="application">Application</label>
                   <select class="usa-select" id="application">
@@ -93,28 +111,19 @@
                     <option>Communication Center</option>
                   </select>
                 </div>
-                <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="status-filter">Status</label>
-                  <select class="usa-select" id="status-filter">
-                    <option selected>Active</option>
-                    <option>Pending Approval</option>
-                    <option>Inactive</option>
-                  </select>
-                </div>
               </div>
 
               <div class="grid-row grid-gap margin-top-2">
                 <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="relationship-type">Relationship type</label>
-                  <select class="usa-select" id="relationship-type">
-                    <option>Relationship Type</option>
-                    <option selected>State IV-D Agency</option>
-                    <option>Tribal IV-D Agency</option>
-                    <option>Employer</option>
-                    <option>Federal Agency</option>
-                    <option>International Partner</option>
-                    <option>Vendor / Contractor</option>
-                    <option>OCSE Internal</option>
+                  <label class="usa-label" for="stakeholder-group-filter">Stakeholder Group</label>
+                  <select class="usa-select" id="stakeholder-group-filter">
+                    <option value="">Any Stakeholder Group</option>
+                  </select>
+                </div>
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="stakeholder-filter">Stakeholder</label>
+                  <select class="usa-select" id="stakeholder-filter" disabled>
+                    <option value="">Select Stakeholder Group first</option>
                   </select>
                 </div>
                 <div class="tablet:grid-col-6">
@@ -130,25 +139,21 @@
 
               <h4 class="margin-top-3 margin-bottom-1">Advanced filters</h4>
               <div class="grid-row grid-gap">
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="status-filter">Status</label>
+                  <select class="usa-select" id="status-filter">
+                    <option selected>Active</option>
+                    <option>Pending Approval</option>
+                    <option>Inactive</option>
+                  </select>
+                </div>
                 <div class="tablet:grid-col-6"><label class="usa-label" for="fein">FEIN (Employer)</label><input class="usa-input" id="fein" /></div>
-                <div class="tablet:grid-col-6"><label class="usa-label" for="company">Company name</label><input class="usa-input" id="company" /></div>
+              </div>
+              <div class="grid-row grid-gap margin-top-2">
+                <div class="tablet:grid-col-6"><label class="usa-label" for="company">Organization name</label><input class="usa-input" id="company" /></div>
               </div>
               <label class="usa-label margin-top-2" for="title-filter">Title</label>
               <input class="usa-input" id="title-filter" placeholder="Filter by contact title" />
-              <label class="usa-label margin-top-2" for="state-filter">State</label>
-              <select class="usa-select" id="state-filter">
-                <option value="" selected>Any state</option>
-                <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option>
-                <option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option>
-                <option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option>
-                <option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option>
-                <option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option>
-                <option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option>
-                <option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option>
-                <option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option>
-                <option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option>
-                <option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
-              </select>
               <label class="usa-label margin-top-2" for="tag-filter">Tags</label>
               <input class="usa-input" id="tag-filter" placeholder="Filter by tags (comma-separated, e.g., Locate, Technical Contact)" />
             </div>
@@ -210,8 +215,91 @@
     const stateFilterSelect = document.getElementById('state-filter');
     const tagFilterInput = document.getElementById('tag-filter');
     const sortResultsSelect = document.getElementById('sort-results');
+    const stakeholderGroupFilter = document.getElementById('stakeholder-group-filter');
+    const stakeholderFilter = document.getElementById('stakeholder-filter');
     const searchButton = document.getElementById('search-button');
     const clearButton = document.getElementById('clear-button');
+    const stakeholderStorageKey = 'cspStakeholderMappings';
+    const defaultStakeholderMappings = {
+      'Federal Partners': [
+        'Administration for Children and Families (ACF Leadership)',
+        'U.S. Department of Health and Human Services (HHS)',
+        'Office of Management and Budget (OMB)',
+        'HHS Office of the Chief Information Officer (OCIO)',
+        'Office of Child Support Enforcement (OCSE Leadership & DFS)'
+      ],
+      'State & Local Agencies': [
+        'State IV-D Agencies (All States, DC, Territories)',
+        'County & Local Child Support Offices',
+        'State IT & Data Teams'
+      ],
+      'Tribal Programs': [
+        'Tribal IV-D Programs',
+        'Tribal Program Administrators & Caseworkers'
+      ],
+      'Federal Data Exchange Partners': [
+        'Social Security Administration (SSA)',
+        'Internal Revenue Service (IRS)',
+        'Department of Defense (DoD)',
+        'Department of Labor (DOL)'
+      ],
+      'Employers & Income Providers': [
+        'Private Employers',
+        'Multistate Employers',
+        'Payroll Service Providers',
+        'Federal Employers'
+      ],
+      'Courts & Legal Entities': [
+        'State Family Courts',
+        'Judges & Magistrates',
+        'Attorneys & Legal Representatives'
+      ],
+      'Families & End Users': [
+        'Custodial Parents',
+        'Noncustodial Parents',
+        'Children & Families Receiving Support'
+      ],
+      'Contractors & Vendors': [
+        'O&M Contractors',
+        'IV&V Providers',
+        'Cloud & Technology Vendors',
+        'Data & Analytics Partners'
+      ],
+      'Advocacy & Policy Organizations': [
+        'Child Welfare Organizations',
+        'Family Advocacy Groups',
+        'Policy Think Tanks'
+      ]
+    };
+
+    function cloneStakeholderMappings(mappings) {
+      return Object.entries(mappings).reduce((acc, [group, stakeholders]) => {
+        acc[group] = [...stakeholders];
+        return acc;
+      }, {});
+    }
+
+    function loadStakeholderMappings() {
+      const storedValue = localStorage.getItem(stakeholderStorageKey);
+      if (!storedValue) return cloneStakeholderMappings(defaultStakeholderMappings);
+
+      try {
+        const parsed = JSON.parse(storedValue);
+        return Object.entries(parsed).reduce((acc, [group, stakeholders]) => {
+          if (typeof group !== 'string' || !Array.isArray(stakeholders)) return acc;
+          const cleanedGroup = group.trim();
+          const cleanedStakeholders = [...new Set(stakeholders.map((name) => String(name).trim()).filter(Boolean))];
+          if (cleanedGroup && cleanedStakeholders.length > 0) {
+            acc[cleanedGroup] = cleanedStakeholders;
+          }
+          return acc;
+        }, {});
+      } catch {
+        return cloneStakeholderMappings(defaultStakeholderMappings);
+      }
+    }
+
+    let stakeholderMappings = loadStakeholderMappings();
 
     const pageSize = 10;
     let currentPage = 1;
@@ -239,13 +327,108 @@
       { name: 'Kaleb Mitchell', title: 'Customer Care Lead', relationshipType: 'Call Center Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'CSP Communication Center<br>(410) 555-0120 · kaleb.mitchell@cspcenter.org', tags: ['Communication Center', 'Customer Support', 'Tier 2'] },
       { name: 'Kathryn Mitchell', title: 'Exchange Administrator', relationshipType: 'Data Exchange Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Interstate Data Hub<br>(202) 555-0121 · kathryn.mitchell@idhub.org', tags: ['Data Access', 'Enterprise Liaison', 'Interstate'] }
     ];
-    const seededResults = searchResults.map((result, index) => ({
-      ...result,
-      state: result.state || 'Maryland',
-      lastUpdated: result.lastUpdated || `2026-03-${String(22 - (index % 10)).padStart(2, '0')}`
-    }));
+    const relationshipFallbackMap = {
+      'State IV-D Agency': {
+        stakeholderGroup: 'State & Local Agencies',
+        stakeholder: 'State IV-D Agencies (All States, DC, Territories)'
+      },
+      'County Agency': {
+        stakeholderGroup: 'State & Local Agencies',
+        stakeholder: 'County & Local Child Support Offices'
+      },
+      'State IT Office': {
+        stakeholderGroup: 'State & Local Agencies',
+        stakeholder: 'State IT & Data Teams'
+      },
+      'Tribal IV-D Agency': {
+        stakeholderGroup: 'Tribal Programs',
+        stakeholder: 'Tribal IV-D Programs'
+      },
+      Employer: {
+        stakeholderGroup: 'Employers & Income Providers',
+        stakeholder: 'Private Employers'
+      },
+      'Federal Agency': {
+        stakeholderGroup: 'Federal Partners',
+        stakeholder: 'U.S. Department of Health and Human Services (HHS)'
+      },
+      'Vendor / Contractor': {
+        stakeholderGroup: 'Contractors & Vendors',
+        stakeholder: 'Cloud & Technology Vendors'
+      },
+      'OCSE Internal': {
+        stakeholderGroup: 'Federal Partners',
+        stakeholder: 'Office of Child Support Enforcement (OCSE Leadership & DFS)'
+      },
+      'Court System': {
+        stakeholderGroup: 'Courts & Legal Entities',
+        stakeholder: 'State Family Courts'
+      },
+      'Military Liaison': {
+        stakeholderGroup: 'Federal Data Exchange Partners',
+        stakeholder: 'Department of Defense (DoD)'
+      }
+    };
+
+    const seededResults = searchResults.map((result, index) => {
+      const mappedStakeholders = relationshipFallbackMap[result.relationshipType] || {};
+      return {
+        ...result,
+        stakeholderGroup: result.stakeholderGroup || mappedStakeholders.stakeholderGroup || '',
+        stakeholder: result.stakeholder || mappedStakeholders.stakeholder || '',
+        state: result.state || 'Maryland',
+        lastUpdated: result.lastUpdated || `2026-03-${String(22 - (index % 10)).padStart(2, '0')}`
+      };
+    });
 
     const defaultTags = ['Contact', 'Directory', 'Candidate'];
+
+    function populateStakeholderSelect(selectedGroup = '', selectedStakeholder = '') {
+      stakeholderFilter.innerHTML = '';
+      const stakeholders = stakeholderMappings[selectedGroup] || [];
+
+      if (!selectedGroup) {
+        stakeholderFilter.disabled = true;
+        stakeholderFilter.innerHTML = '<option value="">Select Stakeholder Group first</option>';
+        return;
+      }
+
+      stakeholderFilter.disabled = false;
+      stakeholderFilter.innerHTML = '<option value="">Any Stakeholder</option>';
+      stakeholders.forEach((stakeholder) => {
+        const option = document.createElement('option');
+        option.value = stakeholder;
+        option.textContent = stakeholder;
+        stakeholderFilter.appendChild(option);
+      });
+
+      if (selectedStakeholder && stakeholders.includes(selectedStakeholder)) {
+        stakeholderFilter.value = selectedStakeholder;
+      }
+    }
+
+    function initializeStakeholderFilters() {
+      stakeholderGroupFilter.innerHTML = '<option value="">Any Stakeholder Group</option>';
+      Object.keys(stakeholderMappings).forEach((group) => {
+        const option = document.createElement('option');
+        option.value = group;
+        option.textContent = group;
+        stakeholderGroupFilter.appendChild(option);
+      });
+      populateStakeholderSelect();
+    }
+
+    function refreshStakeholderMappings() {
+      const previousGroup = stakeholderGroupFilter.value;
+      const previousStakeholder = stakeholderFilter.value;
+      stakeholderMappings = loadStakeholderMappings();
+      initializeStakeholderFilters();
+
+      if (previousGroup && stakeholderMappings[previousGroup]) {
+        stakeholderGroupFilter.value = previousGroup;
+        populateStakeholderSelect(previousGroup, previousStakeholder);
+      }
+    }
 
     function getResultTags(result) {
       const contactTags = result.tags || defaultTags;
@@ -257,6 +440,8 @@
       const query = searchQuery.value.trim().toLowerCase();
       const titleFilter = titleFilterInput.value.trim().toLowerCase();
       const stateFilter = stateFilterSelect.value.trim().toLowerCase();
+      const selectedStakeholderGroup = stakeholderGroupFilter.value.trim();
+      const selectedStakeholder = stakeholderFilter.value.trim();
       const tagFilters = tagFilterInput.value
         .split(',')
         .map((tag) => tag.trim().toLowerCase())
@@ -270,8 +455,10 @@
           || resultTags.some((tag) => tag.includes(query));
         const titleMatches = !titleFilter || (result.title || '').toLowerCase().includes(titleFilter);
         const stateMatches = !stateFilter || (result.state || '').toLowerCase() === stateFilter;
+        const stakeholderGroupMatches = !selectedStakeholderGroup || result.stakeholderGroup === selectedStakeholderGroup;
+        const stakeholderMatches = !selectedStakeholder || result.stakeholder === selectedStakeholder;
         const tagsMatch = tagFilters.every((filterTag) => resultTags.some((tag) => tag.includes(filterTag)));
-        return queryMatches && titleMatches && stateMatches && tagsMatch;
+        return queryMatches && titleMatches && stateMatches && stakeholderGroupMatches && stakeholderMatches && tagsMatch;
       });
 
       const seenContacts = new Set();
@@ -422,6 +609,19 @@
       renderResults();
     });
 
+    stakeholderGroupFilter.addEventListener('change', () => {
+      populateStakeholderSelect(stakeholderGroupFilter.value);
+      if (resultsPanel.hidden) return;
+      currentPage = 1;
+      renderResults();
+    });
+
+    stakeholderFilter.addEventListener('change', () => {
+      if (resultsPanel.hidden) return;
+      currentPage = 1;
+      renderResults();
+    });
+
     stateFilterSelect.addEventListener('change', () => {
       if (resultsPanel.hidden) return;
       currentPage = 1;
@@ -433,6 +633,8 @@
       tagFilterInput.value = '';
       titleFilterInput.value = '';
       stateFilterSelect.value = '';
+      stakeholderGroupFilter.value = '';
+      stakeholderGroupFilter.dispatchEvent(new Event('change'));
       sortResultsSelect.value = 'Best Match';
       resultsList.innerHTML = '';
       resultsSummary.textContent = 'No results to display.';
@@ -447,6 +649,25 @@
       currentPage = 1;
       renderResults();
     });
+
+    window.addEventListener('focus', () => {
+      refreshStakeholderMappings();
+      if (!resultsPanel.hidden) {
+        currentPage = 1;
+        renderResults();
+      }
+    });
+
+    window.addEventListener('storage', (event) => {
+      if (event.key !== stakeholderStorageKey) return;
+      refreshStakeholderMappings();
+      if (!resultsPanel.hidden) {
+        currentPage = 1;
+        renderResults();
+      }
+    });
+
+    initializeStakeholderFilters();
   </script>
   <script>
     const menuToggle = document.getElementById('menu-toggle');
