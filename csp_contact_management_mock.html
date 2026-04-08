@@ -55,6 +55,7 @@
           <li class="usa-sidenav__item"><a class="usa-current" href="csp_contact_management_mock.html" aria-current="page"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#search"></use></svg>Search</a></li>
           <li class="usa-sidenav__item"><a href="create_contact.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#add"></use></svg>Create</a></li>
           <li class="usa-sidenav__item"><a href="duplicate_review_merge.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#content_copy"></use></svg>Duplicate Review</a></li>
+          <li class="usa-sidenav__item"><a href="stakeholder_relationship_management.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#groups"></use></svg>Stakeholder Mapping</a></li>
         </ul>
       </nav>
     </aside>
@@ -64,6 +65,7 @@
         <h2 class="margin-y-0">Contact Search</h2>
         <div class="display-flex flex-align-center gap-1">
           <button id="menu-toggle" class="usa-button usa-button--outline" type="button">Show menu</button>
+          <a href="stakeholder_relationship_management.html" class="usa-button usa-button--outline">Manage Stakeholders</a>
           <a href="create_contact.html" class="usa-button">New Contact</a>
         </div>
       </header>
@@ -217,7 +219,8 @@
     const stakeholderFilter = document.getElementById('stakeholder-filter');
     const searchButton = document.getElementById('search-button');
     const clearButton = document.getElementById('clear-button');
-    const stakeholderMappings = {
+    const stakeholderStorageKey = 'cspStakeholderMappings';
+    const defaultStakeholderMappings = {
       'Federal Partners': [
         'Administration for Children and Families (ACF Leadership)',
         'U.S. Department of Health and Human Services (HHS)',
@@ -268,6 +271,35 @@
         'Policy Think Tanks'
       ]
     };
+
+    function cloneStakeholderMappings(mappings) {
+      return Object.entries(mappings).reduce((acc, [group, stakeholders]) => {
+        acc[group] = [...stakeholders];
+        return acc;
+      }, {});
+    }
+
+    function loadStakeholderMappings() {
+      const storedValue = localStorage.getItem(stakeholderStorageKey);
+      if (!storedValue) return cloneStakeholderMappings(defaultStakeholderMappings);
+
+      try {
+        const parsed = JSON.parse(storedValue);
+        return Object.entries(parsed).reduce((acc, [group, stakeholders]) => {
+          if (typeof group !== 'string' || !Array.isArray(stakeholders)) return acc;
+          const cleanedGroup = group.trim();
+          const cleanedStakeholders = [...new Set(stakeholders.map((name) => String(name).trim()).filter(Boolean))];
+          if (cleanedGroup && cleanedStakeholders.length > 0) {
+            acc[cleanedGroup] = cleanedStakeholders;
+          }
+          return acc;
+        }, {});
+      } catch {
+        return cloneStakeholderMappings(defaultStakeholderMappings);
+      }
+    }
+
+    let stakeholderMappings = loadStakeholderMappings();
 
     const pageSize = 10;
     let currentPage = 1;
@@ -351,6 +383,30 @@
 
     const defaultTags = ['Contact', 'Directory', 'Candidate'];
 
+    function populateStakeholderSelect(selectedGroup = '', selectedStakeholder = '') {
+      stakeholderFilter.innerHTML = '';
+      const stakeholders = stakeholderMappings[selectedGroup] || [];
+
+      if (!selectedGroup) {
+        stakeholderFilter.disabled = true;
+        stakeholderFilter.innerHTML = '<option value="">Select Stakeholder Group first</option>';
+        return;
+      }
+
+      stakeholderFilter.disabled = false;
+      stakeholderFilter.innerHTML = '<option value="">Any Stakeholder</option>';
+      stakeholders.forEach((stakeholder) => {
+        const option = document.createElement('option');
+        option.value = stakeholder;
+        option.textContent = stakeholder;
+        stakeholderFilter.appendChild(option);
+      });
+
+      if (selectedStakeholder && stakeholders.includes(selectedStakeholder)) {
+        stakeholderFilter.value = selectedStakeholder;
+      }
+    }
+
     function initializeStakeholderFilters() {
       stakeholderGroupFilter.innerHTML = '<option value="">Any Stakeholder Group</option>';
       Object.keys(stakeholderMappings).forEach((group) => {
@@ -359,27 +415,19 @@
         option.textContent = group;
         stakeholderGroupFilter.appendChild(option);
       });
+      populateStakeholderSelect();
+    }
 
-      stakeholderGroupFilter.addEventListener('change', () => {
-        const selectedGroup = stakeholderGroupFilter.value;
-        const stakeholders = stakeholderMappings[selectedGroup] || [];
-        stakeholderFilter.innerHTML = '';
+    function refreshStakeholderMappings() {
+      const previousGroup = stakeholderGroupFilter.value;
+      const previousStakeholder = stakeholderFilter.value;
+      stakeholderMappings = loadStakeholderMappings();
+      initializeStakeholderFilters();
 
-        if (!selectedGroup) {
-          stakeholderFilter.disabled = true;
-          stakeholderFilter.innerHTML = '<option value="">Select Stakeholder Group first</option>';
-          return;
-        }
-
-        stakeholderFilter.disabled = false;
-        stakeholderFilter.innerHTML = '<option value="">Any Stakeholder</option>';
-        stakeholders.forEach((stakeholder) => {
-          const option = document.createElement('option');
-          option.value = stakeholder;
-          option.textContent = stakeholder;
-          stakeholderFilter.appendChild(option);
-        });
-      });
+      if (previousGroup && stakeholderMappings[previousGroup]) {
+        stakeholderGroupFilter.value = previousGroup;
+        populateStakeholderSelect(previousGroup, previousStakeholder);
+      }
     }
 
     function getResultTags(result) {
@@ -562,6 +610,7 @@
     });
 
     stakeholderGroupFilter.addEventListener('change', () => {
+      populateStakeholderSelect(stakeholderGroupFilter.value);
       if (resultsPanel.hidden) return;
       currentPage = 1;
       renderResults();
@@ -599,6 +648,23 @@
       if (resultsPanel.hidden) return;
       currentPage = 1;
       renderResults();
+    });
+
+    window.addEventListener('focus', () => {
+      refreshStakeholderMappings();
+      if (!resultsPanel.hidden) {
+        currentPage = 1;
+        renderResults();
+      }
+    });
+
+    window.addEventListener('storage', (event) => {
+      if (event.key !== stakeholderStorageKey) return;
+      refreshStakeholderMappings();
+      if (!resultsPanel.hidden) {
+        currentPage = 1;
+        renderResults();
+      }
     });
 
     initializeStakeholderFilters();
