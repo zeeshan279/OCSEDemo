@@ -113,16 +113,15 @@
 
               <div class="grid-row grid-gap margin-top-2">
                 <div class="tablet:grid-col-6">
-                  <label class="usa-label" for="relationship-type">Relationship type</label>
-                  <select class="usa-select" id="relationship-type">
-                    <option>Relationship Type</option>
-                    <option selected>State IV-D Agency</option>
-                    <option>Tribal IV-D Agency</option>
-                    <option>Employer</option>
-                    <option>Federal Agency</option>
-                    <option>International Partner</option>
-                    <option>Vendor / Contractor</option>
-                    <option>OCSE Internal</option>
+                  <label class="usa-label" for="stakeholder-group-filter">Stakeholder Group</label>
+                  <select class="usa-select" id="stakeholder-group-filter">
+                    <option value="">Any Stakeholder Group</option>
+                  </select>
+                </div>
+                <div class="tablet:grid-col-6">
+                  <label class="usa-label" for="stakeholder-filter">Stakeholder</label>
+                  <select class="usa-select" id="stakeholder-filter" disabled>
+                    <option value="">Select Stakeholder Group first</option>
                   </select>
                 </div>
                 <div class="tablet:grid-col-6">
@@ -214,8 +213,61 @@
     const stateFilterSelect = document.getElementById('state-filter');
     const tagFilterInput = document.getElementById('tag-filter');
     const sortResultsSelect = document.getElementById('sort-results');
+    const stakeholderGroupFilter = document.getElementById('stakeholder-group-filter');
+    const stakeholderFilter = document.getElementById('stakeholder-filter');
     const searchButton = document.getElementById('search-button');
     const clearButton = document.getElementById('clear-button');
+    const stakeholderMappings = {
+      'Federal Partners': [
+        'Administration for Children and Families (ACF Leadership)',
+        'U.S. Department of Health and Human Services (HHS)',
+        'Office of Management and Budget (OMB)',
+        'HHS Office of the Chief Information Officer (OCIO)',
+        'Office of Child Support Enforcement (OCSE Leadership & DFS)'
+      ],
+      'State & Local Agencies': [
+        'State IV-D Agencies (All States, DC, Territories)',
+        'County & Local Child Support Offices',
+        'State IT & Data Teams'
+      ],
+      'Tribal Programs': [
+        'Tribal IV-D Programs',
+        'Tribal Program Administrators & Caseworkers'
+      ],
+      'Federal Data Exchange Partners': [
+        'Social Security Administration (SSA)',
+        'Internal Revenue Service (IRS)',
+        'Department of Defense (DoD)',
+        'Department of Labor (DOL)'
+      ],
+      'Employers & Income Providers': [
+        'Private Employers',
+        'Multistate Employers',
+        'Payroll Service Providers',
+        'Federal Employers'
+      ],
+      'Courts & Legal Entities': [
+        'State Family Courts',
+        'Judges & Magistrates',
+        'Attorneys & Legal Representatives'
+      ],
+      'Families & End Users': [
+        'Custodial Parents',
+        'Noncustodial Parents',
+        'Children & Families Receiving Support'
+      ],
+      'Contractors & Vendors': [
+        'O&M Contractors',
+        'IV&V Providers',
+        'Cloud & Technology Vendors',
+        'Data & Analytics Partners'
+      ],
+      'Advocacy & Policy Organizations': [
+        'Child Welfare Organizations',
+        'Family Advocacy Groups',
+        'Policy Think Tanks'
+      ]
+    };
 
     const pageSize = 10;
     let currentPage = 1;
@@ -243,13 +295,92 @@
       { name: 'Kaleb Mitchell', title: 'Customer Care Lead', relationshipType: 'Call Center Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'CSP Communication Center<br>(410) 555-0120 · kaleb.mitchell@cspcenter.org', tags: ['Communication Center', 'Customer Support', 'Tier 2'] },
       { name: 'Kathryn Mitchell', title: 'Exchange Administrator', relationshipType: 'Data Exchange Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Interstate Data Hub<br>(202) 555-0121 · kathryn.mitchell@idhub.org', tags: ['Data Access', 'Enterprise Liaison', 'Interstate'] }
     ];
-    const seededResults = searchResults.map((result, index) => ({
-      ...result,
-      state: result.state || 'Maryland',
-      lastUpdated: result.lastUpdated || `2026-03-${String(22 - (index % 10)).padStart(2, '0')}`
-    }));
+    const relationshipFallbackMap = {
+      'State IV-D Agency': {
+        stakeholderGroup: 'State & Local Agencies',
+        stakeholder: 'State IV-D Agencies (All States, DC, Territories)'
+      },
+      'County Agency': {
+        stakeholderGroup: 'State & Local Agencies',
+        stakeholder: 'County & Local Child Support Offices'
+      },
+      'State IT Office': {
+        stakeholderGroup: 'State & Local Agencies',
+        stakeholder: 'State IT & Data Teams'
+      },
+      'Tribal IV-D Agency': {
+        stakeholderGroup: 'Tribal Programs',
+        stakeholder: 'Tribal IV-D Programs'
+      },
+      Employer: {
+        stakeholderGroup: 'Employers & Income Providers',
+        stakeholder: 'Private Employers'
+      },
+      'Federal Agency': {
+        stakeholderGroup: 'Federal Partners',
+        stakeholder: 'U.S. Department of Health and Human Services (HHS)'
+      },
+      'Vendor / Contractor': {
+        stakeholderGroup: 'Contractors & Vendors',
+        stakeholder: 'Cloud & Technology Vendors'
+      },
+      'OCSE Internal': {
+        stakeholderGroup: 'Federal Partners',
+        stakeholder: 'Office of Child Support Enforcement (OCSE Leadership & DFS)'
+      },
+      'Court System': {
+        stakeholderGroup: 'Courts & Legal Entities',
+        stakeholder: 'State Family Courts'
+      },
+      'Military Liaison': {
+        stakeholderGroup: 'Federal Data Exchange Partners',
+        stakeholder: 'Department of Defense (DoD)'
+      }
+    };
+
+    const seededResults = searchResults.map((result, index) => {
+      const mappedStakeholders = relationshipFallbackMap[result.relationshipType] || {};
+      return {
+        ...result,
+        stakeholderGroup: result.stakeholderGroup || mappedStakeholders.stakeholderGroup || '',
+        stakeholder: result.stakeholder || mappedStakeholders.stakeholder || '',
+        state: result.state || 'Maryland',
+        lastUpdated: result.lastUpdated || `2026-03-${String(22 - (index % 10)).padStart(2, '0')}`
+      };
+    });
 
     const defaultTags = ['Contact', 'Directory', 'Candidate'];
+
+    function initializeStakeholderFilters() {
+      stakeholderGroupFilter.innerHTML = '<option value="">Any Stakeholder Group</option>';
+      Object.keys(stakeholderMappings).forEach((group) => {
+        const option = document.createElement('option');
+        option.value = group;
+        option.textContent = group;
+        stakeholderGroupFilter.appendChild(option);
+      });
+
+      stakeholderGroupFilter.addEventListener('change', () => {
+        const selectedGroup = stakeholderGroupFilter.value;
+        const stakeholders = stakeholderMappings[selectedGroup] || [];
+        stakeholderFilter.innerHTML = '';
+
+        if (!selectedGroup) {
+          stakeholderFilter.disabled = true;
+          stakeholderFilter.innerHTML = '<option value="">Select Stakeholder Group first</option>';
+          return;
+        }
+
+        stakeholderFilter.disabled = false;
+        stakeholderFilter.innerHTML = '<option value="">Any Stakeholder</option>';
+        stakeholders.forEach((stakeholder) => {
+          const option = document.createElement('option');
+          option.value = stakeholder;
+          option.textContent = stakeholder;
+          stakeholderFilter.appendChild(option);
+        });
+      });
+    }
 
     function getResultTags(result) {
       const contactTags = result.tags || defaultTags;
@@ -261,6 +392,8 @@
       const query = searchQuery.value.trim().toLowerCase();
       const titleFilter = titleFilterInput.value.trim().toLowerCase();
       const stateFilter = stateFilterSelect.value.trim().toLowerCase();
+      const selectedStakeholderGroup = stakeholderGroupFilter.value.trim();
+      const selectedStakeholder = stakeholderFilter.value.trim();
       const tagFilters = tagFilterInput.value
         .split(',')
         .map((tag) => tag.trim().toLowerCase())
@@ -274,8 +407,10 @@
           || resultTags.some((tag) => tag.includes(query));
         const titleMatches = !titleFilter || (result.title || '').toLowerCase().includes(titleFilter);
         const stateMatches = !stateFilter || (result.state || '').toLowerCase() === stateFilter;
+        const stakeholderGroupMatches = !selectedStakeholderGroup || result.stakeholderGroup === selectedStakeholderGroup;
+        const stakeholderMatches = !selectedStakeholder || result.stakeholder === selectedStakeholder;
         const tagsMatch = tagFilters.every((filterTag) => resultTags.some((tag) => tag.includes(filterTag)));
-        return queryMatches && titleMatches && stateMatches && tagsMatch;
+        return queryMatches && titleMatches && stateMatches && stakeholderGroupMatches && stakeholderMatches && tagsMatch;
       });
 
       const seenContacts = new Set();
@@ -426,6 +561,18 @@
       renderResults();
     });
 
+    stakeholderGroupFilter.addEventListener('change', () => {
+      if (resultsPanel.hidden) return;
+      currentPage = 1;
+      renderResults();
+    });
+
+    stakeholderFilter.addEventListener('change', () => {
+      if (resultsPanel.hidden) return;
+      currentPage = 1;
+      renderResults();
+    });
+
     stateFilterSelect.addEventListener('change', () => {
       if (resultsPanel.hidden) return;
       currentPage = 1;
@@ -437,6 +584,8 @@
       tagFilterInput.value = '';
       titleFilterInput.value = '';
       stateFilterSelect.value = '';
+      stakeholderGroupFilter.value = '';
+      stakeholderGroupFilter.dispatchEvent(new Event('change'));
       sortResultsSelect.value = 'Best Match';
       resultsList.innerHTML = '';
       resultsSummary.textContent = 'No results to display.';
@@ -451,6 +600,8 @@
       currentPage = 1;
       renderResults();
     });
+
+    initializeStakeholderFilters();
   </script>
   <script>
     const menuToggle = document.getElementById('menu-toggle');
