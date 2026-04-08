@@ -79,6 +79,28 @@
               <label class="usa-label" for="search-query">Search (name or title)</label>
               <input class="usa-input" id="search-query" placeholder="Search by name or title" value="Mitchell" />
 
+              <div class="margin-top-2" id="company-filter-wrapper">
+                <label class="usa-label" for="company">Organization name</label>
+                <input class="usa-input" id="company" />
+              </div>
+
+              <div class="margin-top-2" id="state-filter-wrapper" hidden>
+                <label class="usa-label" for="state-filter">State</label>
+                <select class="usa-select" id="state-filter">
+                  <option value="" selected>Any state</option>
+                  <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option>
+                  <option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option>
+                  <option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option>
+                  <option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option>
+                  <option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option>
+                  <option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option>
+                  <option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option>
+                  <option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option>
+                  <option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option>
+                  <option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+                </select>
+              </div>
+
               <div class="grid-row grid-gap margin-top-2">
                 <div class="tablet:grid-col-6">
                   <label class="usa-label" for="stakeholder-group-filter">Stakeholder Group</label>
@@ -91,29 +113,6 @@
                   <select class="usa-select" id="stakeholder-filter" disabled>
                     <option value="">Select Stakeholder Group first</option>
                   </select>
-                </div>
-              </div>
-
-              <div class="grid-row grid-gap margin-top-2">
-                <div class="tablet:grid-col-6" id="state-filter-wrapper" hidden>
-                  <label class="usa-label" for="state-filter">State</label>
-                  <select class="usa-select" id="state-filter">
-                    <option value="" selected>Any state</option>
-                    <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option>
-                    <option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option>
-                    <option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option>
-                    <option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option>
-                    <option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option>
-                    <option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option>
-                    <option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option>
-                    <option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option>
-                    <option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option>
-                    <option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
-                  </select>
-                </div>
-                <div class="tablet:grid-col-6" id="company-filter-wrapper" hidden>
-                  <label class="usa-label" for="company">Organization name</label>
-                  <input class="usa-input" id="company" />
                 </div>
               </div>
 
@@ -410,12 +409,11 @@
       stakeholderFilterWrapper.hidden = !selectedGroup;
       const shouldShowStateFilter = selectedGroup === 'State & Local Agencies';
       stateFilterWrapper.hidden = !shouldShowStateFilter;
-      const shouldShowCompanyFilter = Boolean(selectedGroup) && !shouldShowStateFilter;
-      companyFilterWrapper.hidden = !shouldShowCompanyFilter;
+      companyFilterWrapper.hidden = shouldShowStateFilter;
       if (!shouldShowStateFilter) {
         stateFilterSelect.value = '';
       }
-      if (!shouldShowCompanyFilter) {
+      if (shouldShowStateFilter) {
         companyFilterInput.value = '';
       }
     }
