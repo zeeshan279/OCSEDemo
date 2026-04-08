@@ -132,6 +132,7 @@
                       <option>Federal Collections</option>
                       <option>Insurance Match</option>
                       <option>Communication Center</option>
+                      <option>Contact Management</option>
                     </select>
                   </div>
                   <div class="tablet:grid-col-6">
@@ -530,7 +531,7 @@
         const defaultMetrics = [
           { label: 'Last Updated', value: result.lastUpdated },
           { label: 'Updated By', value: result.name },
-          { label: 'Duplicates', value: 'Review Needed' }
+          { label: 'Source Application', value: (result.tags && result.tags[0]) || 'Contact Management' }
         ];
         const metricsData = result.metrics || defaultMetrics;
         const metrics = `<div class="metrics-grid">${metricsData.map((metric) => `<div class="metric"><span class="metric-label">${metric.label}</span><span class="metric-value">${metric.value}</span></div>`).join('')}</div>`;
