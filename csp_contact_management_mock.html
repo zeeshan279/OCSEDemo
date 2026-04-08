@@ -94,8 +94,8 @@
                 </div>
               </div>
 
-              <div class="grid-row grid-gap margin-top-2" id="state-filter-wrapper" hidden>
-                <div class="tablet:grid-col-6">
+              <div class="grid-row grid-gap margin-top-2">
+                <div class="tablet:grid-col-6" id="state-filter-wrapper" hidden>
                   <label class="usa-label" for="state-filter">State</label>
                   <select class="usa-select" id="state-filter">
                     <option value="" selected>Any state</option>
@@ -111,10 +111,7 @@
                     <option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
                   </select>
                 </div>
-              </div>
-
-              <div class="grid-row grid-gap margin-top-2" id="company-filter-wrapper" hidden>
-                <div class="tablet:grid-col-6">
+                <div class="tablet:grid-col-6" id="company-filter-wrapper" hidden>
                   <label class="usa-label" for="company">Organization name</label>
                   <input class="usa-input" id="company" />
                 </div>
@@ -150,7 +147,7 @@
                 </div>
                 <div class="grid-row grid-gap margin-top-2">
                   <div class="tablet:grid-col-6"><label class="usa-label" for="fein">Organization FEIN</label><input class="usa-input" id="fein" /></div>
-                  <div class="tablet:grid-col-6"><label class="usa-label" for="tags-filter">Tags</label><input class="usa-input" id="tags-filter" placeholder="Search by tag" /></div>
+                  <div class="tablet:grid-col-6"><label class="usa-label" for="tags-filter">Tags</label><input class="usa-input" id="tags-filter" placeholder="Search by tag(s), separated by commas" /></div>
                 </div>
               </details>
             </div>
@@ -456,7 +453,10 @@
       const query = searchQuery.value.trim().toLowerCase();
       const stateFilter = stateFilterSelect.value.trim().toLowerCase();
       const organizationFilter = companyFilterInput.value.trim().toLowerCase();
-      const tagFilter = tagsFilterInput.value.trim().toLowerCase();
+      const tagFilters = tagsFilterInput.value
+        .split(',')
+        .map((value) => value.trim().toLowerCase())
+        .filter(Boolean);
       const selectedStakeholderGroup = stakeholderGroupFilter.value.trim();
       const selectedStakeholder = stakeholderFilter.value.trim();
 
@@ -469,7 +469,7 @@
         const stakeholderGroupMatches = !selectedStakeholderGroup || result.stakeholderGroup === selectedStakeholderGroup;
         const stakeholderMatches = !selectedStakeholder || result.stakeholder === selectedStakeholder;
         const tags = getResultTags(result).map((tag) => tag.toLowerCase());
-        const tagMatches = !tagFilter || tags.some((tag) => tag.includes(tagFilter));
+        const tagMatches = !tagFilters.length || tagFilters.every((tagFilter) => tags.some((tag) => tag.includes(tagFilter)));
         return queryMatches && stateMatches && organizationMatches && stakeholderGroupMatches && stakeholderMatches && tagMatches;
       });
 
