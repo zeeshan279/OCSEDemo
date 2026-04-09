@@ -16,6 +16,11 @@
     .menu-toggle { margin-left: auto; }
     .menu-icon { width: 1.1rem; height: 1.1rem; fill: currentColor; }
     .search-layout { display: grid; grid-template-columns: minmax(300px, 390px) 1fr; gap: 1rem; align-items: start; }
+    .search-layout .usa-card__body .usa-input,
+    .search-layout .usa-card__body .usa-select {
+      width: 100%;
+      max-width: 100%;
+    }
     .result-list .usa-collection__item { padding: 1rem 0; }
     .result-content { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 280px); gap: 1rem; align-items: start; }
     .result-content--active { border-left: 0.25rem solid var(--usa-color-primary); padding-left: 0.75rem; }
