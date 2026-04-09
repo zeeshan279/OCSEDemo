@@ -272,6 +272,13 @@
             </tbody>
           </table>
         </div>
+        <div class="display-flex flex-align-center flex-justify margin-top-2 gap-1 flex-wrap">
+          <p id="activity-pagination-status" class="margin-0 text-base-dark" aria-live="polite"></p>
+          <div class="display-flex gap-1">
+            <button id="activity-prev-page" class="usa-button usa-button--outline margin-0" type="button">Previous</button>
+            <button id="activity-next-page" class="usa-button usa-button--outline margin-0" type="button">Next</button>
+          </div>
+        </div>
       </section>
 
       <section aria-labelledby="audit-heading" class="margin-bottom-3">
@@ -314,6 +321,11 @@
     const activityRows = document.getElementById('activities-tbody');
     const activityTypeFilter = document.getElementById('activity-type-filter');
     const resetActivityFilterButton = document.getElementById('reset-activity-filter');
+    const activityPaginationStatus = document.getElementById('activity-pagination-status');
+    const activityPrevPageButton = document.getElementById('activity-prev-page');
+    const activityNextPageButton = document.getElementById('activity-next-page');
+    const activitiesPerPage = 5;
+    let currentActivityPage = 1;
     const tagForm = document.getElementById('tag-form');
     const newTagInput = document.getElementById('new-tag');
     const contactTagsList = document.getElementById('contact-tags-list');
@@ -641,23 +653,81 @@
     };
 
     const applyActivityFilter = () => {
-      if (!activityTypeFilter || !activityRows) return;
+      if (!activityTypeFilter || !activityRows) return [];
       const selectedType = activityTypeFilter.value;
-      [...activityRows.querySelectorAll('tr')].forEach((row) => {
+      return [...activityRows.querySelectorAll('tr')].filter((row) => {
         const rowType = getActivityTypeFromRow(row);
-        row.hidden = Boolean(selectedType) && rowType !== selectedType;
+        return !selectedType || rowType === selectedType;
       });
     };
 
+    const renderActivityPagination = () => {
+      if (!activityRows) return;
+      const filteredRows = applyActivityFilter();
+      const totalRows = filteredRows.length;
+      const totalPages = Math.max(1, Math.ceil(totalRows / activitiesPerPage));
+
+      if (currentActivityPage > totalPages) {
+        currentActivityPage = totalPages;
+      }
+
+      const start = (currentActivityPage - 1) * activitiesPerPage;
+      const end = start + activitiesPerPage;
+      const visibleRows = new Set(filteredRows.slice(start, end));
+
+      [...activityRows.querySelectorAll('tr')].forEach((row) => {
+        row.hidden = !visibleRows.has(row);
+      });
+
+      if (activityPaginationStatus) {
+        if (!totalRows) {
+          activityPaginationStatus.textContent = 'No activities found for the selected filter.';
+        } else {
+          const startingItem = start + 1;
+          const endingItem = Math.min(end, totalRows);
+          activityPaginationStatus.textContent = `Showing ${startingItem}-${endingItem} of ${totalRows} activities (Page ${currentActivityPage} of ${totalPages})`;
+        }
+      }
+
+      if (activityPrevPageButton) {
+        activityPrevPageButton.disabled = totalRows === 0 || currentActivityPage === 1;
+      }
+      if (activityNextPageButton) {
+        activityNextPageButton.disabled = totalRows === 0 || currentActivityPage === totalPages;
+      }
+    };
+
     if (activityTypeFilter) {
-      activityTypeFilter.addEventListener('change', applyActivityFilter);
+      activityTypeFilter.addEventListener('change', () => {
+        currentActivityPage = 1;
+        renderActivityPagination();
+      });
     }
 
     if (resetActivityFilterButton) {
       resetActivityFilterButton.addEventListener('click', () => {
         if (!activityTypeFilter) return;
         activityTypeFilter.value = '';
-        applyActivityFilter();
+        currentActivityPage = 1;
+        renderActivityPagination();
+      });
+    }
+
+    if (activityPrevPageButton) {
+      activityPrevPageButton.addEventListener('click', () => {
+        if (currentActivityPage <= 1) return;
+        currentActivityPage -= 1;
+        renderActivityPagination();
+      });
+    }
+
+    if (activityNextPageButton) {
+      activityNextPageButton.addEventListener('click', () => {
+        const totalFilteredRows = applyActivityFilter().length;
+        const totalPages = Math.max(1, Math.ceil(totalFilteredRows / activitiesPerPage));
+        if (currentActivityPage >= totalPages) return;
+        currentActivityPage += 1;
+        renderActivityPagination();
       });
     }
 
@@ -685,7 +755,8 @@
 
         activityRows.prepend(row);
         renderActivityTypeFilterOptions();
-        applyActivityFilter();
+        currentActivityPage = 1;
+        renderActivityPagination();
         activityForm.reset();
         toggleActivityForm(false);
       });
@@ -720,7 +791,7 @@
     }
 
     renderActivityTypeFilterOptions();
-    applyActivityFilter();
+    renderActivityPagination();
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/js/uswds.min.js"></script>
 </body>
