@@ -83,6 +83,7 @@
             <div class="usa-card__body">
               <label class="usa-label" for="search-query">Search (name or title)</label>
               <input class="usa-input" id="search-query" placeholder="Search by name or title" value="Mitchell" />
+              <button id="reset-filter-text-button" class="usa-button usa-button--unstyled margin-top-1" type="button">Reset filter text</button>
 
               <div class="margin-top-2" id="company-filter-wrapper">
                 <label class="usa-label" for="company">Organization name</label>
@@ -221,6 +222,7 @@
     const stakeholderFilter = document.getElementById('stakeholder-filter');
     const searchButton = document.getElementById('search-button');
     const clearButton = document.getElementById('clear-button');
+    const resetFilterTextButton = document.getElementById('reset-filter-text-button');
     const stakeholderStorageKey = 'cspStakeholderMappings';
     const companyFilterInput = document.getElementById('company');
     const companyFilterWrapper = document.getElementById('company-filter-wrapper');
@@ -627,6 +629,14 @@
     searchButton.addEventListener('click', () => {
       currentPage = 1;
       resultsPanel.hidden = false;
+      renderResults();
+    });
+
+    resetFilterTextButton.addEventListener('click', () => {
+      searchQuery.value = '';
+      searchQuery.focus();
+      if (resultsPanel.hidden) return;
+      currentPage = 1;
       renderResults();
     });
 
