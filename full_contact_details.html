@@ -177,7 +177,16 @@
       <section aria-labelledby="activities-heading" class="margin-bottom-3">
         <div class="display-flex flex-align-center flex-justify gap-1 margin-bottom-2 flex-wrap">
           <h3 id="activities-heading" class="margin-y-0">Activities</h3>
-          <button class="usa-button usa-button--outline" type="button" data-toggle="activity-form">Add activity</button>
+          <div class="display-flex flex-align-end gap-1 flex-wrap">
+            <div>
+              <label class="usa-label margin-top-0 margin-bottom-05" for="activity-type-filter">Filter by type</label>
+              <select class="usa-select" id="activity-type-filter">
+                <option value="">All activity types</option>
+              </select>
+            </div>
+            <button id="reset-activity-filter" class="usa-button usa-button--outline margin-bottom-05" type="button">Reset filter</button>
+            <button class="usa-button usa-button--outline margin-bottom-05" type="button" data-toggle="activity-form">Add activity</button>
+          </div>
         </div>
 
         <div id="activity-form-wrapper" class="bg-white padding-2 radius-md border border-base-lighter margin-bottom-2 display-none">
@@ -301,6 +310,8 @@
     const activityFormWrapper = document.getElementById('activity-form-wrapper');
     const activityForm = document.getElementById('activity-form');
     const activityRows = document.getElementById('activities-tbody');
+    const activityTypeFilter = document.getElementById('activity-type-filter');
+    const resetActivityFilterButton = document.getElementById('reset-activity-filter');
     const tagForm = document.getElementById('tag-form');
     const newTagInput = document.getElementById('new-tag');
     const contactTagsList = document.getElementById('contact-tags-list');
@@ -596,6 +607,58 @@
       return `<span class="activity-type"><span class="activity-type-icon" aria-hidden="true">${icon}</span><span>${type}</span></span>`;
     };
 
+    const getActivityTypeFromRow = (row) => {
+      const typeCell = row.querySelector('td:nth-child(2) span:last-child');
+      return typeCell ? typeCell.textContent.trim() : '';
+    };
+
+    const getActivityTypes = () => {
+      if (!activityRows) return [];
+      const activityTypes = [...new Set(
+        [...activityRows.querySelectorAll('tr')]
+          .map((row) => getActivityTypeFromRow(row))
+          .filter(Boolean)
+      )];
+      return activityTypes.sort((a, b) => a.localeCompare(b));
+    };
+
+    const renderActivityTypeFilterOptions = () => {
+      if (!activityTypeFilter) return;
+      const selectedValue = activityTypeFilter.value;
+      const activityTypes = getActivityTypes();
+      activityTypeFilter.innerHTML = '<option value="">All activity types</option>';
+      activityTypes.forEach((type) => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.textContent = type;
+        activityTypeFilter.appendChild(option);
+      });
+      if (selectedValue && activityTypes.includes(selectedValue)) {
+        activityTypeFilter.value = selectedValue;
+      }
+    };
+
+    const applyActivityFilter = () => {
+      if (!activityTypeFilter || !activityRows) return;
+      const selectedType = activityTypeFilter.value;
+      [...activityRows.querySelectorAll('tr')].forEach((row) => {
+        const rowType = getActivityTypeFromRow(row);
+        row.hidden = Boolean(selectedType) && rowType !== selectedType;
+      });
+    };
+
+    if (activityTypeFilter) {
+      activityTypeFilter.addEventListener('change', applyActivityFilter);
+    }
+
+    if (resetActivityFilterButton) {
+      resetActivityFilterButton.addEventListener('click', () => {
+        if (!activityTypeFilter) return;
+        activityTypeFilter.value = '';
+        applyActivityFilter();
+      });
+    }
+
     if (activityForm) {
       activityForm.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -619,6 +682,8 @@
         `;
 
         activityRows.prepend(row);
+        renderActivityTypeFilterOptions();
+        applyActivityFilter();
         activityForm.reset();
         toggleActivityForm(false);
       });
@@ -651,6 +716,9 @@
 
       editContactLink.href = `edit_contact.html?${editParams.toString()}`;
     }
+
+    renderActivityTypeFilterOptions();
+    applyActivityFilter();
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/js/uswds.min.js"></script>
 </body>
