@@ -186,7 +186,6 @@
                 <option value="">All activity types</option>
               </select>
             </div>
-            <button id="reset-activity-filter" class="usa-button usa-button--outline margin-bottom-05" type="button">Reset filter</button>
             <button class="usa-button usa-button--outline margin-bottom-05" type="button" data-toggle="activity-form">Add activity</button>
           </div>
         </div>
@@ -320,7 +319,6 @@
     const activityForm = document.getElementById('activity-form');
     const activityRows = document.getElementById('activities-tbody');
     const activityTypeFilter = document.getElementById('activity-type-filter');
-    const resetActivityFilterButton = document.getElementById('reset-activity-filter');
     const activityPaginationStatus = document.getElementById('activity-pagination-status');
     const activityPrevPageButton = document.getElementById('activity-prev-page');
     const activityNextPageButton = document.getElementById('activity-next-page');
@@ -699,15 +697,6 @@
 
     if (activityTypeFilter) {
       activityTypeFilter.addEventListener('change', () => {
-        currentActivityPage = 1;
-        renderActivityPagination();
-      });
-    }
-
-    if (resetActivityFilterButton) {
-      resetActivityFilterButton.addEventListener('click', () => {
-        if (!activityTypeFilter) return;
-        activityTypeFilter.value = '';
         currentActivityPage = 1;
         renderActivityPagination();
       });
