@@ -95,6 +95,13 @@
               <label class="usa-label" for="search-query">Search (name or title)</label>
               <input class="usa-input" id="search-query" placeholder="Search by name or title" value="Mitchell" />
 
+              <div class="margin-top-2">
+                <label class="usa-label" for="stakeholder-group-filter">Stakeholder Group</label>
+                <select class="usa-select" id="stakeholder-group-filter">
+                  <option value="">Any Stakeholder Group</option>
+                </select>
+              </div>
+
               <div class="margin-top-2" id="company-filter-wrapper">
                 <label class="usa-label" for="company">Organization name</label>
                 <input class="usa-input" id="company" />
@@ -117,12 +124,6 @@
                 </select>
               </div>
 
-              <div class="margin-top-2">
-                <label class="usa-label" for="stakeholder-group-filter">Stakeholder Group</label>
-                <select class="usa-select" id="stakeholder-group-filter">
-                  <option value="">Any Stakeholder Group</option>
-                </select>
-              </div>
               <div class="margin-top-2" id="stakeholder-filter-wrapper" hidden>
                 <label class="usa-label" for="stakeholder-filter">Stakeholder</label>
                 <select class="usa-select" id="stakeholder-filter" disabled>
@@ -200,6 +201,12 @@
               </div>
             </div>
             <div class="usa-card__body">
+              <div class="usa-alert usa-alert--info margin-top-2" role="status">
+                <div class="usa-alert__body">
+                  <p class="usa-alert__text">Tip: Narrow down broad searches by applying one or more filters.</p>
+                </div>
+              </div>
+
               <div id="empty-results" class="usa-alert usa-alert--warning margin-top-2" role="status">
                 <div class="usa-alert__body"><p class="usa-alert__text">Run a search to load contact results.</p></div>
               </div>
