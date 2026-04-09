@@ -20,6 +20,12 @@
     .search-layout .usa-card__body .usa-select {
       width: 100%;
       max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+    .advanced-filters .usa-input,
+    .advanced-filters .usa-select {
+      max-width: 22rem;
     }
     .result-list .usa-collection__item { padding: 1rem 0; }
     .result-content { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 280px); gap: 1rem; align-items: start; }
@@ -43,6 +49,10 @@
       .app-sidebar { margin-bottom: 1rem; }
       .pagination-wrapper { justify-content: flex-start; }
       .result-action .usa-button { width: auto; }
+      .advanced-filters .usa-input,
+      .advanced-filters .usa-select {
+        max-width: 100%;
+      }
     }
     @media (min-width: 64em) {
       .app-shell { display: grid; grid-template-columns: 260px 1fr; }
@@ -121,7 +131,7 @@
                 </select>
               </div>
 
-              <details class="margin-top-3">
+              <details class="margin-top-3 advanced-filters">
                 <summary class="text-bold">Advanced filters</summary>
                 <div class="margin-top-2">
                   <label class="usa-label" for="application">Source Application</label>
