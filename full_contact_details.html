@@ -7,11 +7,10 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/css/uswds.min.css" />
   <style>
     .app-shell { min-height: 100vh; background: var(--usa-color-base-lightest); }
-    .app-sidebar { background: var(--usa-color-primary-darker); color: var(--usa-color-white); padding: 1rem; }
-    .app-sidebar .usa-sidenav a { color: var(--usa-color-white); display: flex; align-items: center; gap: 0.5rem; }
-    .app-sidebar .usa-sidenav a:hover { color: var(--usa-color-primary-lighter); }
-    .app-sidebar .usa-current { background-color: transparent; color: var(--usa-color-white); font-weight: 700; }
-    .app-main { padding: 1.5rem; max-width: 1100px; }
+    .app-sidebar { background: var(--usa-color-primary-darker); color: var(--usa-color-base-darkest); padding: 1rem; }
+    .app-sidebar .usa-sidenav a { color: var(--usa-color-base-darkest); display: flex; align-items: center; gap: 0.5rem; }
+    .app-sidebar .usa-current { background-color: transparent; color: var(--usa-color-base-darkest); font-weight: 700; }
+    .app-main { padding: 1.5rem; }
     .menu-icon { width: 1.1rem; height: 1.1rem; fill: currentColor; }
     .app-shell.menu-hidden { grid-template-columns: 1fr !important; }
     .app-shell.menu-hidden .app-sidebar { display: none; }
@@ -19,14 +18,11 @@
     .contact-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
     .contact-tag { display: inline-flex; align-items: center; gap: 0.35rem; border: 1px solid var(--usa-color-primary-light); border-radius: 999px; padding: 0.25rem 0.65rem; background: var(--usa-color-primary-lightest); font-weight: 600; }
     .contact-tag button { border: 0; background: transparent; color: var(--usa-color-primary-dark); font-weight: 700; cursor: pointer; line-height: 1; padding: 0; }
-    .detail-card { background: var(--usa-color-white); border: 1px solid var(--usa-color-base-lighter); border-radius: 0.5rem; padding: 1rem; }
-    .section-intro { color: var(--usa-color-base-dark); margin-top: 0; }
     .activity-type { display: inline-flex; align-items: center; gap: 0.35rem; }
     .activity-type-icon { display: inline-block; font-size: 1.05rem; line-height: 1; color: var(--usa-color-primary); }
 
     @media (min-width: 64em) {
       .app-shell { display: grid; grid-template-columns: 260px 1fr; }
-      .menu-toggle { display: none; }
     }
 
     @media (max-width: 63.99em) {
@@ -37,10 +33,10 @@
 <body class="bg-base-lightest">
   <a class="usa-skipnav" href="#main-content">Skip to main content</a>
 
-  <div class="app-shell">
+  <div class="app-shell menu-hidden">
     <aside class="app-sidebar padding-2" aria-label="Primary navigation">
       <h1 class="margin-top-0 font-sans-lg">CSP Contacts</h1>
-      <nav id="primary-navigation" aria-label="Section navigation">
+      <nav aria-label="Section navigation">
         <ul class="usa-sidenav margin-top-2">
           <li class="usa-sidenav__item"><a href="csp_contact_management_mock.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#search"></use></svg>Search</a></li>
           <li class="usa-sidenav__item"><a href="create_contact.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#add"></use></svg>Create</a></li>
@@ -52,29 +48,21 @@
     </aside>
 
     <main class="app-main" id="main-content">
-      <header class="margin-bottom-2">
-        <nav aria-label="Breadcrumb" class="margin-bottom-1">
-          <ol class="usa-breadcrumb">
-            <li class="usa-breadcrumb__list-item"><a class="usa-breadcrumb__link" href="csp_contact_management_mock.html"><span>Contact search</span></a></li>
-            <li class="usa-breadcrumb__list-item usa-current" aria-current="page"><span>Full contact details</span></li>
-          </ol>
-        </nav>
-        <div class="display-flex flex-align-center gap-1 flex-wrap">
-          <h2 class="margin-y-0">Full Contact Details</h2>
-          <a id="edit-contact-link" class="usa-button usa-button--outline" href="edit_contact.html">Edit contact</a>
-          <button id="menu-toggle" class="usa-button usa-button--outline menu-toggle" type="button" aria-expanded="true" aria-controls="primary-navigation">Hide menu</button>
-        </div>
+      <header class="display-flex flex-align-center gap-1 margin-bottom-2">
+        <h2 class="margin-y-0">Full Contact Details</h2>
+        <a id="edit-contact-link" class="usa-button usa-button--outline" href="edit_contact.html">Edit Contact</a>
+        <button id="menu-toggle" class="usa-button usa-button--outline menu-toggle" type="button">Show menu</button>
       </header>
       <div class="usa-alert usa-alert--info margin-bottom-3" role="status">
         <div class="usa-alert__body">
-          <h3 class="usa-alert__heading margin-top-0">Karen Mitchell <span class="usa-tag bg-green-20v text-green-70v">Active</span></h3>
-          <p class="usa-alert__text">Comprehensive view of contact, organization, access, and engagement details.</p>
+          <h2 class="usa-alert__heading">Karen Mitchell <span class="usa-tag bg-green-20v text-green-70v">Active</span></h2>
+          <p class="usa-alert__text">Comprehensive view of contact, organization, and access details.</p>
         </div>
       </div>
 
       <section aria-labelledby="contact-details-heading" class="margin-bottom-3">
         <h3 id="contact-details-heading" class="margin-bottom-2">Contact details</h3>
-        <dl class="usa-list usa-list--unstyled detail-card">
+        <dl class="usa-list usa-list--unstyled bg-white padding-2 radius-md border border-base-lighter">
           <div class="grid-row grid-gap margin-bottom-1">
             <dt class="tablet:grid-col-4 text-base-dark">First name</dt><dd id="detail-first-name" class="tablet:grid-col-8 margin-0 text-bold">Karen</dd>
           </div>
@@ -104,11 +92,10 @@
 
       <section aria-labelledby="stakeholder-details-heading" class="margin-bottom-3">
         <h3 id="stakeholder-details-heading" class="margin-bottom-2">Stakeholder details</h3>
-        <div class="detail-card">
-          <p class="section-intro margin-bottom-1">Review stakeholder group and stakeholder assignments for this contact.</p>
+        <div class="bg-white padding-2 radius-md border border-base-lighter">
+          <p class="margin-top-0 margin-bottom-1 text-base-dark">Review stakeholder group and stakeholder assignments for this contact.</p>
           <div class="overflow-auto">
             <table class="usa-table usa-table--borderless width-full margin-0" aria-label="Stakeholder assignments">
-              <caption class="usa-sr-only">Current stakeholder assignments for this contact</caption>
               <thead>
                 <tr>
                   <th scope="col">Stakeholder group</th>
@@ -142,7 +129,7 @@
 
       <section aria-labelledby="organization-details-heading" class="margin-bottom-3">
         <h3 id="organization-details-heading" class="margin-bottom-2">Organization details</h3>
-        <dl class="usa-list usa-list--unstyled detail-card">
+        <dl class="usa-list usa-list--unstyled bg-white padding-2 radius-md border border-base-lighter">
           <div class="grid-row grid-gap margin-bottom-1">
             <dt class="tablet:grid-col-4 text-base-dark">Organization</dt><dd id="detail-organization" class="tablet:grid-col-8 margin-0 text-bold">Maryland Child Support Administration</dd>
           </div>
@@ -160,11 +147,10 @@
 
       <section aria-labelledby="contact-tags-heading" class="margin-bottom-3">
         <h3 id="contact-tags-heading" class="margin-bottom-2">Contact tags</h3>
-        <div class="detail-card">
-          <p class="section-intro margin-bottom-1">Use tags to categorize this contact for quick filtering in search results.</p>
+        <div class="bg-white padding-2 radius-md border border-base-lighter">
+          <p class="margin-top-0 margin-bottom-1 text-base-dark">Use tags to categorize this contact for quick filtering in search results.</p>
           <div id="contact-tags-list" class="contact-tags margin-bottom-2" aria-live="polite"></div>
           <form id="tag-form" class="display-flex flex-align-end gap-1 flex-wrap">
-            <p class="usa-hint margin-top-0 margin-bottom-1 width-full">Use concise tags (for example: Interstate Lead).</p>
             <div class="flex-1">
               <label class="usa-label margin-top-0" for="new-tag">Add tag</label>
               <input class="usa-input" id="new-tag" name="new-tag" type="text" placeholder="Example: Interstate Lead" required />
@@ -204,9 +190,8 @@
           </div>
         </div>
 
-        <div id="activity-form-wrapper" class="detail-card margin-bottom-2 display-none">
+        <div id="activity-form-wrapper" class="bg-white padding-2 radius-md border border-base-lighter margin-bottom-2 display-none">
           <form id="activity-form" class="grid-row grid-gap" novalidate>
-            <p class="usa-hint grid-col-12 margin-top-0 margin-bottom-0">All fields are required.</p>
             <div class="tablet:grid-col-4">
               <label class="usa-label" for="activity-type">Activity type</label>
               <select class="usa-select" id="activity-type" required>
@@ -236,9 +221,8 @@
           </form>
         </div>
 
-        <div class="detail-card overflow-auto">
+        <div class="bg-white radius-md border border-base-lighter overflow-auto">
           <table class="usa-table usa-table--borderless width-full margin-0" aria-label="Activity details">
-            <caption class="usa-sr-only">Recorded contact activities with date, type, details, and owner</caption>
             <thead>
               <tr>
                 <th scope="col">Date</th>
@@ -298,7 +282,7 @@
 
       <section aria-labelledby="audit-heading" class="margin-bottom-3">
         <h3 id="audit-heading" class="margin-bottom-2">Audit</h3>
-        <dl class="usa-list usa-list--unstyled detail-card">
+        <dl class="usa-list usa-list--unstyled bg-white padding-2 radius-md border border-base-lighter">
           <div class="grid-row grid-gap margin-bottom-1">
             <dt class="tablet:grid-col-4 text-base-dark">Created date</dt><dd class="tablet:grid-col-8 margin-0 text-bold">March 15, 2024</dd>
           </div>
@@ -327,9 +311,7 @@
       menuToggle.addEventListener('click', () => {
         const appShell = document.querySelector('.app-shell');
         appShell.classList.toggle('menu-hidden');
-        const isHidden = appShell.classList.contains('menu-hidden');
-        menuToggle.textContent = isHidden ? 'Show menu' : 'Hide menu';
-        menuToggle.setAttribute('aria-expanded', String(!isHidden));
+        menuToggle.textContent = appShell.classList.contains('menu-hidden') ? 'Show menu' : 'Hide menu';
       });
     }
 
