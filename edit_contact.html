@@ -30,6 +30,8 @@
           <li class="usa-sidenav__item"><a href="csp_contact_management_mock.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#search"></use></svg>Search</a></li>
           <li class="usa-sidenav__item"><a href="create_contact.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#add"></use></svg>Create</a></li>
           <li class="usa-sidenav__item"><a href="duplicate_review_merge.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#content_copy"></use></svg>Duplicate Review</a></li>
+          <li class="usa-sidenav__item"><a href="stakeholder_relationship_management.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#groups"></use></svg>Stakeholder Mapping</a></li>
+          <li class="usa-sidenav__item"><a href="manage_tags.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#label"></use></svg>Manage Tags</a></li>
         </ul>
       </nav>
     </aside>
@@ -53,6 +55,21 @@
                 <p class="usa-hint margin-top-neg-1">Add one or more stakeholder group and stakeholder pairs for this contact.</p>
                 <div id="stakeholder-assignments" class="display-flex flex-column gap-1"></div>
                 <button class="usa-button usa-button--outline margin-top-1" type="button" id="add-stakeholder-assignment">Add stakeholder assignment</button>
+              </fieldset>
+              <fieldset class="usa-fieldset margin-top-2">
+                <legend class="usa-legend">Contact tag(s)</legend>
+                <p class="usa-hint margin-top-neg-1">Only tags from <a href="manage_tags.html">Manage Tags</a> can be attached to this contact.</p>
+                <div class="display-flex flex-align-end gap-1 flex-wrap">
+                  <div>
+                    <label class="usa-label" for="available-tags">Available tags</label>
+                    <select class="usa-select" id="available-tags">
+                      <option value="">Select a tag</option>
+                    </select>
+                  </div>
+                  <button class="usa-button usa-button--outline margin-bottom-05" type="button" id="add-contact-tag">Add tag</button>
+                </div>
+                <label class="usa-label margin-top-2">Selected tags</label>
+                <div id="selected-contact-tags" class="display-flex flex-wrap gap-1" aria-live="polite"></div>
               </fieldset>
               <label class="usa-label" for="applications">Applications</label>
               <span class="usa-hint" id="applications-hint">Select one or more applications linked to this contact.</span>
@@ -152,6 +169,7 @@
           stakeholder: 'Internal Revenue Service (IRS)'
         }
       ],
+      contactTags: ['Locate', 'Technical Contact', 'Primary'],
       applications: ['Locate', 'State Profile Admin', 'Employer Services'],
       primaryEmail: 'karen.mitchell@state.md.gov',
       secondaryEmail: 'k.mitchell@maryland.gov',
@@ -258,7 +276,7 @@
     }
 
     Object.keys(defaults).forEach((key) => {
-      if (key === 'applications' || key === 'stakeholderAssignments') return;
+      if (key === 'applications' || key === 'stakeholderAssignments' || key === 'contactTags') return;
       const input = document.getElementById(key);
       if (!input) return;
       const value = params.get(key) || defaults[key];
@@ -276,6 +294,77 @@
       : defaults.stakeholderAssignments;
     initializeStakeholderAssignments(stakeholderAssignments);
 
+    const managedTagStorageKey = 'cspManagedContactTags';
+    const managedTagDefaults = ['Locate', 'Technical Contact', 'Primary', 'Intergovernmental', 'Escalation', 'Data Access'];
+
+    function loadManagedTags() {
+      const stored = localStorage.getItem(managedTagStorageKey);
+      if (!stored) return [...managedTagDefaults];
+      try {
+        const parsed = JSON.parse(stored);
+        const cleaned = [...new Set((Array.isArray(parsed) ? parsed : []).map((tag) => String(tag).trim()).filter(Boolean))];
+        return cleaned.length ? cleaned : [...managedTagDefaults];
+      } catch {
+        return [...managedTagDefaults];
+      }
+    }
+
+    const availableTagsSelect = document.getElementById('available-tags');
+    const selectedContactTagsContainer = document.getElementById('selected-contact-tags');
+    const addContactTagButton = document.getElementById('add-contact-tag');
+    const managedTags = loadManagedTags();
+
+    function renderAvailableTags() {
+      availableTagsSelect.innerHTML = '<option value="">Select a tag</option>';
+      managedTags.forEach((tag) => {
+        const option = document.createElement('option');
+        option.value = tag;
+        option.textContent = tag;
+        availableTagsSelect.appendChild(option);
+      });
+    }
+
+    const selectedContactTags = (params.get('contactTags') || defaults.contactTags.join(','))
+      .split(',')
+      .map((value) => value.trim())
+      .filter((value) => managedTags.includes(value));
+
+    function renderSelectedContactTags() {
+      selectedContactTagsContainer.innerHTML = '';
+      if (!selectedContactTags.length) {
+        selectedContactTagsContainer.innerHTML = '<span class="text-base">No tags selected.</span>';
+        return;
+      }
+
+      selectedContactTags.forEach((tag) => {
+        const pill = document.createElement('span');
+        pill.className = 'usa-tag bg-primary-lighter text-primary-darker';
+        pill.innerHTML = `${tag} <button type="button" class="text-bold margin-left-1" data-remove-contact-tag="${tag}" style="border:0;background:transparent;color:inherit;cursor:pointer;">×</button>`;
+        selectedContactTagsContainer.appendChild(pill);
+      });
+    }
+
+    addContactTagButton.addEventListener('click', () => {
+      const selectedTag = availableTagsSelect.value;
+      if (!selectedTag || selectedContactTags.includes(selectedTag)) return;
+      selectedContactTags.push(selectedTag);
+      renderSelectedContactTags();
+      availableTagsSelect.value = '';
+    });
+
+    selectedContactTagsContainer.addEventListener('click', (event) => {
+      const button = event.target.closest('button[data-remove-contact-tag]');
+      if (!button) return;
+      const tag = button.dataset.removeContactTag;
+      const tagIndex = selectedContactTags.indexOf(tag);
+      if (tagIndex === -1) return;
+      selectedContactTags.splice(tagIndex, 1);
+      renderSelectedContactTags();
+    });
+
+    renderAvailableTags();
+    renderSelectedContactTags();
+
     const selectedApplications = (params.get('applications') || defaults.applications.join(','))
       .split(',')
       .map((value) => value.trim())
@@ -290,7 +379,8 @@
     document.getElementById('editContactForm').addEventListener('submit', (event) => {
       event.preventDefault();
       const message = document.getElementById('message');
-      message.innerHTML = '<div class="usa-alert usa-alert--success"><div class="usa-alert__body"><p class="usa-alert__text">Contact changes saved in this prototype.</p></div></div>';
+      const tagSummary = selectedContactTags.length ? selectedContactTags.join(', ') : 'none';
+      message.innerHTML = `<div class="usa-alert usa-alert--success"><div class="usa-alert__body"><p class="usa-alert__text">Contact changes saved in this prototype. Attached tags: ${tagSummary}.</p></div></div>`;
     });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/js/uswds.min.js"></script>

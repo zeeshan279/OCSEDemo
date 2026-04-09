@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Contact Tags</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/css/uswds.min.css" />
+  <style>
+    .app-shell { min-height: 100vh; background: var(--usa-color-base-lightest); }
+    .app-sidebar { background: var(--usa-color-primary-darker); color: var(--usa-color-base-darkest); padding: 1rem; }
+    .app-sidebar .usa-sidenav a { color: var(--usa-color-base-darkest); display: flex; align-items: center; gap: 0.5rem; }
+    .app-sidebar .usa-current { background-color: transparent; color: var(--usa-color-base-darkest); font-weight: 700; }
+    .app-main { padding: 1.5rem; max-width: 1360px; width: 100%; margin: 0 auto; }
+    .app-shell.menu-hidden { grid-template-columns: 1fr !important; }
+    .app-shell.menu-hidden .app-sidebar { display: none; }
+    .menu-icon { width: 1.1rem; height: 1.1rem; fill: currentColor; }
+    .tag-row { border: 1px solid var(--usa-color-base-lighter); border-radius: 0.35rem; background: white; padding: 0.75rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+    @media (min-width: 64em) {
+      .app-shell { display: grid; grid-template-columns: 260px 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+  <div class="app-shell menu-hidden">
+    <aside class="app-sidebar" aria-label="Primary navigation">
+      <h1 class="margin-top-0 font-sans-lg">CSP Contacts</h1>
+      <nav aria-label="Section navigation">
+        <ul class="usa-sidenav margin-top-2">
+          <li class="usa-sidenav__item"><a href="csp_contact_management_mock.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#search"></use></svg>Search</a></li>
+          <li class="usa-sidenav__item"><a href="create_contact.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#add"></use></svg>Create</a></li>
+          <li class="usa-sidenav__item"><a href="duplicate_review_merge.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#content_copy"></use></svg>Duplicate Review</a></li>
+          <li class="usa-sidenav__item"><a href="stakeholder_relationship_management.html"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#groups"></use></svg>Stakeholder Mapping</a></li>
+          <li class="usa-sidenav__item"><a class="usa-current" href="manage_tags.html" aria-current="page"><svg class="menu-icon" aria-hidden="true"><use href="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/img/sprite.svg#label"></use></svg>Manage Tags</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="app-main" id="main-content">
+      <header class="display-flex flex-justify flex-align-center margin-bottom-2">
+        <h2 class="margin-y-0">Manage Contact Tags</h2>
+        <div class="display-flex flex-align-center gap-1">
+          <button id="menu-toggle" class="usa-button usa-button--outline" type="button">Show menu</button>
+          <a href="csp_contact_management_mock.html" class="usa-button">Back to Search</a>
+        </div>
+      </header>
+
+      <div class="usa-alert usa-alert--info margin-bottom-2" role="status">
+        <div class="usa-alert__body"><p class="usa-alert__text">Only tags listed here can be attached to contacts on the Edit Contact page.</p></div>
+      </div>
+
+      <section class="usa-card margin-bottom-2" style="max-width: 760px;">
+        <div class="usa-card__container">
+          <div class="usa-card__header"><h3 class="usa-card__heading">Add Contact Tag</h3></div>
+          <div class="usa-card__body">
+            <label class="usa-label" for="new-tag">Tag name</label>
+            <input class="usa-input" id="new-tag" placeholder="e.g., Interstate Lead" />
+          </div>
+          <div class="usa-card__footer"><button class="usa-button" id="add-tag" type="button">Add Tag</button></div>
+        </div>
+      </section>
+
+      <section class="usa-card" style="max-width: 760px;">
+        <div class="usa-card__container">
+          <div class="usa-card__header display-flex flex-justify flex-align-center">
+            <h3 class="usa-card__heading">Allowed Tags</h3>
+            <button class="usa-button usa-button--unstyled" id="reset-defaults" type="button">Reset to defaults</button>
+          </div>
+          <div class="usa-card__body">
+            <div id="tag-list"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const tagStorageKey = 'cspManagedContactTags';
+    const defaultTags = ['Locate', 'Technical Contact', 'Primary', 'Intergovernmental', 'Escalation', 'Data Access'];
+
+    const tagList = document.getElementById('tag-list');
+    const newTagInput = document.getElementById('new-tag');
+
+    function sanitizeTags(values) {
+      return [...new Set((values || []).map((tag) => String(tag).trim()).filter(Boolean))];
+    }
+
+    function loadTags() {
+      const stored = localStorage.getItem(tagStorageKey);
+      if (!stored) return [...defaultTags];
+
+      try {
+        const parsed = JSON.parse(stored);
+        const cleaned = sanitizeTags(parsed);
+        return cleaned.length ? cleaned : [...defaultTags];
+      } catch {
+        return [...defaultTags];
+      }
+    }
+
+    let tags = loadTags();
+
+    function saveTags() {
+      localStorage.setItem(tagStorageKey, JSON.stringify(tags));
+    }
+
+    function renderTags() {
+      tagList.innerHTML = '';
+      if (!tags.length) {
+        tagList.innerHTML = '<p class="text-italic">No tags available. Add a tag above.</p>';
+        return;
+      }
+
+      tags.forEach((tag) => {
+        const row = document.createElement('div');
+        row.className = 'tag-row';
+        row.innerHTML = `
+          <span>${tag}</span>
+          <button class="usa-button usa-button--unstyled text-secondary" type="button" data-action="remove-tag" data-tag="${tag}">Remove</button>
+        `;
+        tagList.appendChild(row);
+      });
+    }
+
+    function syncUi() {
+      tags = sanitizeTags(tags);
+      saveTags();
+      renderTags();
+    }
+
+    document.getElementById('add-tag').addEventListener('click', () => {
+      const tag = newTagInput.value.trim();
+      if (!tag) return;
+      const exists = tags.some((item) => item.toLowerCase() === tag.toLowerCase());
+      if (exists) return;
+      tags.push(tag);
+      newTagInput.value = '';
+      syncUi();
+    });
+
+    tagList.addEventListener('click', (event) => {
+      const button = event.target.closest('button[data-action="remove-tag"]');
+      if (!button) return;
+      const tag = button.dataset.tag;
+      tags = tags.filter((item) => item !== tag);
+      syncUi();
+    });
+
+    document.getElementById('reset-defaults').addEventListener('click', () => {
+      tags = [...defaultTags];
+      syncUi();
+    });
+
+    document.getElementById('menu-toggle').addEventListener('click', () => {
+      const appShell = document.querySelector('.app-shell');
+      appShell.classList.toggle('menu-hidden');
+      document.getElementById('menu-toggle').textContent = appShell.classList.contains('menu-hidden') ? 'Show menu' : 'Hide menu';
+    });
+
+    syncUi();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@uswds/uswds@3.8.1/dist/js/uswds.min.js"></script>
+</body>
+</html>
