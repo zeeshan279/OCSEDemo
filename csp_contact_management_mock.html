@@ -38,6 +38,10 @@
     .result-activity { border-left: 0.25rem solid var(--usa-color-primary-lighter); background: var(--usa-color-primary-lightest); padding: 0.75rem; margin-bottom: 0.75rem; border-radius: 0.25rem; }
     .result-activity__label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--usa-color-primary-dark); margin-bottom: 0.25rem; font-weight: 700; }
     .result-activity__text { margin: 0; color: var(--usa-color-base-darkest); font-size: 0.95rem; }
+    .result-activities-panel { margin-top: 0.75rem; }
+    .result-activities-list { margin: 0.5rem 0 0; padding-left: 1.1rem; }
+    .result-activities-list li { margin-bottom: 0.35rem; }
+    .result-activities-list li:last-child { margin-bottom: 0; }
     .metrics-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
     .metric { border: 1px solid var(--usa-color-base-lighter); border-radius: 0.35rem; padding: 0.5rem; background: var(--usa-color-base-lightest); }
     .metric-label { display: block; font-size: 0.7rem; text-transform: uppercase; color: var(--usa-color-base-dark); letter-spacing: 0.04em; }
@@ -327,29 +331,30 @@
 
     const pageSize = 10;
     let currentPage = 1;
+    const expandedActivityKeys = new Set();
     const searchResults = [
-      { name: 'Karen Mitchell', title: 'Director, Locate Operations', relationshipType: 'State IV-D Agency', badges: ['Primary Match', 'Active'], badgeClasses: ['bg-green-20v text-green-70v', 'bg-blue-20v text-blue-70v'], meta: 'MD Child Support<br>(410) 555-0187 · karen.mitchell@maryland.gov', tags: ['Locate', 'Technical Contact', 'Primary'], active: true },
-      { name: 'Karin Mitchell', title: 'Program Liaison', relationshipType: 'Tribal IV-D Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Navajo Nation Child Support<br>(505) 555-0101 · karin.mitchell@navajo.gov', tags: ['IRG', 'Intergovernmental', 'Case Coordination'] },
-      { name: 'Kay Mitchell', title: 'Payroll Contact', relationshipType: 'Employer', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Blue Harbor Logistics<br>(443) 555-0102 · kay.mitchell@blueharbor.com', tags: ['Employer Services', 'Payroll', 'Wage Withholding'] },
-      { name: 'Keisha Mitchell', title: 'Federal Partner Manager', relationshipType: 'Federal Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Office of Child Support Services<br>(202) 555-0103 · keisha.mitchell@acf.hhs.gov', tags: ['Federal Collections', 'Policy', 'Escalation'] },
-      { name: 'Kendall Mitchell', title: 'Cross-Border Coordinator', relationshipType: 'International Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Ontario Family Responsibility Office<br>(613) 555-0104 · kendall.mitchell@ontario.ca', tags: ['International', 'IRG', 'Reciprocity'] },
-      { name: 'Kelsey Mitchell', title: 'Platform Support Lead', relationshipType: 'Vendor / Contractor', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'CivisTech Solutions<br>(410) 555-0105 · kelsey.mitchell@civistech.com', tags: ['Technical Contact', 'Platform Support', 'Production'] },
-      { name: 'Kim Mitchell', title: 'Access Administrator', relationshipType: 'OCSE Internal', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'OCSE Internal Operations<br>(202) 555-0106 · kim.mitchell@acf.hhs.gov', tags: ['Data Access', 'Security', 'Admin'] },
-      { name: 'Kyle Mitchell', title: 'Judicial Interface Analyst', relationshipType: 'Court System', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland Family Court<br>(410) 555-0107 · kyle.mitchell@mdcourts.gov', tags: ['Court Liaison', 'Case Updates', 'Compliance'] },
-      { name: 'Kara Mitchell', title: 'Regional Supervisor', relationshipType: 'County Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Baltimore County DSS<br>(443) 555-0108 · kara.mitchell@baltimorecountymd.gov', tags: ['Locate', 'Supervisor', 'Regional'] },
-      { name: 'Kurt Mitchell', title: 'Integration Engineer', relationshipType: 'State IT Office', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland DoIT<br>(410) 555-0109 · kurt.mitchell@maryland.gov', tags: ['Integration', 'State Profile Admin', 'API'] },
-      { name: 'Kira Mitchell', title: 'Child Support Processing Lead', relationshipType: 'Financial Institution', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'First Atlantic Bank<br>(301) 555-0110 · kira.mitchell@firstatlantic.com', tags: ['Insurance Match', 'Payments', 'Reconciliation'] },
-      { name: 'Keenan Mitchell', title: 'Case Investigator', relationshipType: 'Law Enforcement', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'State Enforcement Unit<br>(301) 555-0111 · keenan.mitchell@stateenforce.gov', tags: ['Locate', 'Enforcement', 'Field Ops'] },
-      { name: 'Kyla Mitchell', title: 'Eligibility Coordinator', relationshipType: 'Healthcare Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland Health Exchange<br>(410) 555-0112 · kyla.mitchell@mhbe.gov', tags: ['Eligibility', 'Data Access', 'Verification'] },
-      { name: 'Kori Mitchell', title: 'Outreach Specialist', relationshipType: 'Education Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland Department of Education<br>(410) 555-0113 · kori.mitchell@maryland.gov', tags: ['Outreach', 'Business Contact', 'Training'] },
-      { name: 'Kris Mitchell', title: 'Records Liaison', relationshipType: 'Military Liaison', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Defense Manpower Data Center<br>(703) 555-0114 · kris.mitchell@dmc.mil', tags: ['Federal Collections', 'Military', 'Verification'] },
-      { name: 'Kristen Mitchell', title: 'Benefits Analyst', relationshipType: 'Insurance Provider', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'TriState Benefits Group<br>(240) 555-0115 · kristen.mitchell@tristatebenefits.com', tags: ['Insurance Match', 'Benefits', 'Support'] },
-      { name: 'Khalil Mitchell', title: 'Family Law Attorney Liaison', relationshipType: 'Legal Aid Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland Legal Aid<br>(410) 555-0116 · khalil.mitchell@mdlegalaid.org', tags: ['Legal', 'Intergovernmental', 'Escalation'] },
-      { name: 'Kiara Mitchell', title: 'Community Advocate', relationshipType: 'Nonprofit Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Families First Coalition<br>(443) 555-0117 · kiara.mitchell@familiesfirst.org', tags: ['Community', 'Outreach', 'Referrals'] },
-      { name: 'Kingston Mitchell', title: 'Tax Offset Specialist', relationshipType: 'Tax Authority', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Comptroller of Maryland<br>(410) 555-0118 · kingston.mitchell@marylandtax.gov', tags: ['Federal Collections', 'Offsets', 'Finance'] },
-      { name: 'Kaitlyn Mitchell', title: 'Disbursement Manager', relationshipType: 'Payment Processor', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'GovPay Processing Services<br>(410) 555-0119 · kaitlyn.mitchell@govpay.com', tags: ['Payments', 'Disbursement', 'Batch Processing'] },
-      { name: 'Kaleb Mitchell', title: 'Customer Care Lead', relationshipType: 'Call Center Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'CSP Communication Center<br>(410) 555-0120 · kaleb.mitchell@cspcenter.org', tags: ['Communication Center', 'Customer Support', 'Tier 2'] },
-      { name: 'Kathryn Mitchell', title: 'Exchange Administrator', relationshipType: 'Data Exchange Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Interstate Data Hub<br>(202) 555-0121 · kathryn.mitchell@idhub.org', tags: ['Data Access', 'Enterprise Liaison', 'Interstate'] }
+      { name: 'Karen Mitchell', title: 'Director, Locate Operations', relationshipType: 'State IV-D Agency', badges: ['Primary Match', 'Active'], badgeClasses: ['bg-green-20v text-green-70v', 'bg-blue-20v text-blue-70v'], meta: 'MD Child Support<br>(410) 555-0187 · karen.mitchell@maryland.gov', tags: ['Locate', 'Technical Contact', 'Primary'], active: true, activities: ['Updated locate escalation note · Apr 08, 2026', 'Reviewed interstate case queue · Apr 06, 2026'] },
+      { name: 'Karin Mitchell', title: 'Program Liaison', relationshipType: 'Tribal IV-D Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Navajo Nation Child Support<br>(505) 555-0101 · karin.mitchell@navajo.gov', tags: ['IRG', 'Intergovernmental', 'Case Coordination'], activities: ['Acknowledged tribal data sync issue · Apr 07, 2026', 'Confirmed policy update distribution · Apr 03, 2026'] },
+      { name: 'Kay Mitchell', title: 'Payroll Contact', relationshipType: 'Employer', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Blue Harbor Logistics<br>(443) 555-0102 · kay.mitchell@blueharbor.com', tags: ['Employer Services', 'Payroll', 'Wage Withholding'], activities: ['Verified wage withholding feed delivery · Apr 08, 2026', 'Responded to payroll correction request · Apr 05, 2026'] },
+      { name: 'Keisha Mitchell', title: 'Federal Partner Manager', relationshipType: 'Federal Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Office of Child Support Services<br>(202) 555-0103 · keisha.mitchell@acf.hhs.gov', tags: ['Federal Collections', 'Policy', 'Escalation'], activities: ['Shared federal offset clarification · Apr 09, 2026', 'Closed escalation ticket #FC-2241 · Apr 04, 2026'] },
+      { name: 'Kendall Mitchell', title: 'Cross-Border Coordinator', relationshipType: 'International Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Ontario Family Responsibility Office<br>(613) 555-0104 · kendall.mitchell@ontario.ca', tags: ['International', 'IRG', 'Reciprocity'], activities: ['Logged reciprocity handoff notes · Apr 07, 2026', 'Updated cross-border contact schedule · Apr 02, 2026'] },
+      { name: 'Kelsey Mitchell', title: 'Platform Support Lead', relationshipType: 'Vendor / Contractor', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'CivisTech Solutions<br>(410) 555-0105 · kelsey.mitchell@civistech.com', tags: ['Technical Contact', 'Platform Support', 'Production'], activities: ['Posted release validation summary · Apr 08, 2026', 'Resolved production outage follow-up · Apr 06, 2026'] },
+      { name: 'Kim Mitchell', title: 'Access Administrator', relationshipType: 'OCSE Internal', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'OCSE Internal Operations<br>(202) 555-0106 · kim.mitchell@acf.hhs.gov', tags: ['Data Access', 'Security', 'Admin'], activities: ['Approved security role change · Apr 09, 2026', 'Completed quarterly access audit · Apr 01, 2026'] },
+      { name: 'Kyle Mitchell', title: 'Judicial Interface Analyst', relationshipType: 'Court System', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland Family Court<br>(410) 555-0107 · kyle.mitchell@mdcourts.gov', tags: ['Court Liaison', 'Case Updates', 'Compliance'], activities: ['Uploaded court routing matrix · Apr 08, 2026', 'Reviewed compliance exception report · Apr 05, 2026'] },
+      { name: 'Kara Mitchell', title: 'Regional Supervisor', relationshipType: 'County Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Baltimore County DSS<br>(443) 555-0108 · kara.mitchell@baltimorecountymd.gov', tags: ['Locate', 'Supervisor', 'Regional'], activities: ['Signed off on regional staffing plan · Apr 07, 2026', 'Escalated local locate delay · Apr 03, 2026'] },
+      { name: 'Kurt Mitchell', title: 'Integration Engineer', relationshipType: 'State IT Office', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland DoIT<br>(410) 555-0109 · kurt.mitchell@maryland.gov', tags: ['Integration', 'State Profile Admin', 'API'], activities: ['Patched API schema mismatch · Apr 08, 2026', 'Confirmed nightly batch processing recovery · Apr 06, 2026'] },
+      { name: 'Kira Mitchell', title: 'Child Support Processing Lead', relationshipType: 'Financial Institution', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'First Atlantic Bank<br>(301) 555-0110 · kira.mitchell@firstatlantic.com', tags: ['Insurance Match', 'Payments', 'Reconciliation'], activities: ['Completed payment reconciliation review · Apr 08, 2026', 'Updated remittance exception status · Apr 04, 2026'] },
+      { name: 'Keenan Mitchell', title: 'Case Investigator', relationshipType: 'Law Enforcement', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'State Enforcement Unit<br>(301) 555-0111 · keenan.mitchell@stateenforce.gov', tags: ['Locate', 'Enforcement', 'Field Ops'], activities: ['Shared field investigation summary · Apr 07, 2026', 'Requested updated warrant details · Apr 03, 2026'] },
+      { name: 'Kyla Mitchell', title: 'Eligibility Coordinator', relationshipType: 'Healthcare Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland Health Exchange<br>(410) 555-0112 · kyla.mitchell@mhbe.gov', tags: ['Eligibility', 'Data Access', 'Verification'], activities: ['Verified eligibility discrepancy fix · Apr 09, 2026', 'Submitted monthly verification report · Apr 02, 2026'] },
+      { name: 'Kori Mitchell', title: 'Outreach Specialist', relationshipType: 'Education Agency', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland Department of Education<br>(410) 555-0113 · kori.mitchell@maryland.gov', tags: ['Outreach', 'Business Contact', 'Training'], activities: ['Scheduled district outreach briefing · Apr 08, 2026', 'Published partner training recap · Apr 01, 2026'] },
+      { name: 'Kris Mitchell', title: 'Records Liaison', relationshipType: 'Military Liaison', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Defense Manpower Data Center<br>(703) 555-0114 · kris.mitchell@dmc.mil', tags: ['Federal Collections', 'Military', 'Verification'], activities: ['Updated military record sync cadence · Apr 07, 2026', 'Responded to verification backlog alert · Apr 05, 2026'] },
+      { name: 'Kristen Mitchell', title: 'Benefits Analyst', relationshipType: 'Insurance Provider', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'TriState Benefits Group<br>(240) 555-0115 · kristen.mitchell@tristatebenefits.com', tags: ['Insurance Match', 'Benefits', 'Support'], activities: ['Resolved dependent benefits mismatch · Apr 08, 2026', 'Reviewed support eligibility file · Apr 03, 2026'] },
+      { name: 'Khalil Mitchell', title: 'Family Law Attorney Liaison', relationshipType: 'Legal Aid Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Maryland Legal Aid<br>(410) 555-0116 · khalil.mitchell@mdlegalaid.org', tags: ['Legal', 'Intergovernmental', 'Escalation'], activities: ['Provided legal aid hearing notes · Apr 07, 2026', 'Escalated counsel handoff issue · Apr 04, 2026'] },
+      { name: 'Kiara Mitchell', title: 'Community Advocate', relationshipType: 'Nonprofit Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Families First Coalition<br>(443) 555-0117 · kiara.mitchell@familiesfirst.org', tags: ['Community', 'Outreach', 'Referrals'], activities: ['Shared referral resource update · Apr 08, 2026', 'Completed community intake follow-up · Apr 02, 2026'] },
+      { name: 'Kingston Mitchell', title: 'Tax Offset Specialist', relationshipType: 'Tax Authority', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Comptroller of Maryland<br>(410) 555-0118 · kingston.mitchell@marylandtax.gov', tags: ['Federal Collections', 'Offsets', 'Finance'], activities: ['Validated offset reconciliation batch · Apr 09, 2026', 'Updated tax interface exception log · Apr 06, 2026'] },
+      { name: 'Kaitlyn Mitchell', title: 'Disbursement Manager', relationshipType: 'Payment Processor', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'GovPay Processing Services<br>(410) 555-0119 · kaitlyn.mitchell@govpay.com', tags: ['Payments', 'Disbursement', 'Batch Processing'], activities: ['Released disbursement timing notice · Apr 08, 2026', 'Confirmed ACH settlement totals · Apr 04, 2026'] },
+      { name: 'Kaleb Mitchell', title: 'Customer Care Lead', relationshipType: 'Call Center Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'CSP Communication Center<br>(410) 555-0120 · kaleb.mitchell@cspcenter.org', tags: ['Communication Center', 'Customer Support', 'Tier 2'], activities: ['Closed tier-2 callback tickets · Apr 09, 2026', 'Reviewed queue performance snapshot · Apr 05, 2026'] },
+      { name: 'Kathryn Mitchell', title: 'Exchange Administrator', relationshipType: 'Data Exchange Partner', badges: ['Active'], badgeClasses: ['bg-green-20v text-green-70v'], meta: 'Interstate Data Hub<br>(202) 555-0121 · kathryn.mitchell@idhub.org', tags: ['Data Access', 'Enterprise Liaison', 'Interstate'], activities: ['Published interstate exchange bulletin · Apr 08, 2026', 'Addressed partner access request · Apr 03, 2026'] }
     ];
     const relationshipFallbackMap = {
       'State IV-D Agency': {
@@ -401,7 +406,9 @@
         stakeholderGroup: result.stakeholderGroup || mappedStakeholders.stakeholderGroup || '',
         stakeholder: result.stakeholder || mappedStakeholders.stakeholder || '',
         state: result.state || 'Maryland',
-        lastUpdated: result.lastUpdated || `2026-03-${String(22 - (index % 10)).padStart(2, '0')}`
+        lastUpdated: result.lastUpdated || `2026-03-${String(22 - (index % 10)).padStart(2, '0')}`,
+        contactKey: result.name.toLowerCase().replace(/\s+/g, '-'),
+        activities: (result.activities || []).slice(0, 2)
       };
     });
 
@@ -568,6 +575,18 @@
         const metricsData = result.metrics || defaultMetrics;
         const metrics = `<div class="metrics-grid">${metricsData.map((metric) => `<div class="metric"><span class="metric-label">${metric.label}</span><span class="metric-value">${metric.value}</span></div>`).join('')}</div>`;
         const badges = visibleBadges.join(' ');
+        const activities = result.activities?.length ? result.activities : ['No recent activity available.'];
+        const isActivitiesExpanded = expandedActivityKeys.has(result.contactKey);
+        const activityMarkup = isActivitiesExpanded
+          ? `
+            <div class="result-activities-panel result-activity" aria-live="polite">
+              <span class="result-activity__label">Last activities</span>
+              <ul class="result-activities-list">
+                ${activities.map((activity) => `<li class="result-activity__text">${activity}</li>`).join('')}
+              </ul>
+            </div>
+          `
+          : '';
 
         li.innerHTML = `
           <article class="result-content ${result.active ? 'result-content--active' : ''}">
@@ -579,6 +598,12 @@
             </div>
             <div class="result-side">
               ${metrics}
+              <div class="result-action">
+                <button type="button" class="usa-button usa-button--outline" data-action="toggle-activities" data-contact-key="${result.contactKey}" aria-expanded="${isActivitiesExpanded}">
+                  ${isActivitiesExpanded ? 'Hide activities' : 'View activities'}
+                </button>
+              </div>
+              ${activityMarkup}
               <div class="result-action"><a href="full_contact_details.html" class="usa-button usa-button--outline">View details</a></div>
             </div>
           </article>
@@ -640,6 +665,21 @@
         currentPage = targetPage;
         renderResults();
       }
+    });
+
+    resultsList.addEventListener('click', (event) => {
+      const toggleButton = event.target.closest('button[data-action="toggle-activities"]');
+      if (!toggleButton) return;
+
+      const { contactKey } = toggleButton.dataset;
+      if (!contactKey) return;
+
+      if (expandedActivityKeys.has(contactKey)) {
+        expandedActivityKeys.delete(contactKey);
+      } else {
+        expandedActivityKeys.add(contactKey);
+      }
+      renderResults();
     });
 
     searchButton.addEventListener('click', () => {
