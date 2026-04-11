@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" role="img" aria-labelledby="title desc">
+  <title id="title">Suds Soap logo</title>
+  <desc id="desc">A stylized soap bar with two leaves in green and cream tones.</desc>
+  <defs>
+    <linearGradient id="soapFill" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f3ecd8" />
+      <stop offset="100%" stop-color="#e9ddbe" />
+    </linearGradient>
+    <style>
+      .line { stroke: #3f5a45; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+      .leaf { fill: #7f9264; stroke: #3f5a45; stroke-width: 5; }
+    </style>
+  </defs>
+
+  <path class="leaf" d="M32 110C22 78 31 50 58 33c11 26 6 57-10 80-4 6-10 7-16-3Z" />
+  <path class="leaf" d="M24 152c4-29 21-51 50-63 8 26 0 56-18 76-6 6-14 4-17-13Z" />
+  <path class="line" d="M64 72c13 22 15 44 6 66" />
+  <path class="line" d="M58 106c-1 18 5 38 18 58" />
+
+  <path d="M88 62 161 84c7 2 12 8 12 15v43c0 8-6 15-14 16l-73 8c-10 1-19-7-19-17V79c0-12 10-21 21-17Z"
+        fill="url(#soapFill)" stroke="#3f5a45" stroke-width="6" />
+  <path class="line" d="M67 105 141 126l33-28" />
+  <path class="line" d="M141 126v33" />
+</svg>

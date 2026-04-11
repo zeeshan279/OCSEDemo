@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Soap Material Order Calculator</title>
+  <title>Suds Soap Material Order Calculator</title>
   <style>
     :root {
       --bg: #f6f4ef;
@@ -37,6 +37,27 @@
       padding: 1.25rem;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
       margin-bottom: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .brand img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+    }
+
+    .brand-name {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      color: #445a45;
     }
 
     h1 {
@@ -113,8 +134,12 @@
 <body>
   <main class="wrap">
     <section class="card">
-      <h1>Soap Material Order Calculator</h1>
-      <p class="sub">For 100 g bars with this recipe ratio: Olive 3 parts, Coconut 3 parts, Shea 3 parts, Cocoa 1 part.</p>
+      <div class="brand">
+        <img src="suds-logo.svg" alt="Suds Soap logo" />
+        <h1 class="brand-name">SUDS SOAP</h1>
+      </div>
+      <h1>Suds Soap Material Order Calculator</h1>
+      <p class="sub">For Suds Soap 100 g bars with this recipe ratio: Olive 1 part, Coconut 1 part, Shea 1 part, Cocoa 0.5 part.</p>
 
       <div class="grid">
         <div>
