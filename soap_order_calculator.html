@@ -155,6 +155,20 @@
           </tr>
         </thead>
         <tbody id="resultBody"></tbody>
+        <tfoot>
+          <tr>
+            <th>Total Oils</th>
+            <th class="right" id="totalOilsOz"></th>
+            <th class="right" id="totalOilsLbOz"></th>
+            <th class="right" id="totalOilsG"></th>
+          </tr>
+          <tr>
+            <th>Total All Materials</th>
+            <th class="right" id="totalAllOz"></th>
+            <th class="right" id="totalAllLbOz"></th>
+            <th class="right" id="totalAllG"></th>
+          </tr>
+        </tfoot>
       </table>
       <p class="note" id="batchSummary"></p>
       <p class="note">SAP values used (NaOH): Olive 0.134, Coconut 0.183, Shea 0.128, Cocoa 0.137.</p>
@@ -240,6 +254,17 @@
         tableRow('Sodium Hydroxide (Lye)', lyeOz) +
         tableRow('Distilled Water', waterOz) +
         tableRow('Essential Oil', essentialOilOz);
+
+      const totalOilsOz = oliveOz + coconutOz + sheaOz + cocoaOz;
+      const totalAllOz = totalOilsOz + lyeOz + waterOz + essentialOilOz;
+
+      document.getElementById('totalOilsOz').textContent = round(totalOilsOz, 2).toFixed(2);
+      document.getElementById('totalOilsLbOz').textContent = toLbOz(totalOilsOz);
+      document.getElementById('totalOilsG').textContent = round(totalOilsOz * OUNCES_TO_GRAMS, 1).toFixed(1);
+
+      document.getElementById('totalAllOz').textContent = round(totalAllOz, 2).toFixed(2);
+      document.getElementById('totalAllLbOz').textContent = toLbOz(totalAllOz);
+      document.getElementById('totalAllG').textContent = round(totalAllOz * OUNCES_TO_GRAMS, 1).toFixed(1);
 
       document.getElementById('batchSummary').textContent =
         `Batch size: ${bars} bars × 4 oz = ${round(oilTotalOz, 2)} oz oils (${toLbOz(oilTotalOz)}).`;
